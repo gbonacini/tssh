@@ -1,0 +1,13 @@
+config.guess linguist-vendored
+config.sub linguist-vendored
+depcomp linguist-vendored
+install-sh linguist-vendored
+libtool linguist-vendored
+ltmain.sh linguist-vendored
+ylwrap linguist-vendored
+aclocal.m4 linguist-vendored
+compile linguist-vendored
+config.log linguist-vendored
+config.status linguist-vendored
+configure linguist-vendored
+configure.ac linguist-vendored
