@@ -1,0 +1,41 @@
+.TH TSSH 1 "SEPTEMBER 2016" Linux "User Manuals"                                  
+.SH NAME                                                                     
+tssh \- A ssh test implementation.
+.SH SYNOPSIS                                                                 
+.B  tssh [-p port] [-l user] [-i identity] [-T] [-d] host 
+         [-h] [-V]
+.SH DESCRIPTION                                                              
+.B tssh                                                                       
+is a test implementation of the ssh protocol. It permits to interact with a remote shell ( with or without opening a pty) using the ssh protocol.
+.SH OPTIONS                                                       
+.IP -p port
+Specifies the remote port used by the ssh server. If not specified, the port 22 will be used.
+.IP -l user
+Specifies the user needed for the remote login.
+.IP -i prefix
+Specifies an alternative prefix name for the key files, i.e. for rsa the standard is id_rsa, that identifies the couple of files "id_rsa" and "id_rsa.pub" with the private and public rsa keys. Using this parameter, a diferent prefix is specified for both files.
+.IP -T                                                                       
+Tssh will connect without creating a pty.
+.IP -d                                                                       
+Debug mode. Prints on stdout all the packets sent and received and their payload. Warning: activating the debug mode even the sensitive information (private keys, etc) will be printed. Be careful.
+.IP -h
+A short description of tssh command line syntax.
+.IP -V
+Prints the tssh version and further information, if available.
+.SH PARAMETERS                                                                    
+Parameters read from the environment.     
+.SS TERM
+If activate the standard mode, needed so set the pty environment.
+.SS HOME
+Needed to locate the key files.
+.SH FILES                                                                    
+.IP ~/.ssh/<key_files>
+Tssh use the key files in $HOME/.ssh (i.e. id_rsa) the same files used by openssh. 
+.IP ~/.ssh/known_hosts
+The "known_hosts" file to register the known servers, the entries will be added using the same format of openssh.
+.SH BUGS                                                                     
+This program is an alpha, massive changes are possible.
+.SH AUTHOR                                                                   
+Gabriele Bonacini <g.random36@gmail.com>                            
+.SH "SEE ALSO"                                                               
+.BR SSH(1)
