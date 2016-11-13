@@ -320,7 +320,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 dist_man_MANS = ../doc/tssh.1
-nobase_include_HEADERS = ../include/Crypto.cpp ../include/Crypto.hpp ../include/Inet.cpp ../include/Inet.hpp ../include/Main.hpp ../include/StringUtils.cpp ../include/StringUtils.hpp ../include/Tssh.hpp ../include/Types.hpp ../include/Types.cpp  
+nobase_include_HEADERS = ../include/Crypto.hpp ../include/Inet.hpp ../include/Main.hpp ../include/StringUtils.hpp ../include/Tssh.hpp ../include/Types.hpp
 tssh_SOURCES = Main.cpp InetImpl.cpp StringUtilsImpl.cpp Tssh.cpp CryptoImpl.cpp TypesImpl.cpp
 all: all-am
 
@@ -727,6 +727,8 @@ uninstall-man: uninstall-man1
 	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS \
 	uninstall-man uninstall-man1 uninstall-nobase_includeHEADERS
 
+
+TypesImpl.o : CXXFLAGS += -fpermissive
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

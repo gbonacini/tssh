@@ -38,26 +38,84 @@ namespace typeutils{
                    int errorCode;
    };
 
-   template<class T>
-   ssize_t            safeSsizeT(T size)          noexcept(false);
+   #ifdef __clang__
+   #pragma clang diagnostic push
+   #pragma clang diagnostic ignored "-Wsign-compare"
+   #endif
 
    template<class T>
-   size_t             safeSizeT(T size)           noexcept(false);
+   ssize_t safeSsizeT(T size)  noexcept(false){     
+      if(size > std::numeric_limits<ssize_t>::max())
+         throw TypesUtilsException("Invalid conversion to ssize_t: overflow.");
+      return static_cast<ssize_t>(size);
+   }
 
    template<class T>
-   int                safeInt(T size)             noexcept(false);
+   int safeInt(T size)  noexcept(false){        
+      if(size > std::numeric_limits<int>::max())
+         throw TypesUtilsException("Invalid conversion to int: overflow.");
+      return static_cast<int>(size);
+   }
 
    template<class T>
-   unsigned int       safeUInt(T size)            noexcept(false);
+   ptrdiff_t safePtrdiff(T offset)  noexcept(false){  
+      if(offset > std::numeric_limits<ptrdiff_t>::max())
+         throw TypesUtilsException("Invalid conversion to ptrdiff_t: overflow.");
+      return static_cast<ptrdiff_t>(offset);
+   }
 
    template<class T>
-   unsigned long      safeULong(T size)           noexcept(false);
+   size_t safeSizeT(T size)  noexcept(false){
+      if(size < 0)       
+         throw TypesUtilsException("Invalid conversion to size_t: negative value.");
+      if(size > std::numeric_limits<size_t>::max())
+         throw TypesUtilsException("Invalid conversion to size_t: overflow.");
+      return static_cast<size_t>(size);
+   }
 
    template<class T>
-   uint32_t           safeUint32(T size)          noexcept(false);
+   unsigned int safeUInt(T size)  noexcept(false){       
+      if(size < 0)       
+         throw TypesUtilsException("Invalid conversion to unsigned int: negative value.");
+      if(size > std::numeric_limits<unsigned int>::max())
+         throw TypesUtilsException("Invalid conversion to unsigned int: overflow.");
+      return static_cast<unsigned int>(size);
+   }
 
    template<class T>
-   ptrdiff_t          safePtrdiff(T offset)       noexcept(false);
+   unsigned long safeULong(T size)  noexcept(false){      
+      if(size < 0)       
+         throw TypesUtilsException("Invalid conversion to unsigned long: negative value.");
+      if(size > std::numeric_limits<unsigned long>::max())
+         throw TypesUtilsException("Invalid conversion to unsigned long: overflow.");
+      return static_cast<unsigned long>(size);
+   }
 
+   template<class T>
+   uint32_t safeUint32(T size)  noexcept(false){     
+      if(size < 0)       
+         throw TypesUtilsException("Invalid conversion to uint32_t: negative value.");
+      if(size > std::numeric_limits<uint32_t>::max())
+         throw TypesUtilsException("Invalid conversion to uint32_t: overflow.");
+      return static_cast<uint32_t>(size);
+   }
+
+   #ifdef __clang__
+   #pragma clang diagnostic pop
+   #endif
+
+   extern template ptrdiff_t       safePtrdiff<size_t>(size_t)                noexcept(false);
+   extern template ssize_t         safeSsizeT<size_t>(size_t)                 noexcept(false);
+   extern template int             safeInt<unsigned int>(unsigned int)        noexcept(false);
+   extern template int             safeInt<size_t>(size_t)                    noexcept(false);
+   extern template size_t          safeSizeT<ssize_t>(ssize_t)                noexcept(false);
+   extern template size_t          safeSizeT<int>(int)                        noexcept(false);
+   extern template size_t          safeSizeT<uint32_t>(uint32_t)              noexcept(false);
+   extern template size_t          safeSizeT<long long int>(long long int)    noexcept(false);
+   extern template uint32_t        safeUint32<int>(int)                       noexcept(false);
+   extern template uint32_t        safeUint32<unsigned long>(unsigned long)   noexcept(false);
+   extern template unsigned int    safeUInt<size_t>(size_t)                   noexcept(false);
+   extern template unsigned long   safeULong<int>(int)                        noexcept(false);
+   extern template unsigned long   safeULong<long int>(long int)              noexcept(false);
 }
 #endif

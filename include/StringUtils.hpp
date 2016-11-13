@@ -110,6 +110,29 @@ namespace stringutils{
    template<class T>
    void      loadFileMem(std::string fileName, T& dest, bool terminator)                            noexcept(false);
 
+   extern template
+   void   encodeB64(const std::vector<uint8_t>& in, std::string& out)                               noexcept(false);
+   extern template
+   void   decodeB64(const std::string& in, std::vector<uint8_t>& out)                               noexcept(false);
+   extern template 
+   void   insArrayVals(const std::vector<uint8_t>& orig, size_t origOffset,
+                       std::vector<uint8_t>& dest, size_t destOffset)                               noexcept(false);
+   extern template 
+   void   addVarLengthDataString(const std::string& item,
+                                 std::vector<uint8_t>& target)                                      noexcept(false);
+   extern template 
+   void   addVarLengthDataString(const std::vector<uint8_t>&item,
+                                 std::vector<uint8_t>& target)                                      noexcept(false);
+   extern template 
+   size_t getVariableLengthRawValue(const std::vector<uint8_t>& index,
+                                    size_t offset, std::string& destination)                        noexcept(false);
+   extern template
+   size_t getVariableLengthRawValue(const std::vector<uint8_t>& index,
+                                    size_t offset, std::vector<uint8_t>&destination)                noexcept(false);
+   extern template 
+   void   loadFileMem(std::string fileName, std::vector<uint8_t>& dest,
+                      bool terminator)                                                              noexcept(false);
+
  }
    
 #endif

@@ -28,23 +28,40 @@
 #pragma clang diagnostic ignored "-Wundefined-func-template"
 #endif
 
-#include <Types.cpp>
-
 namespace typeutils{
 
-  template ptrdiff_t       safePtrdiff(size_t size);
-  template ssize_t         safeSsizeT(size_t size);
-  template int             safeInt(unsigned int size);
-  template int             safeInt(size_t size);
-  template size_t          safeSizeT(ssize_t size);
-  template size_t          safeSizeT(int size);
-  template size_t          safeSizeT(uint32_t size);
-  template size_t          safeSizeT(long long int size);
-  template uint32_t        safeUint32(int size);
-  template uint32_t        safeUint32(unsigned long size);
-  template unsigned int    safeUInt(size_t size);
-  template unsigned long   safeULong(int size);
-  template unsigned long   safeULong(long int size);
+  TypesUtilsException::TypesUtilsException(int errNum){
+          errorCode=errNum;
+          errorMessage="None";
+  }   
+  
+  TypesUtilsException::TypesUtilsException(std::string errString){
+          errorMessage=errString;
+          errorCode=0;
+  }   
+  
+  TypesUtilsException::TypesUtilsException(int errNum, std::string errString){
+          errorMessage=errString;
+          errorCode=errNum;
+  }   
+  
+  std::string TypesUtilsException::what() const noexcept(true){
+          return errorMessage;
+  }   
+
+  template ptrdiff_t       safePtrdiff(size_t size)            noexcept(false);
+  template ssize_t         safeSsizeT(size_t size)             noexcept(false);
+  template int             safeInt(unsigned int size)          noexcept(false);
+  template int             safeInt(size_t size)                noexcept(false);
+  template size_t          safeSizeT(ssize_t size)             noexcept(false);
+  template size_t          safeSizeT(int size)                 noexcept(false);
+  template size_t          safeSizeT(uint32_t size)            noexcept(false);
+  template size_t          safeSizeT(long long int size)       noexcept(false);
+  template uint32_t        safeUint32(int size)                noexcept(false);
+  template uint32_t        safeUint32(unsigned long size)      noexcept(false);
+  template unsigned int    safeUInt(size_t size)               noexcept(false);
+  template unsigned long   safeULong(int size)                 noexcept(false);
+  template unsigned long   safeULong(long int size)            noexcept(false);
 }
 
 #ifdef __GNUC__

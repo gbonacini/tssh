@@ -347,6 +347,9 @@ namespace crypto {
                                    std::vector<uint8_t> &out)    const noexcept(false);
    };
 
+   extern template 
+   void Crypto::serverKeyHash(const std::string& in, 
+                              std::vector<uint8_t>& out)         const noexcept(false);
 }
 
 #endif

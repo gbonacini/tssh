@@ -1,9 +1,9 @@
 Description:
 ============
 
-Tssh is a SSH 2 client I wrote in C++11 from scratch starting from the RFCs.
+Tssh is a SSH 2 client I wrote in C++11 from scratch, starting from the RFCs.
 
-This is a screeshoot of the output that the program produce in debug mode, with the contents of the initial packets exchange:
+This is a screeshoot of the output that the program produces in debug mode, with the contents of the initial packets exchange:
 
 ![alt text](screenshoots/handshake.png "Tssh screenshoot")
 
@@ -27,7 +27,8 @@ The program is intended to be used in a *nix environment and it is tested on var
 
 - RHEL7 Linux  x86_64;
 - Debian 7 ("wheezy");
-- Ununtu 16.04 LTS;
+- Ubuntu 16.04 LTS;
+- Ubuntu 14.04 LTS;
 - OS X 10.10.5;
 
 using, as compiler, one in this list:
@@ -35,6 +36,7 @@ using, as compiler, one in this list:
 - clang version 4.0.0;
 - clang version 3.8.1;
 - gcc version 4.8.5 20150623 (Red Hat 4.8.5-4) (GCC);
+- gcc version 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3);
 - gcc version 4.7.2 (Debian 4.7.2-5);
 - Apple LLVM version 6.0 (clang-600.0.57) (based on LLVM 3.5svn)
 
@@ -67,8 +69,13 @@ Installation:
   ./configure
 - Compile the program:
   make
-- Istall the program and the man page:
+- Install the program and the man page:
   sudo make install
+
+Instructions:
+=============
+
+See the man page included in the release.
 
 Important Notes:
 ================
@@ -80,6 +87,6 @@ Note that the "-d" flag will print on stderr all the packets exchanged before an
 
 *** This means that sensible data will be visualized on the screen ! *** 
 
-So if you are thinking to use this program in envirnonment with security restrictions,  reflect before on the conseguences before using it!
+So if you are thinking to use this program in envirnonment with security restrictions,  reflect on the conseguences before using it!
 
 

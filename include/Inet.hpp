@@ -125,6 +125,11 @@ namespace inet{
                    void cleanResurces(void)                                 noexcept(true)   override;
    };
 
+   extern template 
+   void Inet::getBufferCopy(std::string& dest, bool append=false)           const noexcept(false);
+   extern template 
+   void Inet::getBufferCopy(std::vector<uint8_t>& dest, bool append=false)  const noexcept(false);
+
 }
    
 #endif
