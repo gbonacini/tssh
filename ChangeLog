@@ -1,19 +1,25 @@
+tssh (0.6.6) any; urgency=low
+
+ * Alpha Test
+ Minor changes, openssl "_" macro warnings suppression.
+ -- Gabriele Bonacini <gabriele.bonacini@protonmail.com> Wed, 1 Mar 2017 19:17:00 -0100
+
 tssh (0.6.4) any; urgency=low
 
  * Alpha Test
  Minor changes, cleaning, reorganized template libsi, debugged readBuffer/readBufferNb error handling.
- -- Gabriele Bonacini <gabriele.bonacini@protonmail.com> Fri, 19 Aug 2016 11:12:00 -0100
+ -- Gabriele Bonacini <gabriele.bonacini@protonmail.com Fri, 19 Aug 2016 11:12:00 -0100
 
 tssh (0.6.2) any; urgency=low
 
  * Alpha Test
  First Public release.
- -- Gabriele Bonacini <gabriele.bonacini@protonmail.com> Fri, 19 Aug 2016 11:12:00 -0100
+ -- Gabriele Bonacini <gabriele.bonacini@protonmail.com Fri, 19 Aug 2016 11:12:00 -0100
 
 tssh (0.5.0) any; urgency=low 
 
  * Alpha Test
  Initial Version.
- -- Gabriele Bonacini <gabriele.bonacini@protonmail.com> Fri, 19 Aug 2016 11:12:00 -0100 
+ -- Gabriele Bonacini <gabriele.bonacini@protonmail.com Fri, 19 Aug 2016 11:12:00 -0100 
 
 

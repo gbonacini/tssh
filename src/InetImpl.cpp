@@ -30,8 +30,13 @@ namespace inet {
       errorMessage            = "None";
    }
    
-   InetException::InetException(string errString){
+   InetException::InetException(string& errString){
       errorMessage            = errString;
+      errorCode               = 0;
+   }
+   
+   InetException::InetException(string&& errString){
+      errorMessage            = move(errString);
       errorCode               = 0;
    }
    

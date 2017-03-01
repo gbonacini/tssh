@@ -48,7 +48,8 @@ namespace stringutils{
    class  StringUtilsException final {
            public:
                    StringUtilsException(int errNum);
-                   StringUtilsException(std::string errString);
+                   StringUtilsException(std::string&  errString);
+                   StringUtilsException(std::string&& errString);
                    StringUtilsException(int errNum, std::string errString);
                    std::string what(void)                                                     const noexcept(true);
               private:

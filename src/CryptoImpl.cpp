@@ -44,8 +44,13 @@ namespace crypto{
            errorMessage="None";
    }
 
-   CryptoException::CryptoException(string errString){
+   CryptoException::CryptoException(string& errString){
            errorMessage=errString;
+           errorCode=0;
+   }
+
+   CryptoException::CryptoException(string&& errString){
+           errorMessage=move(errString);
            errorCode=0;
    }
 

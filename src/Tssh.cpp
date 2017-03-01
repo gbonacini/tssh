@@ -126,7 +126,7 @@ namespace tssh{
          return strlen(data);
    }
    
-   VarDataRecursive::VarDataRecursive(initializer_list<VarData*> sList) : subList(sList), globalSize(0){}
+   VarDataRecursive::VarDataRecursive(initializer_list<VarData*>&& sList) : subList(move(sList)), globalSize(0){}
    
    VarDataRecursive::~VarDataRecursive(void){}
    
@@ -917,7 +917,7 @@ namespace tssh{
    }
   
    void SshTransport::createSendPacket(const uint8_t packetType, 
-                                       initializer_list<VarData*> list) noexcept(false){
+                                       initializer_list<VarData*>&& list) noexcept(false){
       addHeader(packetType, message); 
       for(auto elem : list) {
          elem->appendData(message);
@@ -976,7 +976,7 @@ namespace tssh{
       ERR_clear_error();  
    }
    
-   void  SshConnection::createAuthSign(vector<uint8_t>& msg, initializer_list<VarData*> list) noexcept(false){
+   void  SshConnection::createAuthSign(vector<uint8_t>& msg, initializer_list<VarData*>&& list) noexcept(false){
       genericBuffer.clear();
       for(auto elem : list) {
          elem->appendData(genericBuffer);

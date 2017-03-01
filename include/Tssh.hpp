@@ -248,7 +248,7 @@ namespace tssh{
    
    class VarDataRecursive : public VarData{
       public:
-         VarDataRecursive(std::initializer_list<VarData*> sList);
+         VarDataRecursive(std::initializer_list<VarData*>&& sList);
          ~VarDataRecursive(void);
          void    appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
          size_t  size(void)                                       noexcept(true)    override;
@@ -369,7 +369,7 @@ namespace tssh{
          void                   sendWithHeader(std::vector<uint8_t>& buff,
                                                uint8_t allign)                    const  noexcept(false);
          void                   createSendPacket(const uint8_t packetType,
-                                      std::initializer_list<VarData*> list)              noexcept(false); 
+                                      std::initializer_list<VarData*>&& list)            noexcept(false); 
    };
 
    typedef std::map<unsigned int, std::set<unsigned int>> StatusTree;
@@ -419,7 +419,7 @@ namespace tssh{
          void                    shellLoopPty(void)                                      noexcept(false); 
          void                    adjustWnwSize(void)                              const  noexcept(true); 
          void                    createAuthSign(std::vector<uint8_t>& msg, 
-                                          std::initializer_list<VarData*> list)          noexcept(false); 
+                                          std::initializer_list<VarData*>&& list)        noexcept(false); 
          bool                    parseShellPacket(void)                                  noexcept(false); 
          void                    createSendShellData()                                   noexcept(false); 
    };

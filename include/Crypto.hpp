@@ -18,12 +18,21 @@
 #ifndef CRYPTO_LIB
 #define CRYPTO_LIB
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreserved-id-macro"
+#endif
+
 #include <openssl/ssl.h>
 #include <openssl/bn.h>
 #include <openssl/rand.h>
 #include <openssl/err.h>
 #include <openssl/rsa.h>
 #include <openssl/sha.h>
+
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
 #include <openssl/evp.h>
 
@@ -47,7 +56,8 @@ namespace crypto {
                    CryptoException(int errNum,
                                    std::string errString);
                    CryptoException(int errNum);
-                   CryptoException(std::string errString);
+                   CryptoException(std::string&  errString);
+                   CryptoException(std::string&& errString);
                    std::string what(void)                        const noexcept(true);
               private:
                    std::string errorMessage;

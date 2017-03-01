@@ -67,8 +67,13 @@ namespace stringutils{
            errorMessage="None";
    }
    
-   StringUtilsException::StringUtilsException(string errString){
+   StringUtilsException::StringUtilsException(string& errString){
            errorMessage=errString;
+           errorCode=0;
+   }
+   
+   StringUtilsException::StringUtilsException(string&& errString){
+           errorMessage=move(errString);
            errorCode=0;
    }
    
