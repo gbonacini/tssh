@@ -61,6 +61,31 @@ namespace tssh{
 
    using  crypto::Crypto;
 
+   static const char INITIAL_IV_C_TO_S                = 'A';
+   static const char INITIAL_IV_S_TO_C                = 'B';
+   static const char ENCR_KEY_C_TO_S                  = 'C';
+   static const char ENCR_KEY_S_TO_C                  = 'D';
+   static const char INTEGRITY_KEY_C_TO_S             = 'E';
+   static const char INTEGRITY_KEY_S_TO_C             = 'F';
+   
+   static const char *SSH_CONF_DIRECTORY              = ".ssh";
+   static const char *SSH_KNOWN_HOST_FILE             = "known_hosts";
+   static const char *SSH_DEFAULT_TERM                = "vt100";
+   static const char *SSH_PTY_REQ                     = "pty-req";
+   static const char *SSH_SHELL_REQ                   = "shell";
+   
+   static const char *SSH_ID_STRING                   = "SSH-2.0-bg\r\n";
+   static const char *SSH_HEADER_ID                   = "SSH-2.0";
+   static const char *RAND_FILE                       = "/dev/urandom";
+   
+   static const char *SSH_USERAUTH_STRING             = "ssh-userauth";
+   static const char *SSH_CONNECT_STRING              = "ssh-connection";
+   static const char *SSH_PUBKEY_AUTH_REQ             = "publickey";
+   static const char *SSH_PASSWD_SPEC                 = "password";
+   static const char *SSH_KEYB_INTER_SPEC             = "keyboard-interactive";
+   static const char *SSH_SESSION_SPEC                = "session";
+   static const char *SSH_WNDW_RESIZE                 = "window-change";
+
    VarData::~VarData(void){}
 
    VarDataBin::VarDataBin(vector<uint8_t>& val) : data(val){}
@@ -184,7 +209,7 @@ namespace tssh{
    #pragma clang diagnostic ignored "-Wundefined-func-template"
    #endif
 
-   SshTransport::SshTransport(string host, string port = SSH_PORT): 
+   SshTransport::SshTransport(string host, string port): 
                  InetClient(host.c_str(), port.c_str()), hostname(host), 
                  clientIdString(SSH_ID_STRING), haveKeys(false){ 
   

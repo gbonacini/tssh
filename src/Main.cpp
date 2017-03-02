@@ -21,8 +21,9 @@
 
 using namespace std;
 using namespace tssh;
-      
+
 int main(int argc, char **argv){
+   const char *SSH_PORT   = "22";
    string      usr,
                port,
                identityFile,

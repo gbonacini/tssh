@@ -56,33 +56,6 @@ enum CONFETC   { CHANNEL_EXTDATA_STDERR     = 1,     SSH_PTY_ECHO  = 53         
 enum KEYATTCOL { KEYTEXT                    = 0,     KEYTYPE       = 1,      KEYHASH    = 2 };
 enum PUBKEYIDX { PUBKEYTYPE                 = 0,     PUBKEYBLOB    = 1,      PUBKEYUSR  = 2 };
 
-static const char INITIAL_IV_C_TO_S                = 'A';
-static const char INITIAL_IV_S_TO_C                = 'B';
-static const char ENCR_KEY_C_TO_S                  = 'C';
-static const char ENCR_KEY_S_TO_C                  = 'D';
-static const char INTEGRITY_KEY_C_TO_S             = 'E';
-static const char INTEGRITY_KEY_S_TO_C             = 'F';
-
-static const char *SSH_PORT                        = "22";
-static const char *SSH_CONF_DIRECTORY              = ".ssh";
-static const char *SSH_KNOWN_HOST_FILE             = "known_hosts";
-static const char *SSH_DEFAULT_TERM                = "vt100";
-static const char *SSH_PTY_REQ                     = "pty-req";
-static const char *SSH_SHELL_REQ                   = "shell";
-
-static const char *SSH_ID_STRING                   = "SSH-2.0-bg\r\n";
-static const char *SSH_HEADER_ID                   = "SSH-2.0";
-static const char *RAND_FILE                       = "/dev/urandom";
-
-static const char *SSH_USERAUTH_STRING             = "ssh-userauth";
-static const char *SSH_CONNECT_STRING              = "ssh-connection";
-static const char *SSH_PUBKEY_AUTH_REQ             = "publickey";
-static const char *SSH_PASSWD_SPEC                 = "password";
-static const char *SSH_KEYB_INTER_SPEC             = "keyboard-interactive";
-static const char *SSH_SESSION_SPEC                = "session";
-static const char *SSH_WNDW_RESIZE                 = "window-change";
-
-
 //      SSH_MSG_USERAUTH_PK_OK              60
 //      SSH_MSG_REQUEST_SUCCESS             81
 
