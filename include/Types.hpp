@@ -43,6 +43,12 @@ namespace typeutils{
    #pragma clang diagnostic ignored "-Wsign-compare"
    #endif
 
+   #ifdef __GNUC__
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wsign-compare"
+   #pragma GCC diagnostic ignored "-Wtype-limits"
+   #endif
+
    template<class T>
    ssize_t safeSsizeT(T size)  noexcept(false){     
       if(size > std::numeric_limits<ssize_t>::max())
@@ -117,5 +123,9 @@ namespace typeutils{
    extern template unsigned int    safeUInt<size_t>(size_t)                   noexcept(false);
    extern template unsigned long   safeULong<int>(int)                        noexcept(false);
    extern template unsigned long   safeULong<long int>(long int)              noexcept(false);
+   
+   #ifdef __GNUC__
+   #pragma GCC diagnostic pop
+   #endif
 }
 #endif
