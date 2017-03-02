@@ -1,12 +1,12 @@
 .TH TSSH 1 "SEPTEMBER 2016" Linux "User Manuals"                                  
 .SH NAME                                                                     
-tssh \- A ssh test implementation.
+tssh \- A basic ssh client, implemented using the version 2 of the ssh protocol.
 .SH SYNOPSIS                                                                 
 .B  tssh [-p port] [-l user] [-i identity] [-T] [-d] host 
          [-h] [-V]
 .SH DESCRIPTION                                                              
 .B tssh                                                                       
-is a test implementation of the ssh protocol. It permits to interact with a remote shell ( with or without opening a pty) using the ssh protocol.
+ is a ssh ver.2 basic client, It permits to interact with a remote shell ( with or without opening a pty) using the ssh protocol.
 .SH OPTIONS                                                       
 .IP -p port
 Specifies the remote port used by the ssh server. If not specified, the port 22 will be used.
