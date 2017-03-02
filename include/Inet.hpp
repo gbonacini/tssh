@@ -38,10 +38,10 @@ namespace inet{
    
    class InetException final {
       public:
-         InetException(int errNum);
-         InetException(std::string&  errString);
-         InetException(std::string&& errString);
-         InetException(int errNum, std::string errString);
+         explicit    InetException(int errNum);
+         explicit    InetException(std::string&  errString);
+         explicit    InetException(std::string&& errString);
+                     InetException(int errNum, std::string errString);
          std::string what(void)                                        const noexcept(true);
       private:
          std::string errorMessage;

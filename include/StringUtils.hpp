@@ -47,10 +47,10 @@ namespace stringutils{
 
    class  StringUtilsException final {
            public:
-                   StringUtilsException(int errNum);
-                   StringUtilsException(std::string&  errString);
-                   StringUtilsException(std::string&& errString);
-                   StringUtilsException(int errNum, std::string errString);
+                   explicit    StringUtilsException(int errNum);
+                   explicit    StringUtilsException(std::string&  errString);
+                   explicit    StringUtilsException(std::string&& errString);
+                               StringUtilsException(int errNum, std::string errString);
                    std::string what(void)                                                     const noexcept(true);
               private:
                    std::string errorMessage;
@@ -65,12 +65,15 @@ namespace stringutils{
    void      appendStringAsUint32t(const std::string& orig,
                                    std::vector<uint8_t>& dest, size_t offset)                       noexcept(false);
    void      appendVectBuffer(std::vector<uint8_t>& buffer, 
-                              const char* orig, size_t len, size_t start, size_t stop)              noexcept(false);
+                              const char* orig, size_t len, size_t start, 
+                             size_t stop)                                                           noexcept(false);
    void      appendVectBuffer(std::vector<uint8_t>& buffer,
-                              const uint8_t* orig, size_t len, size_t start, size_t stop)           noexcept(false);
+                              const uint8_t* orig, size_t len, 
+                              size_t start, size_t stop)                                            noexcept(false);
    void      appendVectBuffer(std::vector<uint8_t>& buffer,
                               const std::vector<uint8_t>& orig)                                     noexcept(false);
-   void      appendVectBuffer(std::vector<uint8_t>& buffer, const std::vector<uint8_t>& orig, 
+   void      appendVectBuffer(std::vector<uint8_t>& buffer, 
+                              const std::vector<uint8_t>& orig, 
                               size_t start, size_t removePad)                                       noexcept(false);
    void      trace(std::string header)                                                              noexcept(true);
    void      trace(std::string header, const std::vector<uint8_t>* buff,
@@ -86,19 +89,24 @@ namespace stringutils{
    size_t    getVariableLengthRawValue(const std::vector<uint8_t>& index, 
                                        size_t offset, T& destination)                               noexcept(false);
 
-   size_t    getVariableLengthRawValue(const std::vector<uint8_t>& index, size_t offset,
-                                       std::vector<uint8_t> destination[], int item)                noexcept(false);
-   size_t    getVariableLengthValueCsv(std::vector<uint8_t>& index, std::vector<char>& buff,
+   size_t    getVariableLengthRawValue(const std::vector<uint8_t>& index, 
+                                       size_t offset,
+                                       std::vector<uint8_t> destination[],
+                                       int item)                                                    noexcept(false);
+   size_t    getVariableLengthValueCsv(std::vector<uint8_t>& index,
+                                       std::vector<char>& buff,
                                        std::vector<std::string>* algorithmStrings,
                                        int item, size_t offset)                                     noexcept(false);
-   size_t    getVariableLengthValueCsv(std::vector<uint8_t>& index, std::vector<char>& buff,
-                                       std::set<std::string>* algorithmStrings, int item,
-                                       size_t offset)                                               noexcept(false);
-   size_t    getVariableLengthSingleBignum(const std::vector<uint8_t>& index, size_t offset,
+   size_t    getVariableLengthValueCsv(std::vector<uint8_t>& index, 
+                                       std::vector<char>& buff,
+                                       std::set<std::string>* algorithmStrings, 
+                                       int item, size_t offset)                                     noexcept(false);
+   size_t    getVariableLengthSingleBignum(const std::vector<uint8_t>& index, 
+                                           size_t offset,
                                            BIGNUM* keyAndSign)                                      noexcept(false);
    template<class T>
    void      insArrayVals(const T& orig, size_t origOffset,
-                                        std::vector<uint8_t>& dest, size_t destOffset)              noexcept(false);
+                          std::vector<uint8_t>& dest, size_t destOffset)                            noexcept(false);
    template<class T, class T2>
    void      decodeB64(const T& in, T2& out)                                                        noexcept(false);
    template<class T, class T2>

@@ -1,7 +1,7 @@
 tssh (0.6.6) any; urgency=low
 
  * Alpha Test
- Minor changes, openssl "_" macro warnings suppression.
+ Minor changes, cleaning, openssl "_" macro warnings suppression.
  -- Gabriele Bonacini <gabriele.bonacini@protonmail.com> Wed, 1 Mar 2017 19:17:00 -0100
 
 tssh (0.6.4) any; urgency=low

@@ -89,45 +89,45 @@ namespace crypto{
       OpenSSL_add_all_algorithms();
       SSL_load_error_strings();
 
-      for(auto i=clientHKeyAlg.begin(); i!=clientHKeyAlg.end(); ++i){
+      for(auto i=clientHKeyAlg.cbegin(); i!=clientHKeyAlg.cend(); ++i){
          hKeyAlgsString.append(*i);
-         if(i != clientHKeyAlg.end() - 1) hKeyAlgsString.append(",");
+         if(i != clientHKeyAlg.cend() - 1) hKeyAlgsString.append(",");
       }
-      for(auto i=clientKexAlg.begin(); i!=clientKexAlg.end(); ++i){
+      for(auto i=clientKexAlg.cbegin(); i!=clientKexAlg.cend(); ++i){
          kexAlgsString.append(*i);
-         if(i != clientKexAlg.end() - 1) kexAlgsString.append(",");
+         if(i != clientKexAlg.cend() - 1) kexAlgsString.append(",");
       }
-      for(auto i=clientMacCtSAlg.begin(); i!=clientMacCtSAlg.end(); ++i){
+      for(auto i=clientMacCtSAlg.cbegin(); i!=clientMacCtSAlg.cend(); ++i){
          macAlgsCtSString.append(*i);
-         if(i != clientMacCtSAlg.end() - 1) macAlgsCtSString.append(",");
+         if(i != clientMacCtSAlg.cend() - 1) macAlgsCtSString.append(",");
       }
-      for(auto i=clientMacStCAlg.begin(); i!=clientMacStCAlg.end(); ++i){
+      for(auto i=clientMacStCAlg.cbegin(); i!=clientMacStCAlg.cend(); ++i){
          macAlgsStCString.append(*i);
-         if(i != clientMacStCAlg.end() - 1) macAlgsStCString.append(",");
+         if(i != clientMacStCAlg.cend() - 1) macAlgsStCString.append(",");
       }
-      for(auto i=clientBlkEncStCAlg.begin(); i!=clientBlkEncStCAlg.end(); ++i){
+      for(auto i=clientBlkEncStCAlg.cbegin(); i!=clientBlkEncStCAlg.cend(); ++i){
          blkAlgsStCString.append(*i);
-         if(i != clientBlkEncStCAlg.end() - 1) blkAlgsStCString.append(",");
+         if(i != clientBlkEncStCAlg.cend() - 1) blkAlgsStCString.append(",");
       }
-      for(auto i=clientBlkEncCtSAlg.begin(); i!=clientBlkEncCtSAlg.end(); ++i){
+      for(auto i=clientBlkEncCtSAlg.cbegin(); i!=clientBlkEncCtSAlg.cend(); ++i){
          blkAlgsCtSString.append(*i);
-         if(i != clientBlkEncCtSAlg.end() - 1) blkAlgsCtSString.append(",");
+         if(i != clientBlkEncCtSAlg.cend() - 1) blkAlgsCtSString.append(",");
       }
-      for(auto i=clientComprCtSAlg.begin(); i!=clientComprCtSAlg.end(); ++i){
+      for(auto i=clientComprCtSAlg.cbegin(); i!=clientComprCtSAlg.cend(); ++i){
          comprAlgsCtSString.append(*i);
-         if(i != clientComprCtSAlg.end() - 1) comprAlgsCtSString.append(",");
+         if(i != clientComprCtSAlg.cend() - 1) comprAlgsCtSString.append(",");
       }
-      for(auto i=clientComprStCAlg.begin(); i!=clientComprStCAlg.end(); ++i){
+      for(auto i=clientComprStCAlg.cbegin(); i!=clientComprStCAlg.cend(); ++i){
          comprAlgsStCString.append(*i);
-         if(i != clientComprStCAlg.end() - 1) comprAlgsStCString.append(",");
+         if(i != clientComprStCAlg.cend() - 1) comprAlgsStCString.append(",");
       }
-      for(auto i=clientLangStC.begin(); i!=clientLangStC.end(); ++i){
+      for(auto i=clientLangStC.cbegin(); i!=clientLangStC.cend(); ++i){
          langCtSString.append(*i);
-         if(i != clientLangStC.end() - 1) langCtSString.append(",");
+         if(i != clientLangStC.cend() - 1) langCtSString.append(",");
       }
-      for(auto i=clientLangCtS.begin(); i!=clientLangCtS.end(); ++i){
+      for(auto i=clientLangCtS.cbegin(); i!=clientLangCtS.cend(); ++i){
          langStCString.append(*i);
-         if(i != clientLangCtS.end() - 1) langStCString.append(",");
+         if(i != clientLangCtS.cend() - 1) langStCString.append(",");
       }
      
    }
@@ -250,7 +250,7 @@ namespace crypto{
    void Crypto::setHKeyAlg(void)  noexcept(false){
       bool    found = false;
       size_t  idx   = 0;
-      for(auto i = clientHKeyAlg.begin(); i != clientHKeyAlg.end(); ++i){
+      for(auto i = clientHKeyAlg.cbegin(); i != clientHKeyAlg.cend(); ++i){
          if(serverHKeyAlg->find(*i) != serverHKeyAlg->end()){
 		found  = true;
                 break;
@@ -293,7 +293,7 @@ namespace crypto{
    void Crypto::setKexAlg(void)     noexcept(false){
       bool    found = false;
       size_t  idx   = 0;
-      for(auto i = clientKexAlg.begin(); i != clientKexAlg.end(); ++i){
+      for(auto i = clientKexAlg.cbegin(); i != clientKexAlg.cend(); ++i){
          if(serverKexAlg->find(*i) != serverKexAlg->end()){
 		found  = true;
                 break;
@@ -316,7 +316,7 @@ namespace crypto{
    void Crypto::setMacAlgCtS(void)  noexcept(false){
       bool    found = false;
       size_t  idx   = 0;
-      for(auto i = clientMacCtSAlg.begin(); i != clientMacCtSAlg.end(); ++i){
+      for(auto i = clientMacCtSAlg.cbegin(); i != clientMacCtSAlg.cend(); ++i){
          if(serverMacCtSAlg->find(*i) != serverMacCtSAlg->end()){
 		found  = true;
                 break;
@@ -339,7 +339,7 @@ namespace crypto{
    void Crypto::setMacAlgStC(void)  noexcept(false){
       bool    found = false;
       size_t  idx   = 0;
-      for(auto i = clientMacStCAlg.begin(); i != clientMacStCAlg.end(); ++i){
+      for(auto i = clientMacStCAlg.cbegin(); i != clientMacStCAlg.cend(); ++i){
          if(serverMacStCAlg->find(*i) != serverMacStCAlg->end()){
 		found  = true;
                 break;
@@ -366,7 +366,7 @@ namespace crypto{
    void Crypto::setBlkAlgCtS(void)  noexcept(false){
       bool    found = false;
       size_t  idx   = 0;
-      for(auto i = clientBlkEncCtSAlg.begin(); i != clientBlkEncCtSAlg.end(); ++i){
+      for(auto i = clientBlkEncCtSAlg.cbegin(); i != clientBlkEncCtSAlg.cend(); ++i){
          if(serverBlkEncCtSAlg->find(*i) != serverBlkEncCtSAlg->end()){
 		found  = true;
                 break;
@@ -389,7 +389,7 @@ namespace crypto{
    void Crypto::setBlkAlgStC(void)  noexcept(false){
       bool    found = false;
       size_t  idx   = 0;
-      for(auto i = clientBlkEncStCAlg.begin(); i != clientBlkEncStCAlg.end(); ++i){
+      for(auto i = clientBlkEncStCAlg.cbegin(); i != clientBlkEncStCAlg.cend(); ++i){
          if(serverBlkEncStCAlg->find(*i) != serverBlkEncStCAlg->end()){
 		found  = true;
                 break;
@@ -467,18 +467,18 @@ namespace crypto{
       try{
          buffHash.resize(SHA256_DIGEST_LENGTH);
    
-         for(auto i = in.begin(); i != in.end(); ++i){
-            if(*i != '=')  buffIn.insert(buffIn.end(), static_cast<uint8_t>(*i));
+         for(auto i = in.cbegin(); i != in.cend(); ++i){
+            if(*i != '=')  buffIn.insert(buffIn.cend(), static_cast<uint8_t>(*i));
             else           break;
          }
    
          static_cast<void>(SHA256(buffIn.data(), buffIn.size(), buffHash.data()));
          encodeHex(buffHash, buffHex);           
    
-         for(auto i = buffHex.begin(); i != buffHex.end(); i+=2){
-            out.insert(out.end(), *i);
-            out.insert(out.end(), *(i+1));
-            out.insert(out.end(), ':');
+         for(auto i = buffHex.cbegin(); i != buffHex.cend(); i+=2){
+            out.insert(out.cend(), *i);
+            out.insert(out.cend(), *(i+1));
+            out.insert(out.cend(), ':');
          }
          out[out.size() - 1] = 0;
      }catch(StringUtilsException& e){

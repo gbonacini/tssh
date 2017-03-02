@@ -39,115 +39,75 @@
 #include <Inet.hpp>
 #include <Crypto.hpp>
 
-#define SSH_PORT                          "22"
-#define COOKIE_LEN                        16
-#define KEX_RESERVED_BYTES_LEN            4
-#define PADDING_LEN_OFFSET                4
-#define DATA_OFFSET                       6
-#define PACKET_TYPE_OFFSET                5
-#define BYTE_LENGHT                       8
+enum CONFILEN { COOKIE_LEN                  = 16,    KEX_RESERVED_BYTES_LEN        = 4,
+                PADDING_LEN_OFFSET          = 4,     DATA_OFFSET                   = 6,
+                PACKET_TYPE_OFFSET          = 5,     SSH_RSA_MIN_MODULUS_LENGTH    = 768,
+                SSH_MAX_PACKET_SIZE         = 35000, SSH_MAX_ID_STRING_SIZE        = 255, 
+                SSH_STD_KEYS_NUMBER         = 6,     BEGINNING_BLOCK_LEN_ALLIGN    = 8,
+                AES_BLOCK_LEN_ALLIGN        = 64
+};
+
+enum HNDSHKIDX { INITIAL_IV_C_TO_S_IDX      = 0,     INITIAL_IV_S_TO_C_IDX         = 1,
+                 ENCR_KEY_C_TO_S_IDX        = 2,     ENCR_KEY_S_TO_C_IDX           = 3,
+                 INTEGRITY_KEY_C_TO_S_IDX   = 4,     INTEGRITY_KEY_S_TO_C_IDX      = 5
+};
  
-#define SSH_RSA_MIN_MODULUS_LENGTH        768
-#define SSH_MAX_PACKET_SIZE               35000
-#define SSH_MAX_ID_STRING_SIZE            255
-#define SSH_STD_KEYS_NUMBER               6
-#define SSH_CONF_DIRECTORY                ".ssh"
-#define SSH_KNOWN_HOST_FILE               "known_hosts"
-#define SSH_PTY_ECHO                      53
-#define SSH_DEFAULT_TERM                  "vt100"
-#define SSH_PTY_REQ                       "pty-req"
-#define SSH_SHELL_REQ                     "shell"
+enum CONFETC   { CHANNEL_EXTDATA_STDERR     = 1,     SSH_PTY_ECHO  = 53                     };
+enum KEYATTCOL { KEYTEXT                    = 0,     KEYTYPE       = 1,      KEYHASH    = 2 };
+enum PUBKEYIDX { PUBKEYTYPE                 = 0,     PUBKEYBLOB    = 1,      PUBKEYUSR  = 2 };
 
-#define INITIAL_IV_C_TO_S                  'A'
-#define INITIAL_IV_S_TO_C                  'B'
-#define ENCR_KEY_C_TO_S                    'C'
-#define ENCR_KEY_S_TO_C                    'D'
-#define INTEGRITY_KEY_C_TO_S               'E'
-#define INTEGRITY_KEY_S_TO_C               'F'
+static const char INITIAL_IV_C_TO_S                = 'A';
+static const char INITIAL_IV_S_TO_C                = 'B';
+static const char ENCR_KEY_C_TO_S                  = 'C';
+static const char ENCR_KEY_S_TO_C                  = 'D';
+static const char INTEGRITY_KEY_C_TO_S             = 'E';
+static const char INTEGRITY_KEY_S_TO_C             = 'F';
 
-#define INITIAL_IV_C_TO_S_IDX               0
-#define INITIAL_IV_S_TO_C_IDX               1
-#define ENCR_KEY_C_TO_S_IDX                 2
-#define ENCR_KEY_S_TO_C_IDX                 3
-#define INTEGRITY_KEY_C_TO_S_IDX            4
-#define INTEGRITY_KEY_S_TO_C_IDX            5
- 
-#define KEYTEXT                             0
-#define KEYTYPE                             1
-#define KEYHASH                             2
+static const char *SSH_PORT                        = "22";
+static const char *SSH_CONF_DIRECTORY              = ".ssh";
+static const char *SSH_KNOWN_HOST_FILE             = "known_hosts";
+static const char *SSH_DEFAULT_TERM                = "vt100";
+static const char *SSH_PTY_REQ                     = "pty-req";
+static const char *SSH_SHELL_REQ                   = "shell";
 
-#define PUBKEYTYPE                          0
-#define PUBKEYBLOB                          1
-#define PUBKEYUSR                           2
+static const char *SSH_ID_STRING                   = "SSH-2.0-bg\r\n";
+static const char *SSH_HEADER_ID                   = "SSH-2.0";
+static const char *RAND_FILE                       = "/dev/urandom";
 
-#define BEGINNING_BLOCK_LEN_ALLIGN          8
-#define AES_BLOCK_LEN                       16
-#define AES_BLOCK_LEN_ALLIGN                64
+static const char *SSH_USERAUTH_STRING             = "ssh-userauth";
+static const char *SSH_CONNECT_STRING              = "ssh-connection";
+static const char *SSH_PUBKEY_AUTH_REQ             = "publickey";
+static const char *SSH_PASSWD_SPEC                 = "password";
+static const char *SSH_KEYB_INTER_SPEC             = "keyboard-interactive";
+static const char *SSH_SESSION_SPEC                = "session";
+static const char *SSH_WNDW_RESIZE                 = "window-change";
 
-#define SSH_ID_STRING                       "SSH-2.0-bg\r\n"
-#define SSH_HEADER_ID                       "SSH-2.0"
-#define RAND_FILE                           "/dev/urandom"
-
-#define SSH_CONN_START                      0
-#define SSH_MSG_DISCONNECT                  1
-#define SSH_MSG_IGNORE                      2
-#define SSH_MSG_UNIMPLEMENTED               3
-#define SSH_DISCONNECT_BY_APPLICATION       11
-
-#define SSH_MSG_SERVICE_REQUEST             5
-#define SSH_MSG_SERVICE_ACCEPT              6
-
-#define SSH_MSG_KEXINIT                     20
-#define SSH_MSG_NEWKEYS                     21
-#define SSH_MSG_KEX_DH_GEX_REQUEST_OLD      30
-
-#define SSH_MSG_USERAUTH_REQUEST            50
-#define SSH_MSG_USERAUTH_FAILURE            51
-#define SSH_MSG_USERAUTH_SUCCESS            52
-#define SSH_MSG_USERAUTH_BANNER             53
 
 //      SSH_MSG_USERAUTH_PK_OK              60
-#define SSH_MSG_USERAUTH_INFO_REQUEST       60
-#define SSH_MSG_USERAUTH_INFO_RESPONSE      61
+//      SSH_MSG_REQUEST_SUCCESS             81
 
-#define SSH_MSG_GLOBAL_REQUEST              80
-// #define SSH_MSG_REQUEST_SUCCESS          81
-#define SSH_MSG_REQUEST_FAILURE             82
+enum STATUS { SSH_CONN_START                 = 0,    SSH_MSG_DISCONNECT                = 1,
+              SSH_MSG_IGNORE                 = 2,    SSH_MSG_UNIMPLEMENTED             = 3,
+              SSH_DISCONNECT_BY_APPLICATION  = 11,   SSH_MSG_SERVICE_REQUEST           = 5,
+              SSH_MSG_SERVICE_ACCEPT         = 6,    SSH_MSG_KEXINIT                   = 20,
+              SSH_MSG_NEWKEYS                = 21,   SSH_MSG_KEX_DH_GEX_REQUEST_OLD    = 30,
+              SSH_MSG_USERAUTH_REQUEST       = 50,   SSH_MSG_USERAUTH_FAILURE          = 51,
+              SSH_MSG_USERAUTH_SUCCESS       = 52,   SSH_MSG_USERAUTH_BANNER           = 53,
+              SSH_MSG_USERAUTH_INFO_REQUEST  = 60,   SSH_MSG_USERAUTH_INFO_RESPONSE    = 61,
+              SSH_MSG_GLOBAL_REQUEST         = 80,   SSH_MSG_REQUEST_FAILURE           = 82,
+              SSH_MSG_CHANNEL_OPEN           = 90,   SSH_MSG_CHANNEL_OPEN_CONFIRMATION = 91,
+              SSH_MSG_CHANNEL_OPEN_FAILURE   = 92,   SSH_MSG_CHANNEL_WINDOW_ADJUST     = 93,
+              SSH_MSG_CHANNEL_DATA           = 94,   SSH_MSG_CHANNEL_EXTENDED_DATA     = 95,
+              SSH_MSG_CHANNEL_EOF            = 96,   SSH_MSG_CHANNEL_CLOSE             = 97,
+              SSH_MSG_CHANNEL_REQUEST        = 98,   SSH_MSG_CHANNEL_SUCCESS           = 99,
+              SSH_MSG_CHANNEL_FAILURE        = 100
+};
 
-#define SSH_MSG_CHANNEL_OPEN                90
-#define SSH_MSG_CHANNEL_OPEN_CONFIRMATION   91
-#define SSH_MSG_CHANNEL_OPEN_FAILURE        92
-#define SSH_MSG_CHANNEL_WINDOW_ADJUST       93
-#define SSH_MSG_CHANNEL_DATA                94
-#define SSH_MSG_CHANNEL_EXTENDED_DATA       95
-#define SSH_MSG_CHANNEL_EOF                 96
-#define SSH_MSG_CHANNEL_CLOSE               97
-#define SSH_MSG_CHANNEL_REQUEST             98
-#define SSH_MSG_CHANNEL_SUCCESS             99
-#define SSH_MSG_CHANNEL_FAILURE             100
-
-#define SSH_USERAUTH_STRING                 "ssh-userauth"
-#define SSH_CONNECT_STRING                  "ssh-connection"
-#define SSH_PUBKEY_AUTH_REQ                 "publickey"
-#define SSH_PASSWD_SPEC                     "password"
-#define SSH_KEYB_INTER_SPEC                 "keyboard-interactive"
-#define SSH_SESSION_SPEC                    "session"
-#define SSH_WNDW_RESIZE                     "window-change"
-
-#define CHANNEL_EXTDATA_STDERR              1
-
-#define   PACKET_LENGTH                     0
-#define   PADDING_LENGTH                    1
-#define   KEX_PACKT_TYPE                    2
-#define   CERTIFICATE_ID                    3
-#define   CERTIFICATE_B64                   4
-#define   BN_EXPONENT                       5
-#define   BN_MODULUS                        6
-#define   BN_KEYF                           7
-#define   PUBKEY_BLOB                       8
-#define   SIGNATURE_ID                      9
-#define   HASH_SIGNATURE                    10
-#define   SERVER_COOKIE                     11
+enum CTXIDX { PACKET_LENGTH  = 0, PADDING_LENGTH  = 1, KEX_PACKT_TYPE = 2,
+              CERTIFICATE_ID = 3, CERTIFICATE_B64 = 4, BN_EXPONENT    = 5,
+              BN_MODULUS     = 6, BN_KEYF         = 7, PUBKEY_BLOB    = 8,
+              SIGNATURE_ID   = 9, HASH_SIGNATURE  = 10, SERVER_COOKIE = 11
+};
 
 namespace tssh{
 
@@ -165,7 +125,7 @@ namespace tssh{
                                                       // | 8 - lang_cl_to_srv  | 9 - lang_srv_to_cl
    } ;
 
-   typedef std::tuple< 
+   using SshDhReplyPacket =  std::tuple< 
       uint32_t,              // PACKET_LENGTH   |
       uint8_t,               // PADDING_LENGTH  |
       uint8_t,               // KEX_PACKT_TYPE  |
@@ -181,7 +141,7 @@ namespace tssh{
       std::vector<uint8_t>,  // SIGNATURE_ID    |   SignatureIdentifier
       std::vector<uint8_t>,  // HASH_SIGNATURE  |   Hash Signature
       std::vector<uint8_t>   // SERVER_COOKIE   |   Server cookie 
-   >  SshDhReplyPacket;
+   >;
 
    #ifdef __clang__
    #pragma clang diagnostic push
@@ -201,27 +161,27 @@ namespace tssh{
    
    class VarDataBin : public VarData{
       public:
-         VarDataBin(std::vector<uint8_t>& val);
-         void    appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
-         size_t  size(void)                                       noexcept(true)    override;
+         explicit VarDataBin(std::vector<uint8_t>& val);
+         void     appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
+         size_t   size(void)                                       noexcept(true)    override;
       private:
          std::vector<uint8_t>& data;
    };
    
    class VarDataChar : public VarData{
       public:
-         VarDataChar(char val);
-         void    appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
-         size_t  size(void)                                       noexcept(true)    override;
+         explicit VarDataChar(char val);
+         void     appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
+         size_t   size(void)                                       noexcept(true)    override;
       private:
          char data;
    };
    
    class VarDataUint32 : public VarData{
       public:
-         VarDataUint32(uint32_t val);
-         void    appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
-         size_t  size(void)                                       noexcept(true)    override;
+         explicit VarDataUint32(uint32_t val);
+         void     appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
+         size_t   size(void)                                       noexcept(true)    override;
       private:
          uint32_t data;
    };
@@ -229,31 +189,31 @@ namespace tssh{
    template<class T>
    class VarDataString : public VarData{
       public:
-         VarDataString(T& val);
-         void    appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
-         size_t  size(void)                                       noexcept(true)    override;
+         explicit VarDataString(T& val);
+         void     appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
+         size_t   size(void)                                       noexcept(true)    override;
       private:
          T& data;
    };
    
    class VarDataCharArr : public VarData{
       public:
-         VarDataCharArr(const char* val);
-         ~VarDataCharArr(void);
-         void    appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
-         size_t  size(void)                                       noexcept(true)    override;
+         explicit VarDataCharArr(const char* val);
+                  ~VarDataCharArr(void);
+         void     appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
+         size_t   size(void)                                       noexcept(true)    override;
       private:
          const char* data; 
    };
    
    class VarDataRecursive : public VarData{
       public:
-         VarDataRecursive(std::initializer_list<VarData*>&& sList);
-         ~VarDataRecursive(void);
-         void    appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
-         size_t  size(void)                                       noexcept(true)    override;
+         explicit VarDataRecursive(std::initializer_list<VarData*>&& sList);
+                  ~VarDataRecursive(void);
+         void     appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
+         size_t   size(void)                                       noexcept(true)    override;
       private:
-         void                             addSize(size_t len)     noexcept(true);
+         void     addSize(size_t len)                              noexcept(true);
          std::initializer_list<VarData*>  subList;
          size_t                           globalSize;
    };
@@ -293,9 +253,9 @@ namespace tssh{
          std::string      descr;
    };
    
-   typedef std::tuple<std::vector<uint8_t>, uint8_t, std::vector<uint8_t> >    Key;
-   typedef std::tuple<std::string, std::vector<uint8_t>, std::string>          ClientPubKey;
-   typedef std::tuple<std::string, std::string, std::string >                  Id;
+   using Key          = std::tuple<std::vector<uint8_t>, uint8_t, std::vector<uint8_t>>;
+   using ClientPubKey = std::tuple<std::string, std::vector<uint8_t>, std::string>;
+   using Id           = std::tuple<std::string, std::string, std::string>;
    
    class SshTransport : public inet::InetClient{
       public:
@@ -372,7 +332,7 @@ namespace tssh{
                                       std::initializer_list<VarData*>&& list)            noexcept(false); 
    };
 
-   typedef std::map<unsigned int, std::set<unsigned int>> StatusTree;
+   using StatusTree  = std::map<unsigned int, std::set<unsigned int>>;
 
    class Fsm{
       private:
