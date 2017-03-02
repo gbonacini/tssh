@@ -29,9 +29,9 @@ namespace typeutils{
 
    class  TypesUtilsException final {
            public:
-                   TypesUtilsException(int errNum);
-                   TypesUtilsException(std::string errString);
-                   TypesUtilsException(int errNum, std::string errString);
+                   explicit    TypesUtilsException(int errNum);
+                   explicit    TypesUtilsException(std::string errString);
+                               TypesUtilsException(int errNum, std::string errString);
                    std::string what(void)                                                     const noexcept(true);
               private:
                    std::string errorMessage;

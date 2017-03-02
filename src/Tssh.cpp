@@ -67,7 +67,7 @@ namespace tssh{
    
    void VarDataBin::appendData(vector<uint8_t>& dest) noexcept(false){
          try{
-            dest.insert(dest.end(), data.begin(), data.end());
+            dest.insert(dest.cend(), data.cbegin(), data.cend());
          }catch(...){
             throw(InetException("appendData : a : Data Error."));
          }
@@ -314,8 +314,8 @@ namespace tssh{
          goto INTERRUPTED_BY_SIGNAL;
       }
       try{
-         partialRead.insert(partialRead.end(), buffer.begin(), 
-                            buffer.begin() + safePtrdiff(currentBlockLenD));
+         partialRead.insert(partialRead.cend(), buffer.cbegin(), 
+                            buffer.cbegin() + safePtrdiff(currentBlockLenD));
       }catch(...){
             throw InetException("readSshEnc: a : Data error.");
       }
@@ -323,8 +323,8 @@ namespace tssh{
       while( reassembledLen < currentBlockLenD){
          reassembledLen += safeSizeT(readBuffer(currentBlockLenD - reassembledLen));
          try{
-            partialRead.insert(partialRead.end(), buffer.begin(), 
-                               buffer.begin() + safePtrdiff(currentBlockLenD));
+            partialRead.insert(partialRead.cend(), buffer.cbegin(), 
+                               buffer.cbegin() + safePtrdiff(currentBlockLenD));
          }catch(...){
                throw InetException("readSshEnc: b : Data error.");
          }
@@ -357,8 +357,8 @@ namespace tssh{
       while( availableBytes < reassembledLen){
          availableBytes += safeSizeT(readBuffer(reassembledLen - availableBytes));
          try{
-            partialRead.insert(partialRead.end(),
-                               buffer.begin(), buffer.begin() + readLen);
+            partialRead.insert(partialRead.cend(),
+                               buffer.cbegin(), buffer.cbegin() + readLen);
          }catch(...){
                 throw InetException("readSshEnc: c : Data error.");
          }
@@ -389,8 +389,8 @@ namespace tssh{
         
       uint32ToUChars(currentHashS.data(), packetsRcvCount);
       try{
-         currentHashS.insert(currentHashS.begin() + sizeof(uint32_t), incomingEnc.begin(), 
-                             incomingEnc.begin() + plainTextLen);
+         currentHashS.insert(currentHashS.cbegin() + sizeof(uint32_t), incomingEnc.cbegin(), 
+                             incomingEnc.cbegin() + plainTextLen);
       }catch(...){
              throw InetException("readSshEnc: d : Data error.");
       }
@@ -403,8 +403,8 @@ namespace tssh{
             0, sizeof(uint32_t), currentHashCLen + safeSizeT(plainTextLen));
       TRACE("* Calculated Hash - Len: " + to_string(currentHashCLen), &currentHashC);
  
-      if(!equal(currentHashC.begin(), currentHashC.end(),
-          partialRead.begin() + safePtrdiff(partialRead.size() - currentHashCLen)))
+      if(!equal(currentHashC.cbegin(), currentHashC.cend(),
+          partialRead.cbegin() + safePtrdiff(partialRead.size() - currentHashCLen)))
             throw InetException("readSshEnc: Invalid Hash On Incoming Packet");
 
       TRACE("\n* Rcv Sequence: " + to_string(packetsRcvCount));
@@ -500,7 +500,7 @@ namespace tssh{
    void SshTransport::addRandomBytes(size_t bytes, vector<uint8_t>& target, 
                                      size_t offset) const noexcept(false){
       try{
-         target.insert(target.end(), bytes, 0);
+         target.insert(target.cend(), bytes, 0);
       }catch(...){
          throw InetException("addRandomBytes: Data error");
       }
@@ -512,8 +512,8 @@ namespace tssh{
       sshKexPacket   packet;
       
       try{
-         serverKexInit.insert(serverKexInit.end(), buffCopy.begin(),
-                              buffCopy.end());  
+         serverKexInit.insert(serverKexInit.cend(), buffCopy.cbegin(),
+                              buffCopy.cend());  
       }catch(...){
          throw InetException("checkServerAlgList: a : Data error");
       }
@@ -535,7 +535,7 @@ namespace tssh{
       }
 
       try{
-         packet.server_cookie.insert(packet.server_cookie.end(), 
+         packet.server_cookie.insert(packet.server_cookie.cend(), 
                                      buffCopy.data() + 6, buffCopy.data() + 16);
       }catch(...){
          throw InetException("checkServerAlgList: b :  Data error.");
@@ -565,7 +565,7 @@ namespace tssh{
       }
   
       try{ 
-         packet.reserved.insert(packet.reserved.end(), buffCopy.data() + offset + 2, 
+         packet.reserved.insert(packet.reserved.cend(), buffCopy.data() + offset + 2, 
                                 buffCopy.data() + offset + 9);
       }catch(...){
          throw InetException("checkServerAlgList: c :  Data error.");
@@ -588,7 +588,7 @@ namespace tssh{
    
    void SshTransport::checkServerDhReply(void) noexcept(false){
    
-      get<PACKET_LENGTH>(dhReplyPacket)   = charToUint32(buffCopy.data());
+      get<PACKET_LENGTH>(dhReplyPacket)      = charToUint32(buffCopy.data());
 
       try{
          get<PADDING_LENGTH>(dhReplyPacket)  = buffCopy.at(PADDING_LEN_OFFSET);
@@ -598,24 +598,24 @@ namespace tssh{
       }
 
       try{ 
-         get<SERVER_COOKIE>(dhReplyPacket).insert(get<SERVER_COOKIE>(dhReplyPacket).end(), 
-                                                  buffCopy.begin() + DATA_OFFSET,
-                                                  buffCopy.begin() + DATA_OFFSET + COOKIE_LEN);
+         get<SERVER_COOKIE>(dhReplyPacket).insert(get<SERVER_COOKIE>(dhReplyPacket).cend(), 
+                                                  buffCopy.cbegin() + DATA_OFFSET,
+                                                  buffCopy.cbegin() + DATA_OFFSET + COOKIE_LEN);
       }catch(...){
          throw InetException("checkServerDhReply: a :  Data error.");
       }
    
       TRACE("* Rcv SSH_MSG_NEWKEYS packet - DH Reply: \n ** Received bytes: " + to_string(buffCopy.size()) +
-            "\n ** Payload Length: " + to_string(get<PACKET_LENGTH>(dhReplyPacket) - sizeof(uint32_t)) + 
-            "\n ** Padding Length: " + to_string(get<PADDING_LENGTH>(dhReplyPacket)) +
+            "\n ** Payload Length: "  + to_string(get<PACKET_LENGTH>(dhReplyPacket) - sizeof(uint32_t)) + 
+            "\n ** Padding Length: "  + to_string(get<PADDING_LENGTH>(dhReplyPacket)) +
             "\n ** Kex Packet Type: " + to_string(get<KEX_PACKT_TYPE>(dhReplyPacket)),
             &buffCopy);
    
       genericBuffer.clear();
 
       try{ 
-         genericBuffer.insert(genericBuffer.end(), buffCopy.begin() + safePtrdiff(DATA_OFFSET + sizeof(uint32_t)), 
-                              buffCopy.begin() + safePtrdiff(DATA_OFFSET + sizeof(uint32_t) +
+         genericBuffer.insert(genericBuffer.cend(), buffCopy.cbegin() + safePtrdiff(DATA_OFFSET + sizeof(uint32_t)), 
+                              buffCopy.cbegin() + safePtrdiff(DATA_OFFSET + sizeof(uint32_t) +
                               charToUint32(buffCopy.data() + DATA_OFFSET))); 
       }catch(...){
          throw InetException("checkServerDhReply: b :  Data error.");
@@ -699,7 +699,7 @@ namespace tssh{
    
       TRACE("* Hash buffer: added SK (Session Id).\n* Session Id dump : ", &sessionIdHash);
       try{ 
-         currentSessionHash.insert(currentSessionHash.end(), sessionIdHash.begin(), sessionIdHash.end());
+         currentSessionHash.insert(currentSessionHash.cend(), sessionIdHash.cbegin(), sessionIdHash.cend());
       }catch(...){
          throw InetException("checkServerDhReply: e :  Data error.");
       }
@@ -834,10 +834,10 @@ namespace tssh{
       for(auto i = keys.begin(); i != keys.end(); ++i){
          get<KEYTEXT>(*i).clear();
          try{ 
-            get<KEYTEXT>(*i).insert(get<KEYTEXT>(*i).end(), sharedKey.begin(), sharedKey.end());
-            get<KEYTEXT>(*i).insert(get<KEYTEXT>(*i).end(), currentSessionHash.begin(), currentSessionHash.end());
+            get<KEYTEXT>(*i).insert(get<KEYTEXT>(*i).cend(), sharedKey.cbegin(), sharedKey.cend());
+            get<KEYTEXT>(*i).insert(get<KEYTEXT>(*i).cend(), currentSessionHash.cbegin(), currentSessionHash.cend());
             get<KEYTEXT>(*i).push_back(get<KEYTYPE>(*i));
-            get<KEYTEXT>(*i).insert(get<KEYTEXT>(*i).end(), sessionIdHash.begin(), sessionIdHash.end());
+            get<KEYTEXT>(*i).insert(get<KEYTEXT>(*i).cend(), sessionIdHash.cbegin(), sessionIdHash.cend());
          }catch(...){
             throw InetException("createKeys: a : Data error.");
          }
@@ -856,9 +856,9 @@ namespace tssh{
             currentHashLen += currentHashCLen;
             try{
                get<KEYTEXT>(*i).resize(currentHashLen);
-               get<KEYTEXT>(*i).insert((get<KEYTEXT>(*i).end() - currentHashCLen), 
-                                       (get<KEYHASH>(*i).end() - currentHashCLen),
-                                       get<KEYHASH>(*i).end());
+               get<KEYTEXT>(*i).insert((get<KEYTEXT>(*i).cend() - currentHashCLen), 
+                                       (get<KEYHASH>(*i).cend() - currentHashCLen),
+                                       get<KEYHASH>(*i).cend());
                get<KEYHASH>(*i).resize(currentKeyLen);
             }catch(...){
                throw InetException("createKeys: c : Data error.");
@@ -866,9 +866,9 @@ namespace tssh{
 
             crypto.dhHash(get<KEYTEXT>(*i), get<KEYHASH>(*i).data() + (currentKeyLen - currentHashCLen));
          }
-         get<KEYHASH>(*i).erase(get<KEYHASH>(*i).end() - 
+         get<KEYHASH>(*i).erase(get<KEYHASH>(*i).cend() - 
                                 safePtrdiff(get<KEYHASH>(*i).size() - keyLen), 
-                                get<KEYHASH>(*i).end());
+                                get<KEYHASH>(*i).cend());
    
          TRACE("* Hash - " +  string(1, static_cast<char>(get<KEYTYPE>(*i))) + 
                ":", &get<KEYTEXT>(*i));
@@ -886,7 +886,7 @@ namespace tssh{
    void SshTransport::addHeader(uint8_t packetType, vector<uint8_t>& buff) const noexcept(false){
          buff.clear();
          try{
-            buff.insert(buff.end(), sizeof(uint32_t), 0);  // 4 bytes reserved for packet length
+            buff.insert(buff.cend(), sizeof(uint32_t), 0);  // 4 bytes reserved for packet length
             buff.push_back(0);                             // 1 byte reserved for padding length
             buff.push_back(packetType);                    // 1 byte message type
          }catch(...){
@@ -901,7 +901,7 @@ namespace tssh{
    
          buff[PADDING_LEN_OFFSET] = padding;
          try{
-            buff.insert(buff.end(), padding, 0);  // Added padding
+            buff.insert(buff.cend(), padding, 0);  // Added padding
          }catch(...){
             throw InetException("sendWithHeader : Data error.");
          }
@@ -941,7 +941,7 @@ namespace tssh{
          throw InetException("checkStatus: Fsm Error: invalid status " + to_string(newStat) + ".");
 
       auto ii = i->second.find(currStat);
-      if( ii == i->second.end())
+      if( ii == i->second.cend())
          throw InetException("checkStatus: Packet sequence error: unexpected packet sequence: " +
                              to_string(currStat) + " --> " + to_string(newStat));
 
@@ -1021,7 +1021,7 @@ namespace tssh{
          genericBuffer.clear();
          try{
             string nullKey = crypto.getDhId() + " " + crypto.getNullKey() + " " + user;
-            genericBuffer.insert(genericBuffer.end(), nullKey.begin(), nullKey.end());
+            genericBuffer.insert(genericBuffer.cend(), nullKey.cbegin(), nullKey.cend());
             genericBuffer.push_back(0);
          }catch(...){
             throw InetException("getUserPubK: Data error.");
