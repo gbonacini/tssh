@@ -167,7 +167,7 @@ namespace inet {
    bool Inet::checkHeaderRaw(string header) const noexcept(false){
       try{
          string temp; 
-         temp.insert(temp.cend(), buffer.cbegin(), buffer.cend());
+         temp.insert(temp.end(), buffer.begin(), buffer.end());
          return temp.find(header) != string::npos ? true : false;
       }catch (...){
          throw InetException("checkHeaderRaw: Unexpected data error.");
@@ -184,7 +184,7 @@ namespace inet {
          throw InetException("getBufferCopy: Attempt of copy an unitialized buffer.");
       try{
          if(!append) dest.clear();
-         dest.insert(dest.cend(), buffer.cbegin(), buffer.cbegin() + readLen);
+         dest.insert(dest.end(), buffer.begin(), buffer.begin() + readLen);
       }catch(...){
          throw InetException("getBufferCopy: Attempt of copy Inet buffer failed.");
       }

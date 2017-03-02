@@ -326,8 +326,8 @@ namespace stringutils{
 
      try{
         if(length > 0){
-              destination.insert(destination.cend(), index.cbegin() + safePtrdiff(sizeof(uint32_t) + offset),
-                                 index.cbegin() + safePtrdiff(sizeof(uint32_t) + offset + length));
+              destination.insert(destination.end(), index.begin() + safePtrdiff(sizeof(uint32_t) + offset),
+                                 index.begin() + safePtrdiff(sizeof(uint32_t) + offset + length));
         }else{
               destination.push_back(0);
               TRACE(" ** Parsed an empty Value." ); 
