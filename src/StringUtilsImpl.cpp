@@ -128,7 +128,7 @@ namespace stringutils{
         for(auto i=orig.cbegin()+safePtrdiff(offset); i!=orig.cend(); ++i){
            uint32_t tmp     = htonl(static_cast<uint32_t>(*i));
            uint8_t* handler = reinterpret_cast<uint8_t*>(&tmp);
-           dest.insert(dest.cend(), handler, handler+sizeof(uint32_t));
+           dest.insert(dest.end(), handler, handler+sizeof(uint32_t));
         }
      }catch(...){
         throw StringUtilsException("appendStringAsUint32t: translation error.");
@@ -144,7 +144,7 @@ namespace stringutils{
      uint32ToUChars(buffer, safeUint32(len));
 
      try{ 
-        buffer.insert(buffer.cend(), orig, orig+stop+1);
+        buffer.insert(buffer.end(), orig, orig+stop+1);
      }catch(...){
 	throw StringUtilsException("appendVectBuffer: a : Data error.");
      }
@@ -159,7 +159,7 @@ namespace stringutils{
      uint32ToUChars(buffer, safeUint32(len));
   
      try{ 
-        buffer.insert(buffer.cend(), orig, orig+stop+1);
+        buffer.insert(buffer.end(), orig, orig+stop+1);
      }catch(...){
 	throw StringUtilsException("appendVectBuffer: b : Data error.");
      }
@@ -176,7 +176,7 @@ namespace stringutils{
   
      try{ 
         if(positive != 0) buffer.push_back(0);
-        buffer.insert(buffer.cend(), orig.cbegin(), orig.cend());
+        buffer.insert(buffer.end(), orig.cbegin(), orig.cend());
      }catch(...){
 	throw StringUtilsException("appendVectBuffer: c : Data error.");
      }
@@ -190,7 +190,7 @@ namespace stringutils{
      uint32ToUChars(buffer, safeUint32(orig.size() - start - removePad));
   
      try{ 
-        buffer.insert(buffer.cend(), (orig.cbegin() + safePtrdiff(start)), 
+        buffer.insert(buffer.end(), (orig.cbegin() + safePtrdiff(start)), 
                       (orig.cend() - safePtrdiff(removePad)));
      }catch(...){
 	throw StringUtilsException("appendVectBuffer: d : Data error.");
@@ -280,7 +280,7 @@ namespace stringutils{
      size_t len = item.size();
      uint32ToUChars(target, static_cast<uint32_t>(len));
      try{
-        if(len > 0) target.insert(target.cend(), item.cbegin(), item.cend());
+        if(len > 0) target.insert(target.end(), item.begin(), item.end());
      }catch(...){
 	throw StringUtilsException("addVarLengthDataString: Data error.");
      }
@@ -290,7 +290,7 @@ namespace stringutils{
      size_t len = strlen(item);
      uint32ToUChars(target, safeUint32(len));
      try{
-        if(len > 0) target.insert(target.cend(), item, item+len);
+        if(len > 0) target.insert(target.end(), item, item+len);
      }catch(...){
 	throw StringUtilsException("addVarLengthDataCCharStr: Data error.");
      }
@@ -358,9 +358,9 @@ namespace stringutils{
 
      try{
         if(length > 0){
-              destination[item].insert(destination[item].cend(), 
-                                       index.cbegin() + safePtrdiff(sizeof(uint32_t) + offset), 
-                                       index.cbegin() + safePtrdiff(sizeof(uint32_t) + offset + length));
+              destination[item].insert(destination[item].end(), 
+                                       index.begin() + safePtrdiff(sizeof(uint32_t) + offset), 
+                                       index.begin() + safePtrdiff(sizeof(uint32_t) + offset + length));
         }else{
               destination[item].push_back(0);
               TRACE(" ** Empty Value: " + to_string(item)); 
@@ -475,8 +475,8 @@ namespace stringutils{
      }
 
      try{
-        buff.insert(buff.cend(), index.cbegin() + safePtrdiff(offset + sizeof(uint32_t)), 
-                    index.cbegin() + safePtrdiff(offset + sizeof(uint32_t) + length));
+        buff.insert(buff.end(), index.begin() + safePtrdiff(offset + sizeof(uint32_t)), 
+                    index.begin() + safePtrdiff(offset + sizeof(uint32_t) + length));
      }catch(...){
 	throw StringUtilsException("getVariableLengthSingleBignum: Data error.");
      }
@@ -497,9 +497,9 @@ namespace stringutils{
          throw StringUtilsException("InsArrayVals: attempt to use invalid indexes.");
      }
      try{
-        dest.insert(dest.cbegin()  + static_cast<ptrdiff_t>(destOffset),
-                    orig.cbegin() + static_cast<ptrdiff_t>(origOffset), 
-                    orig.cend()
+        dest.insert(dest.begin()  + static_cast<ptrdiff_t>(destOffset),
+                    orig.begin() + static_cast<ptrdiff_t>(origOffset), 
+                    orig.end()
         );
      }catch(...){
 	throw StringUtilsException("insArrayVals: Data error.");
@@ -584,8 +584,8 @@ namespace stringutils{
                                 '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
      try{
         for(auto i = in.cbegin(); i != in.cend(); ++i){
-           out.insert(out.cend(), hexConv[ *i >> 4     ]);
-           out.insert(out.cend(), hexConv[ *i &  0x0F  ]);
+           out.insert(out.end(), hexConv[ *i >> 4     ]);
+           out.insert(out.end(), hexConv[ *i &  0x0F  ]);
         }
      }catch(...){
         throw StringUtilsException("encodeHex: Data error.");

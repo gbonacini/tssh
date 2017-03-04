@@ -470,7 +470,7 @@ namespace crypto{
          buffHash.resize(SHA256_DIGEST_LENGTH);
    
          for(auto i = in.cbegin(); i != in.cend(); ++i){
-            if(*i != '=')  buffIn.insert(buffIn.cend(), static_cast<uint8_t>(*i));
+            if(*i != '=')  buffIn.insert(buffIn.end(), static_cast<uint8_t>(*i));
             else           break;
          }
    
@@ -478,9 +478,9 @@ namespace crypto{
          encodeHex(buffHash, buffHex);           
    
          for(auto i = buffHex.cbegin(); i != buffHex.cend(); i+=2){
-            out.insert(out.cend(), *i);
-            out.insert(out.cend(), *(i+1));
-            out.insert(out.cend(), ':');
+            out.insert(out.end(), *i);
+            out.insert(out.end(), *(i+1));
+            out.insert(out.end(), ':');
          }
          out[out.size() - 1] = 0;
      }catch(StringUtilsException& e){

@@ -1,3 +1,9 @@
+tssh (0.6.6c) any; urgency=low
+
+ * Alpha Test
+ Debug: remove editation error change all iterators in const.
+ -- Gabriele Bonacini <gabriele.bonacini@protonmail.com> Wed, 1 Mar 2017 19:17:00 -0100
+
 tssh (0.6.6b) any; urgency=low
 
  * Alpha Test
