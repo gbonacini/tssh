@@ -30,20 +30,14 @@
 
 namespace typeutils{
 
-  TypesUtilsException::TypesUtilsException(int errNum){
-          errorCode=errNum;
-          errorMessage="None";
-  }   
+  TypesUtilsException::TypesUtilsException(int errNum) : 
+                       errorMessage("None"), errorCode(errNum){}   
   
-  TypesUtilsException::TypesUtilsException(std::string errString){
-          errorMessage=errString;
-          errorCode=0;
-  }   
+  TypesUtilsException::TypesUtilsException(std::string errString) : 
+                       errorMessage(errString), errorCode(0){}   
   
-  TypesUtilsException::TypesUtilsException(int errNum, std::string errString){
-          errorMessage=errString;
-          errorCode=errNum;
-  }   
+  TypesUtilsException::TypesUtilsException(int errNum, std::string errString) : 
+                       errorMessage(errString), errorCode(errNum) {}   
   
   std::string TypesUtilsException::what() const noexcept(true){
           return errorMessage;

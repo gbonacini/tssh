@@ -134,6 +134,21 @@ namespace crypto{
      
    }
 
+   Crypto::~Crypto(void){
+      delete kexalg;
+      delete hKeyalg;
+      delete macCtS;
+      delete macStC;
+      delete blkEncCtS;
+      delete blkEncStC;
+
+      EVP_cleanup();
+      ERR_free_strings();
+      ERR_remove_state(0);
+
+      CRYPTO_cleanup_all_ex_data();
+   }
+
    void Crypto::initServerAlgs(const set<string>*  algorithmStrings) noexcept(false){
       // | 0 - kex_algorithms  | 1 - srv_host_key_alg
       // | 2 - enc_al_cl_srv   | 3 - enc_alg_srv_cl
@@ -158,21 +173,6 @@ namespace crypto{
       setMacAlgStC();
       setBlkAlgStC();
       setBlkAlgCtS();
-   }
-
-   Crypto::~Crypto(void){
-      if(kexalg != nullptr)     delete kexalg;
-      if(hKeyalg != nullptr)    delete hKeyalg;
-      if(macCtS != nullptr)     delete macCtS;
-      if(macStC != nullptr)     delete macStC;
-      if(blkEncCtS != nullptr)  delete blkEncCtS;
-      if(blkEncStC != nullptr)  delete blkEncStC;
-
-      EVP_cleanup();
-      ERR_free_strings();
-      ERR_remove_state(0);
-
-      CRYPTO_cleanup_all_ex_data();
    }
 
    const string& Crypto::getHKeyAlgs(void)    const noexcept(true){
