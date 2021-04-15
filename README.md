@@ -30,10 +30,12 @@ The program is intended to be used in a *nix environment and it is tested on var
 - Ubuntu 16.04 LTS;
 - Ubuntu 14.04 LTS;
 - OS X 10.10.5;
+- OS X 10.15.7;
 
 using, as compiler, one in this list:
 
 - clang version 4.0.0;
+- Apple clang version 12.0.0 (clang-1200.0.32.29)
 - clang version 3.8.1;
 - gcc version 4.8.5 20150623 (Red Hat 4.8.5-4) (GCC);
 - gcc version 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3);
@@ -46,6 +48,7 @@ and, as ssh server, one of the following:
 - OpenSSH_6.2p2
 - OpenSSH_6.6.1p1
 - OpenSSH_7.2p2
+- OpenSSH_8.2p1 
 
 The only external dependency is the OpenSSL libraryi, used for the cryptographic functions.
 I could introduce alternatives to OpenSSL in the next versions.
@@ -60,7 +63,7 @@ To compile the program, this tools/libraries are necessary:
 - a c++ compiler ( with c++11 support);
 - automake/autoconf;
 - libtool;
-- OpenSSL 1.0.2h or superior ("dev" packages);
+- OpenSSL 1.0.2h ("dev" packages) - about superios versions: the interface was changed at some point so I can't certify newer verions at moment, I'll release a pached version of tssh asap.
 
 Installation:
 =============
