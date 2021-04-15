@@ -265,7 +265,8 @@ namespace inet {
    
       for(size_t s=0; s<size;){
          ssize_t writeLen   = (*wFunc)(localHandler, 
-                                       reinterpret_cast<void*>(const_cast<uint8_t*>(msg)), size);
+                                       reinterpret_cast<void*>(const_cast<uint8_t*>(msg + s)), 
+                                       size - s);
          if(writeLen < 0 && errno != EINTR) 
              throw InetException(string("writeBuffer: Write error: ") + strerror(errno));
          if(writeLen > 0){
@@ -281,11 +282,11 @@ namespace inet {
       Handler *localHandler    = hdlr ? hdlr : &handler;
    
       errno=0;
-      for(size_t s=0; s<msg.size();){
+      for(ssize_t s=0; s < safeSsizeT(msg.size());){
          ssize_t writeLen = (*wFunc)(localHandler, 
                                      reinterpret_cast<void*>(const_cast<char*>(msg.c_str() + s)),
-                                     safeSizeT(msgLen));
-         if(writeLen < 0&& errno != EINTR) 
+                                     safeSizeT(msgLen - s));
+         if(writeLen < 0 && errno != EINTR) 
             throw InetException(string("Write error: ") + strerror(errno));
          if(writeLen > 0) 
             s                  += static_cast<size_t>(writeLen);
