@@ -15365,7 +15365,7 @@ _ACEOF
 fi
 
 
-# Libs list autmatically generated prom dependecy script
+# Checks OpenSSL
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for EVP_DigestVerifyInit in -lcrypto" >&5
 $as_echo_n "checking for EVP_DigestVerifyInit in -lcrypto... " >&6; }
 if ${ac_cv_lib_crypto_EVP_DigestVerifyInit+:} false; then :
@@ -15416,9 +15416,9 @@ as_fn_error $? "could not find lib crypto
 See \`config.log' for more details" "$LINENO" 5; }
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for SSL_load_error_strings in -lssl" >&5
-$as_echo_n "checking for SSL_load_error_strings in -lssl... " >&6; }
-if ${ac_cv_lib_ssl_SSL_load_error_strings+:} false; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for RSA_set0_key in -lssl" >&5
+$as_echo_n "checking for RSA_set0_key in -lssl... " >&6; }
+if ${ac_cv_lib_ssl_RSA_set0_key+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -15432,27 +15432,27 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char SSL_load_error_strings ();
+char RSA_set0_key ();
 int
 main ()
 {
-return SSL_load_error_strings ();
+return RSA_set0_key ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_ssl_SSL_load_error_strings=yes
+  ac_cv_lib_ssl_RSA_set0_key=yes
 else
-  ac_cv_lib_ssl_SSL_load_error_strings=no
+  ac_cv_lib_ssl_RSA_set0_key=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_SSL_load_error_strings" >&5
-$as_echo "$ac_cv_lib_ssl_SSL_load_error_strings" >&6; }
-if test "x$ac_cv_lib_ssl_SSL_load_error_strings" = xyes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_RSA_set0_key" >&5
+$as_echo "$ac_cv_lib_ssl_RSA_set0_key" >&6; }
+if test "x$ac_cv_lib_ssl_RSA_set0_key" = xyes; then :
   cat >>confdefs.h <<_ACEOF
 #define HAVE_LIBSSL 1
 _ACEOF

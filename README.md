@@ -53,7 +53,7 @@ To compile the program, this tools/libraries are necessary:
 Legacy Version:
 ===============
 
-To compile this software with the old OpenSSL versiona 1.0.x, use the CryptoImpl.cpp in the 'legacy' directory, replacing the one present in the 'src' directory.
+To compile this software with the old OpenSSL versiona 1.0.x, use the CryptoImpl.cpp in the 'legacy' directory, replacing the one present in the 'src' directory and the configure.ac file present in the root directory with the one available in the 'legacy' directory.
 
 The old version was tested in the following OSs:
 

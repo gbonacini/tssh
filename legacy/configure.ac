@@ -31,9 +31,9 @@ AC_HEADER_STDC
 AC_C_CONST
 AC_TYPE_SIZE_T
 
-# Checks OpenSSL 
+# Libs list autmatically generated prom dependecy script
 AC_CHECK_LIB([crypto],[EVP_DigestVerifyInit],[],[AC_MSG_FAILURE([could not find lib crypto])])
-AC_CHECK_LIB([ssl],[RSA_set0_key],[],[AC_MSG_FAILURE([could not find lib ssl])])
+AC_CHECK_LIB([ssl],[SSL_load_error_strings],[],[AC_MSG_FAILURE([could not find lib ssl])])
 
 AC_CANONICAL_HOST
 case $host_os in
