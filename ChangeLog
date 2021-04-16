@@ -1,3 +1,9 @@
+tssh (0.6.7a) any; urgency=low
+
+ * Alpha Test
+ Add: sha256 algorithms and methods to process connection to servers where SHA1 is deprecated. 
+ -- Gabriele Bonacini <gabriele.bonacini@protonmail.com> Wed, 1 Mar 2017 19:17:00 -0100
+
 tssh (0.6.6c) any; urgency=low
 
  * Alpha Test

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------
 // Tssh - A ssh test client. 
-// Copyright (C) 2016  Gabriele Bonacini
+// Copyright (C) 2016-2021  Gabriele Bonacini
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -36,26 +36,31 @@
 
 #include <openssl/evp.h>
 
+#include <exception>
 #include <string>
 #include <vector>
 #include <set>
 #include <tuple>
 
+#include <anyexcept.hpp>
 #include <Types.hpp>
 #include <StringUtils.hpp>
 
-enum CRYPTOCFG { AES_BLOCK_LEN = 16, SHA1_DIGEST_LENGTH = 20, BYTE_LENGHT = 8};
+enum CRYPTOCFG { AES_BLOCK_LEN        = 16, 
+                 SHA1_DIGEST_LENGTH   = 20, 
+                 BYTE_LENGHT          = 8};
 
 namespace crypto {
 
-   class  CryptoException final {
-           public:
+   class  CryptoException final : std::exception {
+           public :
                    CryptoException(int errNum,
                                    std::string errString);
                    explicit    CryptoException(int errNum);
                    explicit    CryptoException(std::string&  errString);
                    explicit    CryptoException(std::string&& errString);
-                   std::string what(void)                        const noexcept(true);
+                   const char* what(void)                        const noexcept override;
+                   int         getErrorCode(void)                const noexcept;
               private:
                    std::string errorMessage;
                    int errorCode;
@@ -81,12 +86,25 @@ namespace crypto {
          size_t      sha1Len;
       public: 
          CryptoDHG14Sha1(void);
-         ~CryptoDHG14Sha1(void);
+         ~CryptoDHG14Sha1(void)                                                 override;
          void      dhHash(std::vector<uint8_t>& buff,
-                          std::vector<uint8_t>& hash)           const noexcept(true)  override;
+                          std::vector<uint8_t>& hash)           const noexcept  override;
          void      dhHash(std::vector<uint8_t>& buff,
-                          uint8_t* hash)                        const noexcept(true)  override;
-         size_t    getDhHashSize(void)                          const noexcept(true)  override;
+                          uint8_t* hash)                        const noexcept  override;
+         size_t    getDhHashSize(void)                          const noexcept  override;
+   };
+
+   class CryptoDHG14Sha256 final : public CryptoDH{
+      private:
+         size_t      sha256Len;
+      public: 
+         CryptoDHG14Sha256(void);
+         ~CryptoDHG14Sha256(void)                                               override;
+         void      dhHash(std::vector<uint8_t>& buff,
+                          std::vector<uint8_t>& hash)           const noexcept  override;
+         void      dhHash(std::vector<uint8_t>& buff,
+                          uint8_t* hash)                        const noexcept  override;
+         size_t    getDhHashSize(void)                          const noexcept  override;
    };
 
    class CryptoHKeyAlg{
@@ -126,26 +144,26 @@ namespace crypto {
          const std::string    descr;
       public: 
          CryptoKeyRsa(void);
-         ~CryptoKeyRsa(void);
+         ~CryptoKeyRsa(void)                                                    override;
          void           setDhKeys(std::vector<uint8_t>& genBuff,
-                                  std::vector<uint8_t>& res)          noexcept(false) override;
+                                  std::vector<uint8_t>& res)          anyexcept override;
          void           signDH(std::vector<uint8_t>& buff,
                                std::vector<uint8_t>& sign,
-                               BIGNUM* mod, BIGNUM* exp)        const noexcept(false) override;
+                               BIGNUM* mod, BIGNUM* exp)        const anyexcept override;
          void           signMessage(std::string& privKey,
                                     std::vector<uint8_t>& msg, 
-                                    std::vector<uint8_t>& sign) const noexcept(false) override;
-         void           setDhSharedKey(BIGNUM* f)                     noexcept(false) override;
+                                    std::vector<uint8_t>& sign) const anyexcept override;
+         void           setDhSharedKey(BIGNUM* f)                     anyexcept override;
          const std::string&
-                        getDhId(void)                           const noexcept(true)  override;
+                        getDhId(void)                           const noexcept  override;
          const std::string&
-                        getDhDescr(void)                        const noexcept(true)  override;
-         BIGNUM*        getE(void)                              const noexcept(true)  override;
-         BIGNUM*        getSharedKey(void)                      const noexcept(true)  override;
+                        getDhDescr(void)                        const noexcept  override;
+         BIGNUM*        getE(void)                              const noexcept  override;
+         BIGNUM*        getSharedKey(void)                      const noexcept  override;
          const std::string&   
-                        getKeyFilePrefix(void)                  const noexcept(true)  override;
+                        getKeyFilePrefix(void)                  const noexcept  override;
          const std::string&   
-                        getNullKey(void)                        const noexcept(true)  override;
+                        getNullKey(void)                        const noexcept  override;
    };
    
    class CryptoMacCtS{
@@ -161,9 +179,18 @@ namespace crypto {
       private:
          std::vector<uint8_t>* iv;
       public:   
-         void init(std::vector<uint8_t>* initVect)                    noexcept(true)  override;
+         void init(std::vector<uint8_t>* initVect)                    noexcept  override;
          void hmac(const uint8_t* msg, int smsg,
-                   uint8_t*  sign, unsigned int* ssize)         const noexcept(false) override;
+                   uint8_t*  sign, unsigned int* ssize)         const anyexcept override;
+   };
+   
+   class CryptoMacCtSSha256 final : public CryptoMacCtS{ 
+      private:
+         std::vector<uint8_t>* iv;
+      public:   
+         void init(std::vector<uint8_t>* initVect)                    noexcept  override;
+         void hmac(const uint8_t* msg, int smsg,
+                   uint8_t*  sign, unsigned int* ssize)         const anyexcept override;
    };
    
    class CryptoMacStC{
@@ -179,9 +206,18 @@ namespace crypto {
       private:
          std::vector<uint8_t>* iv;
       public:   
-         void init(std::vector<uint8_t>* initVect)                    noexcept(true)  override;
+         void init(std::vector<uint8_t>* initVect)                    noexcept  override;
          void hmac(const uint8_t*  msg, int smsg,
-                   uint8_t*  sign, unsigned int* ssize)         const noexcept(false) override;
+                   uint8_t*  sign, unsigned int* ssize)         const anyexcept override;
+   };
+   
+   class CryptoMacStCSha256 final : public CryptoMacStC{
+      private:
+         std::vector<uint8_t>* iv;
+      public:   
+         void init(std::vector<uint8_t>* initVect)                    noexcept  override;
+         void hmac(const uint8_t*  msg, int smsg,
+                   uint8_t*  sign, unsigned int* ssize)         const anyexcept override;
    };
    
    class CryptoBlkEncCtS{
@@ -200,13 +236,13 @@ namespace crypto {
          EVP_CIPHER_CTX         *ectxE;
       public:   
          CryptoBlkEncCtSAes128Ctr(void);
-         ~CryptoBlkEncCtSAes128Ctr(void);
+         ~CryptoBlkEncCtSAes128Ctr(void)                                         override;
          void    init(std::vector<uint8_t>& key, 
-                      std::vector<uint8_t>& iv)                        noexcept(false) override;
+                      std::vector<uint8_t>& iv)                        anyexcept override;
          void    encrUpd(uint8_t* msg, int  msize,  
-                         uint8_t* encrypt, int* esize)           const noexcept(false) override;
-         void    encrFin(uint8_t* encrypt, int* esize)           const noexcept(false) override;
-         size_t  getBlockLen(void)                               const noexcept(true)  override;
+                         uint8_t* encrypt, int* esize)           const anyexcept override;
+         void    encrFin(uint8_t* encrypt, int* esize)           const anyexcept override;
+         size_t  getBlockLen(void)                               const noexcept  override;
    };
 
    class CryptoBlkEncStC{
@@ -225,13 +261,13 @@ namespace crypto {
          EVP_CIPHER_CTX         *ectxD;
       public:   
          CryptoBlkEncStCAes128Ctr(void);
-         ~CryptoBlkEncStCAes128Ctr(void);
+         ~CryptoBlkEncStCAes128Ctr(void)                                        override;
          void    init(std::vector<uint8_t>& key, 
-                      std::vector<uint8_t>& iv)                       noexcept(false) override;
+                      std::vector<uint8_t>& iv)                       anyexcept override;
          void    decrUpd(uint8_t* msg, int  msize,  
-                         uint8_t* decrypt, int* dsize)          const noexcept(false) override;
-         void    decrFin(uint8_t* decrypt, int* dsize)          const noexcept(false) override;
-         size_t  getBlockLen(void)                              const noexcept(true)  override;
+                         uint8_t* decrypt, int* dsize)          const anyexcept override;
+         void    decrFin(uint8_t* decrypt, int* dsize)          const anyexcept override;
+         size_t  getBlockLen(void)                              const noexcept  override;
    };
 
    #ifdef __clang__
@@ -280,83 +316,83 @@ namespace crypto {
                                           langCtSString,
                                           langStCString;
 
-         void setHKeyAlg(void)                                         noexcept(false);
-         void setKexAlg(void)                                          noexcept(false);
-         void setMacAlgCtS(void)                                       noexcept(false);
-         void setMacAlgStC(void)                                       noexcept(false);
-         void setBlkAlgStC(void)                                       noexcept(false);
-         void setBlkAlgCtS(void)                                       noexcept(false);
+         void   setHKeyAlg(void)                                        anyexcept;
+         size_t setKexAlg(void)                                         anyexcept;
+         void   setMacAlgCtS(size_t idx)                                anyexcept;
+         void   setMacAlgStC(size_t idx)                                anyexcept;
+         void   setBlkAlgStC(void)                                      anyexcept;
+         void   setBlkAlgCtS(void)                                      anyexcept;
          
       public:   
          Crypto(void);
          ~Crypto(void);
          void initServerAlgs(const std::set<std::string>* algorithmStrings)
-                                                                       noexcept(false);
-         const std::string& getHKeyAlgs(void)                    const noexcept(true);
-         const std::string& getKexAlgs(void)                     const noexcept(true);
-         const std::string& getMacAlgsCtS(void)                  const noexcept(true);
-         const std::string& getMacAlgsStC(void)                  const noexcept(true);
-         const std::string& getBlkAlgsCtS(void)                  const noexcept(true);
-         const std::string& getBlkAlgsStC(void)                  const noexcept(true);
-         const std::string& getComprAlgCtS(void)                 const noexcept(true);
-         const std::string& getComprAlgStC(void)                 const noexcept(true);
-         const std::string& getLangCtS(void)                     const noexcept(true);
-         const std::string& getLangStC(void)                     const noexcept(true);
+                                                                       anyexcept;
+         const std::string& getHKeyAlgs(void)                    const noexcept;
+         const std::string& getKexAlgs(void)                     const noexcept;
+         const std::string& getMacAlgsCtS(void)                  const noexcept;
+         const std::string& getMacAlgsStC(void)                  const noexcept;
+         const std::string& getBlkAlgsCtS(void)                  const noexcept;
+         const std::string& getBlkAlgsStC(void)                  const noexcept;
+         const std::string& getComprAlgCtS(void)                 const noexcept;
+         const std::string& getComprAlgStC(void)                 const noexcept;
+         const std::string& getLangCtS(void)                     const noexcept;
+         const std::string& getLangStC(void)                     const noexcept;
 
          void           setDhKeys(std::vector<uint8_t>& genBuff,
-                                  std::vector<uint8_t>& res)           noexcept(false);
+                                  std::vector<uint8_t>& res)           anyexcept;
          void           dhHash(std::vector<uint8_t>& buff,
-                               std::vector<uint8_t>& hash)       const noexcept(true);
+                               std::vector<uint8_t>& hash)       const noexcept;
          void           dhHash(std::vector<uint8_t>& buff,
-                               uint8_t* hash)                    const noexcept(true);
-         size_t         getDhHashSize(void)                      const noexcept(true);
+                               uint8_t* hash)                    const noexcept;
+         size_t         getDhHashSize(void)                      const noexcept;
          void           signDH(std::vector<uint8_t>& buff,
                                std::vector<uint8_t>& sign,
-                               BIGNUM* mod, BIGNUM* exp)         const noexcept(false);
+                               BIGNUM* mod, BIGNUM* exp)         const anyexcept;
          void           signMessage(std::string& privKey,
                                     std::vector<uint8_t>& msg, 
-                                    std::vector<uint8_t>& sign)  const noexcept(false);
-         void           setDhSharedKey(BIGNUM* f)                      noexcept(false);
-         BIGNUM*        getE(void)                               const noexcept(true);
-         BIGNUM*        getSharedKey(void)                       const noexcept(true);
+                                    std::vector<uint8_t>& sign)  const anyexcept;
+         void           setDhSharedKey(BIGNUM* f)                      anyexcept;
+         BIGNUM*        getE(void)                               const noexcept;
+         BIGNUM*        getSharedKey(void)                       const noexcept;
          const std::string&   
-                        getKeyFilePrefix(void)                   const noexcept(true);
+                        getKeyFilePrefix(void)                   const noexcept;
          const std::string&   
-                        getNullKey(void)                         const noexcept(true);
+                        getNullKey(void)                         const noexcept;
          void           initMacCtS(std::vector<uint8_t>* 
-                                   initVect)                           noexcept(true);
+                                   initVect)                           noexcept;
          void           hmacCtS(const uint8_t*  msg, int smsg,
                                 uint8_t*  sign, 
-                                unsigned int* ssize)             const noexcept(false);
+                                unsigned int* ssize)             const anyexcept;
          void           initMacStC(std::vector<uint8_t>*
-                                   initVect)                           noexcept(true);
+                                   initVect)                           noexcept;
          void           hmacStC(const uint8_t*  msg, int smsg,
                                 uint8_t* sign, 
-                                unsigned int* ssize)             const noexcept(false);
+                                unsigned int* ssize)             const anyexcept;
          const std::string&
-                        getDhId(void)                            const noexcept(true);
+                        getDhId(void)                            const noexcept;
          const std::string&
-                        getDhDescr(void)                         const noexcept(true);
-         size_t         getBlockLenE(void)                       const noexcept(true);
-         size_t         getBlockLenD(void)                       const noexcept(true);
+                        getDhDescr(void)                         const noexcept;
+         size_t         getBlockLenE(void)                       const noexcept;
+         size_t         getBlockLenD(void)                       const noexcept;
          void           encr(uint8_t* msg, int  msize,
-                             uint8_t* encrypt, int* esize)       const noexcept(false);
-         void           encrFin(uint8_t* encrypt, int* esize)    const noexcept(false);
+                             uint8_t* encrypt, int* esize)       const anyexcept;
+         void           encrFin(uint8_t* encrypt, int* esize)    const anyexcept;
          void           decr(uint8_t* msg, int  msize,
-                             uint8_t* decrypt, int* dsize)       const noexcept(false);
-         void           decrFin(uint8_t* decrypt, int* dsize)    const noexcept(false);
+                             uint8_t* decrypt, int* dsize)       const anyexcept;
+         void           decrFin(uint8_t* decrypt, int* dsize)    const anyexcept;
          void           initBlkEnc(std::vector<uint8_t>& key, 
-                                   std::vector<uint8_t>& iv)     const noexcept(false);
+                                   std::vector<uint8_t>& iv)     const anyexcept;
          void           initBlkDec(std::vector<uint8_t>& key, 
-                                   std::vector<uint8_t>& iv)     const noexcept(false);
+                                   std::vector<uint8_t>& iv)     const anyexcept;
          template<class T>
          void           serverKeyHash(const T& in, 
-                                   std::vector<uint8_t> &out)    const noexcept(false);
+                                   std::vector<uint8_t> &out)    const anyexcept;
    };
 
    extern template 
    void Crypto::serverKeyHash(const std::string& in, 
-                              std::vector<uint8_t>& out)         const noexcept(false);
+                              std::vector<uint8_t>& out)         const anyexcept;
 }
 
 #endif

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------
 // Tssh - A ssh test client. 
-// Copyright (C) 2016  Gabriele Bonacini
+// Copyright (C) 2016-2021  Gabriele Bonacini
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,16 +23,16 @@ using namespace std;
 using namespace tssh;
 
 int main(int argc, char **argv){
-   const char *SSH_PORT   = "22";
+   const char *SSH_PORT   { "22" };
    string      usr,
                port,
                identityFile,
                host;
-   bool        noTTY   = false;
+   bool        noTTY   { false };
    #ifndef NOTRACE
-   const char  flags[] = "l:p:i:hdTV";
+   const char  flags[] { "l:p:i:hdTV" };
    #else
-   const char  flags[] = "l:p:i:hTV";
+   const char  flags[] { "l:p:i:hTV" };
    #endif
 
    opterr = 0;

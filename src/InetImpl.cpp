@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------
 // Tssh - A ssh test client. 
-// Copyright (C) 2016  Gabriele Bonacini
+// Copyright (C) 2016-2021  Gabriele Bonacini
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,28 +25,28 @@ namespace inet {
    using typeutils::safeSsizeT;
    using typeutils::safeSizeT;
    
-   InetException::InetException(int errNum){
-      errorCode               = errNum;
-      errorMessage            = "None";
-   }
+   InetException::InetException(int errNum)
+    : errorMessage{"None"}, errorCode{errNum}
+   {}
    
-   InetException::InetException(string& errString){
-      errorMessage            = errString;
-      errorCode               = 0;
-   }
+   InetException::InetException(string& errString)
+      : errorMessage{errString}, errorCode{0}
+   {}
    
-   InetException::InetException(string&& errString){
-      errorMessage            = move(errString);
-      errorCode               = 0;
-   }
+   InetException::InetException(string&& errString)
+      : errorMessage{move(errString)}, errorCode{0}
+   {}
    
-   InetException::InetException(int errNum, string errString){
-      errorMessage            = errString;
-      errorCode               = errNum;
-   }
+   InetException::InetException(int errNum, string errString)
+      : errorMessage{errString}, errorCode{errNum}
+    {}
    
-   string InetException::what() const noexcept(true){
-      return errorMessage;
+   const char* InetException::what() const noexcept{
+      return errorMessage.c_str();
+   }
+
+   int  InetException::getErrorCode(void)  const noexcept{
+      return errorCode;
    }
    
    Inet::Inet(readFunc rFx, writeFunc wFx) : result(nullptr), bufferPtr(nullptr), 
@@ -69,33 +69,33 @@ namespace inet {
 
    int Inet::socketFd;
    
-   void Inet::setTimeoutMin(long int seconds, int useconds) noexcept(true){
+   void Inet::setTimeoutMin(long int seconds, int useconds) noexcept{
       tvMin.tv_sec            = seconds;
       tvMin.tv_usec           = useconds;
    }
    
-   void Inet::setTimeoutMax(long int seconds, int useconds) noexcept(true){
+   void Inet::setTimeoutMax(long int seconds, int useconds) noexcept{
       tvMax.tv_sec            = seconds;
       tvMax.tv_usec           = useconds;
    }
    
-   ssize_t Inet::readSocket(Handler* fDesc, void *buf, size_t len) noexcept(true){
+   ssize_t Inet::readSocket(Handler* fDesc, void *buf, size_t len) noexcept{
       if(len > 0)
          return ::read(*(static_cast<int const *>(fDesc->peerFd)), buf, static_cast<size_t>(len));
       else
          return EINVAL;
    }
    
-   ssize_t Inet::writeSocket(Handler* fDesc, void *buf, size_t len) noexcept(true){
+   ssize_t Inet::writeSocket(Handler* fDesc, void *buf, size_t len) noexcept{
       if(len > 0)
          return ::write(*(static_cast<int const *>(fDesc->peerFd)), buf, static_cast<size_t>(len));
       else
          return EINVAL;
    }
    
-   size_t Inet::readLineTimeout(size_t maxSize, char sep, Handler *hdlr) noexcept(false){
-      char     buff[2]        = {0,0};
-      Handler  *localHandler  = hdlr ? hdlr : &handler;
+   size_t Inet::readLineTimeout(size_t maxSize, char sep, Handler *hdlr) anyexcept{
+      char     buff[2]        {0,0} ;
+      Handler  *localHandler  { hdlr ? hdlr : &handler};
       currentLine             = "";
       errno                   = 0;
 
@@ -106,7 +106,7 @@ namespace inet {
          if(*(localHandler->peerFd) > nfds)
             nfds = *(localHandler->peerFd) + 1;
 
-         ssize_t ret=::select(nfds, &fdset, nullptr, nullptr, &tvMin);
+         ssize_t ret {::select(nfds, &fdset, nullptr, nullptr, &tvMin)};
          switch(ret){
             case -1:
                throw InetException("readLineTimeout: Select Error.");
@@ -130,14 +130,14 @@ namespace inet {
      }
    }
    
-   size_t Inet::readLine(size_t maxSize, char sep, Handler* hdlr) noexcept(false){
-      char     buff[2]        = {0,0};
-      Handler  *localHandler  = hdlr ? hdlr : &handler;
+   size_t Inet::readLine(size_t maxSize, char sep, Handler* hdlr) anyexcept{
+      char     buff[2]        {0,0};
+      Handler  *localHandler  { hdlr ? hdlr : &handler};
       currentLine             = "";
 
       errno=0;
       for(;;){
-         ssize_t ret = (*rFunc)(localHandler, buff, 1);
+         ssize_t ret { (*rFunc)(localHandler, buff, 1) };
          switch(ret){
             case 1:
                currentLine.append(static_cast<const char*>(buff));
@@ -153,18 +153,18 @@ namespace inet {
       }
    }
    
-   void Inet::addLine(string* dest) const noexcept(true){
+   void Inet::addLine(string* dest) const noexcept{
       dest->append(currentLine);
    }
    
    bool Inet::checkHeader(string header, size_t sizeMax, char sep, bool read, 
-                          bool timeout, Handler *hdlr) noexcept(false){
+                          bool timeout, Handler *hdlr) anyexcept{
       if(read) timeout?(void)readLineTimeout(sizeMax, sep, hdlr) : 
                        (void)readLine(sizeMax, sep, hdlr);
       return currentLine.find(header) != string::npos ? true : false; 
    }
    
-   bool Inet::checkHeaderRaw(string header) const noexcept(false){
+   bool Inet::checkHeaderRaw(string header) const anyexcept{
       try{
          string temp; 
          temp.insert(temp.end(), buffer.begin(), buffer.end());
@@ -174,12 +174,12 @@ namespace inet {
       }
    }
    
-   ssize_t Inet::getReadLen(void) const noexcept(true){
+   ssize_t Inet::getReadLen(void) const noexcept{
       return readLen;
    }
    
    template<class T>
-   void Inet::getBufferCopy(T& dest, bool append)  const noexcept(false){
+   void Inet::getBufferCopy(T& dest, bool append)  const anyexcept{
       if(buffer.size() == 0)
          throw InetException("getBufferCopy: Attempt of copy an unitialized buffer.");
       try{
@@ -190,11 +190,11 @@ namespace inet {
       }
    }
    
-   ssize_t Inet::readBuffer(size_t len, Handler* hdlr, void** buff) noexcept(false){
+   ssize_t Inet::readBuffer(size_t len, Handler* hdlr, void** buff) anyexcept{
       void**  localBuff;
       void*   indBuff;
-      Handler *localHandler   = hdlr ? hdlr : &handler;
-      size_t bufLen           = len ? len : buffer.size();
+      Handler *localHandler   { hdlr ? hdlr : &handler };
+      size_t bufLen           { len ? len : buffer.size() };
       if(hdlr != nullptr){
          localBuff            = buff;
       }else{
@@ -212,12 +212,12 @@ namespace inet {
       return readLen > 0 ? readLen : 0;
    }
 
-   void Inet::setBlocking(bool onOff) noexcept(false){
+   void Inet::setBlocking(bool onOff) anyexcept{
       if( socketFd != -1){
-           int oFlags         = fcntl(socketFd, F_GETFL);
+           int oFlags         { fcntl(socketFd, F_GETFL) };
            if(oFlags == -1) 
               throw InetException("setBlocking: Error getting descriptor settings.");
-           int nFlags         = onOff ? oFlags | O_NONBLOCK : oFlags & ~O_NONBLOCK;
+           int nFlags         { onOff ? oFlags | O_NONBLOCK : oFlags & ~O_NONBLOCK };
            if(fcntl(socketFd, F_SETFL, nFlags) == -1)
               throw InetException("setBlocking: Error setting descriptor settings.");
       }else{
@@ -225,11 +225,11 @@ namespace inet {
       } 
    }
 
-   ssize_t Inet::readBufferNb(size_t len, Handler* hdlr, void** buff) noexcept(false){
+   ssize_t Inet::readBufferNb(size_t len, Handler* hdlr, void** buff) anyexcept{
       void**  localBuff;
       void*   indBuff;
-      Handler *localHandler   = hdlr ? hdlr : &handler;
-      size_t bufLen           = len ? len : buffer.size();
+      Handler *localHandler   { hdlr ? hdlr : &handler};
+      size_t bufLen           { len ? len : buffer.size()};
       if(hdlr != nullptr){
          localBuff            = buff;
       }else{
@@ -238,7 +238,7 @@ namespace inet {
       }
    
       memset(*localBuff, 0, bufLen);
-      ssize_t tlen         = (*rFunc)(localHandler, *localBuff, bufLen);
+      ssize_t tlen         { (*rFunc)(localHandler, *localBuff, bufLen) };
       if(tlen == 0) throw InetException("Connection was closed by the server.");
       if(tlen < 1 && errno != EAGAIN && errno != EINTR)
                     throw InetException(string("readBufferNb: Read error: ") + strerror(errno));
@@ -249,7 +249,7 @@ namespace inet {
       return readLen;
    }
    
-   void Inet::initBuffer(size_t len) noexcept(false){
+   void Inet::initBuffer(size_t len) anyexcept{
       if(len == 0) throw InetException("initBuffer: InitBuffer: Invalid buffer size");
       
       try{
@@ -260,13 +260,13 @@ namespace inet {
       }
    }
    
-   void Inet::writeBuffer(const uint8_t* msg, size_t size, Handler* hdlr) const noexcept(false){
-      Handler  *localHandler   = hdlr ? hdlr : &handler;
+   void Inet::writeBuffer(const uint8_t* msg, size_t size, Handler* hdlr) const anyexcept{
+      Handler  *localHandler   { hdlr ? hdlr : &handler };
    
-      for(size_t s=0; s<size;){
-         ssize_t writeLen   = (*wFunc)(localHandler, 
+      for(size_t s{0}; s<size;){
+         ssize_t writeLen   { (*wFunc)(localHandler, 
                                        reinterpret_cast<void*>(const_cast<uint8_t*>(msg + s)), 
-                                       size - s);
+                                       size - s) };
          if(writeLen < 0 && errno != EINTR) 
              throw InetException(string("writeBuffer: Write error: ") + strerror(errno));
          if(writeLen > 0){
@@ -277,15 +277,15 @@ namespace inet {
       errno=0;
    }
    
-   void Inet::writeBuffer(const string& msg, Handler* hdlr) const noexcept(false){
-      ssize_t msgLen           = safeSsizeT(msg.size());
-      Handler *localHandler    = hdlr ? hdlr : &handler;
+   void Inet::writeBuffer(const string& msg, Handler* hdlr) const anyexcept{
+      ssize_t msgLen           { safeSsizeT(msg.size()) };
+      Handler *localHandler    { hdlr ? hdlr : &handler };
    
       errno=0;
-      for(ssize_t s=0; s < safeSsizeT(msg.size());){
-         ssize_t writeLen = (*wFunc)(localHandler, 
+      for(ssize_t s{0}; s < safeSsizeT(msg.size());){
+         ssize_t writeLen { (*wFunc)(localHandler, 
                                      reinterpret_cast<void*>(const_cast<char*>(msg.c_str() + s)),
-                                     safeSizeT(msgLen - s));
+                                     safeSizeT(msgLen - s)) };
          if(writeLen < 0 && errno != EINTR) 
             throw InetException(string("Write error: ") + strerror(errno));
          if(writeLen > 0) 
@@ -294,8 +294,8 @@ namespace inet {
       errno=0;
    }
    
-   InetClient::InetClient(const char* ifc, const char* port) noexcept(false){
-      int errCode  = getaddrinfo(ifc, port, &hints, &result);
+   InetClient::InetClient(const char* ifc, const char* port) anyexcept{
+      int errCode  { getaddrinfo(ifc, port, &hints, &result) };
       if( errCode != 0) throw InetException(string("InetClient: Getaddrinfo Error: ") + 
                                             ifc + " : " + ::gai_strerror(errCode));
       
@@ -313,7 +313,7 @@ namespace inet {
       handler.peerFd = static_cast<int*>(&socketFd);
    }
    
-   void InetClient::cleanResurces(void) noexcept(true){
+   void InetClient::cleanResurces(void) noexcept{
       if(socketFd >= 0 ){
          close(socketFd);
          socketFd=-1;
@@ -335,8 +335,8 @@ namespace inet {
    #pragma clang diagnostic ignored "-Wundefined-func-template"
    #endif
 
-   template void Inet::getBufferCopy(std::string& dest, bool append=false)           const noexcept(false);
-   template void Inet::getBufferCopy(std::vector<uint8_t>& dest, bool append=false)  const noexcept(false);
+   template void Inet::getBufferCopy(std::string& dest, bool append=false)           const anyexcept;
+   template void Inet::getBufferCopy(std::vector<uint8_t>& dest, bool append=false)  const anyexcept;
 
    #if defined  __clang_major__ && __clang_major__ >= 4 && !defined __APPLE__ && __clang_major__ >= 4
    #pragma clang diagnostic pop

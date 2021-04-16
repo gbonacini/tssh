@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------
 // Tssh - A ssh test client. 
-// Copyright (C) 2016  Gabriele Bonacini
+// Copyright (C) 2016-2021  Gabriele Bonacini
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -51,6 +51,7 @@ namespace tssh{
 
    using  typeutils::safePtrdiff;
    using  typeutils::safeUint32;
+   using  typeutils::safeUint8;
    using  typeutils::safeSizeT;
    using  typeutils::safeInt;
    using  typeutils::safeUInt;
@@ -61,36 +62,36 @@ namespace tssh{
 
    using  crypto::Crypto;
 
-   static const char INITIAL_IV_C_TO_S                = 'A';
-   static const char INITIAL_IV_S_TO_C                = 'B';
-   static const char ENCR_KEY_C_TO_S                  = 'C';
-   static const char ENCR_KEY_S_TO_C                  = 'D';
-   static const char INTEGRITY_KEY_C_TO_S             = 'E';
-   static const char INTEGRITY_KEY_S_TO_C             = 'F';
+   static const char INITIAL_IV_C_TO_S                { 'A' };
+   static const char INITIAL_IV_S_TO_C                { 'B' };
+   static const char ENCR_KEY_C_TO_S                  { 'C' };
+   static const char ENCR_KEY_S_TO_C                  { 'D' };
+   static const char INTEGRITY_KEY_C_TO_S             { 'E' };
+   static const char INTEGRITY_KEY_S_TO_C             { 'F' };
    
-   static const char *SSH_CONF_DIRECTORY              = ".ssh";
-   static const char *SSH_KNOWN_HOST_FILE             = "known_hosts";
-   static const char *SSH_DEFAULT_TERM                = "vt100";
-   static const char *SSH_PTY_REQ                     = "pty-req";
-   static const char *SSH_SHELL_REQ                   = "shell";
+   static const char *SSH_CONF_DIRECTORY              { ".ssh" };
+   static const char *SSH_KNOWN_HOST_FILE             { "known_hosts" };
+   static const char *SSH_DEFAULT_TERM                { "vt100" };
+   static const char *SSH_PTY_REQ                     { "pty-req" };
+   static const char *SSH_SHELL_REQ                   { "shell" };
    
-   static const char *SSH_ID_STRING                   = "SSH-2.0-bg\r\n";
-   static const char *SSH_HEADER_ID                   = "SSH-2.0";
-   static const char *RAND_FILE                       = "/dev/urandom";
+   static const char *SSH_ID_STRING                   { "SSH-2.0-bg\r\n" };
+   static const char *SSH_HEADER_ID                   { "SSH-2.0" };
+   static const char *RAND_FILE                       { "/dev/urandom" };
    
-   static const char *SSH_USERAUTH_STRING             = "ssh-userauth";
-   static const char *SSH_CONNECT_STRING              = "ssh-connection";
-   static const char *SSH_PUBKEY_AUTH_REQ             = "publickey";
-   static const char *SSH_PASSWD_SPEC                 = "password";
-   static const char *SSH_KEYB_INTER_SPEC             = "keyboard-interactive";
-   static const char *SSH_SESSION_SPEC                = "session";
-   static const char *SSH_WNDW_RESIZE                 = "window-change";
+   static const char *SSH_USERAUTH_STRING             { "ssh-userauth" };
+   static const char *SSH_CONNECT_STRING              { "ssh-connection" };
+   static const char *SSH_PUBKEY_AUTH_REQ             { "publickey" };
+   static const char *SSH_PASSWD_SPEC                 { "password" };
+   static const char *SSH_KEYB_INTER_SPEC             { "keyboard-interactive" };
+   static const char *SSH_SESSION_SPEC                { "session" };
+   static const char *SSH_WNDW_RESIZE                 { "window-change" };
 
    VarData::~VarData(void){}
 
    VarDataBin::VarDataBin(vector<uint8_t>& val) : data(val){}
    
-   void VarDataBin::appendData(vector<uint8_t>& dest) noexcept(false){
+   void VarDataBin::appendData(vector<uint8_t>& dest) anyexcept{
          try{
             dest.insert(dest.end(), data.begin(), data.end());
          }catch(...){
@@ -98,13 +99,13 @@ namespace tssh{
          }
    }
    
-   size_t VarDataBin::size(void)  noexcept(true){
+   size_t VarDataBin::size(void)  noexcept{
          return data.size();
    }
    
    VarDataChar::VarDataChar(char val) : data(val){}
    
-   void VarDataChar::appendData(vector<uint8_t>& dest) noexcept(false){
+   void VarDataChar::appendData(vector<uint8_t>& dest) anyexcept{
          try{
             dest.push_back(static_cast<uint8_t>(data));
          }catch(...){
@@ -112,17 +113,17 @@ namespace tssh{
          }
    }
    
-   size_t VarDataChar::size(void)  noexcept(true){
+   size_t VarDataChar::size(void)  noexcept{
          return sizeof(uint8_t);
    }
    
    VarDataUint32::VarDataUint32(uint32_t val) : data(val){}
    
-   void VarDataUint32::appendData(vector<uint8_t>& dest)  noexcept(false){
+   void VarDataUint32::appendData(vector<uint8_t>& dest)  anyexcept{
          uint32ToUChars(dest, data);
    }
    
-   size_t VarDataUint32::size(void)  noexcept(true){
+   size_t VarDataUint32::size(void)  noexcept{
          return sizeof(uint32_t);
    }
    
@@ -130,12 +131,12 @@ namespace tssh{
    VarDataString<T>::VarDataString(T& val) : data(val){}
    
    template<class T>
-   void VarDataString<T>::appendData(vector<uint8_t>& dest)  noexcept(false){
+   void VarDataString<T>::appendData(vector<uint8_t>& dest)  anyexcept{
          addVarLengthDataString(data, dest);
    }
    
    template<class T>
-   size_t VarDataString<T>::size(void)  noexcept(true){
+   size_t VarDataString<T>::size(void)  noexcept{
          return data.size();
    }
    
@@ -143,11 +144,11 @@ namespace tssh{
    
    VarDataCharArr::~VarDataCharArr(void){}
    
-   void VarDataCharArr::appendData(vector<uint8_t>& dest)  noexcept(false){
+   void VarDataCharArr::appendData(vector<uint8_t>& dest)  anyexcept{
          addVarLengthDataCCharStr(data, dest);
    }
    
-   size_t VarDataCharArr::size(void)  noexcept(true){
+   size_t VarDataCharArr::size(void)  noexcept{
          return strlen(data);
    }
    
@@ -155,7 +156,7 @@ namespace tssh{
    
    VarDataRecursive::~VarDataRecursive(void){}
    
-   void VarDataRecursive::appendData(vector<uint8_t>& dest)  noexcept(false){
+   void VarDataRecursive::appendData(vector<uint8_t>& dest)  anyexcept{
          uint32ToUChars(dest, 0);
          for(auto elem : subList) {
             addSize(elem->size());
@@ -176,11 +177,11 @@ namespace tssh{
          #endif
    }
    
-   size_t VarDataRecursive::size(void)  noexcept(true){
+   size_t VarDataRecursive::size(void)  noexcept{
          return globalSize;
    }
    
-   void VarDataRecursive::addSize(size_t len)  noexcept(true){
+   void VarDataRecursive::addSize(size_t len)  noexcept{
          globalSize += len + sizeof(uint32_t);
    }
 
@@ -190,7 +191,7 @@ namespace tssh{
    VarDataBlob<T>::VarDataBlob(T& dest, string dsc) : data(dest), descr(dsc){}
    
    template<class T>
-   size_t VarDataBlob<T>::insertData(vector<uint8_t>& buff, size_t offset)  noexcept(false){
+   size_t VarDataBlob<T>::insertData(vector<uint8_t>& buff, size_t offset)  anyexcept{
          TRACE(" \n  ** " + descr + ":\n", &buff, offset, 
                sizeof(uint32_t) + offset + charToUint32(buff.data() + offset) ); 
          return getVariableLengthRawValue(buff, offset, data);
@@ -198,7 +199,7 @@ namespace tssh{
 
    VarDataBNum::VarDataBNum(BIGNUM* dest, string dsc) : data(dest), descr(dsc){}
    
-   size_t VarDataBNum::insertData(vector<uint8_t>& buff, size_t offset)  noexcept(false){
+   size_t VarDataBNum::insertData(vector<uint8_t>& buff, size_t offset)  anyexcept{
          TRACE(" \n  ** " + descr + ":\n", &buff, offset,
                sizeof(uint32_t) + offset + charToUint32(buff.data() + offset) ); 
          return getVariableLengthSingleBignum(buff, offset, data);
@@ -234,9 +235,9 @@ namespace tssh{
    
       setTimeoutMin(5, 0);
 
-      initializer_list<uint8_t> ktypes = { INITIAL_IV_C_TO_S, INITIAL_IV_S_TO_C,    ENCR_KEY_C_TO_S, 
-                                           ENCR_KEY_S_TO_C,   INTEGRITY_KEY_C_TO_S, INTEGRITY_KEY_S_TO_C };
-      size_t idx = 0;
+      initializer_list<uint8_t> ktypes  { INITIAL_IV_C_TO_S, INITIAL_IV_S_TO_C,    ENCR_KEY_C_TO_S, 
+                                          ENCR_KEY_S_TO_C,   INTEGRITY_KEY_C_TO_S, INTEGRITY_KEY_S_TO_C };
+      size_t idx { 0 };
       for( auto k : ktypes){
          get<KEYTYPE>(keys[idx]) = k;
          idx++;
@@ -257,13 +258,13 @@ namespace tssh{
       close(rndFd);
    }
    
-   vector<uint8_t>&  SshTransport::setKexMsg(void)  noexcept(false){
+   vector<uint8_t>&  SshTransport::setKexMsg(void)  anyexcept{
       addHeader(SSH_MSG_KEXINIT, clientKexInit); 
       addRandomBytes(COOKIE_LEN, clientKexInit, clientKexInit.size()); 
   
-      initializer_list<const string> al ={crypto.getKexAlgs(),     crypto.getHKeyAlgs(),   crypto.getBlkAlgsCtS(),
-                                          crypto.getBlkAlgsStC(),  crypto.getMacAlgsCtS(), crypto.getMacAlgsStC(),
-                                          crypto.getComprAlgCtS(), crypto.getComprAlgStC() };
+      initializer_list<const string> al {crypto.getKexAlgs(),     crypto.getHKeyAlgs(),   crypto.getBlkAlgsCtS(),
+                                         crypto.getBlkAlgsStC(),  crypto.getMacAlgsCtS(), crypto.getMacAlgsStC(),
+                                         crypto.getComprAlgCtS(), crypto.getComprAlgStC() };
 
       for(auto elem : al) addVarLengthDataString(elem, clientKexInit);   
 
@@ -279,26 +280,26 @@ namespace tssh{
       return clientKexInit;
    }
    
-   const string& SshTransport::getServerId(void) const noexcept(true){
+   const string& SshTransport::getServerId(void) const noexcept{
       return serverIdString;
    }
    
-   const string& SshTransport::getClientId(void) const noexcept(true){
+   const string& SshTransport::getClientId(void) const noexcept{
       return clientIdString;
    }
    
-   void SshTransport::getStatistics(void) const noexcept(true){
+   void SshTransport::getStatistics(void) const noexcept{
       cerr << "* Received " << packetsRcvCount << " ssh packets." << endl 
            << "* Sent     " << packetsSndCount << " ssh packets." << endl;
    }
   
-   void SshTransport::readSsh(void) noexcept(false){
+   void SshTransport::readSsh(void) anyexcept{
       packetsRcvCount++;
       TRACE("\n* Rcv Sequence: " + to_string(packetsRcvCount));
 
       buffCopy.clear();     
-      size_t availableBytes         = 0,
-             deltaBytes             = 0;
+      size_t availableBytes         { 0 },
+             deltaBytes             { 0 };
       while(availableBytes < sizeof(uint32_t)){
          deltaBytes                 = safeSizeT(readBuffer());
          if(deltaBytes > 0){
@@ -307,7 +308,7 @@ namespace tssh{
          }
       }
       
-      size_t requiredBytes          = charToUint32(buffCopy.data()) + sizeof(uint32_t);
+      size_t requiredBytes          { charToUint32(buffCopy.data()) + sizeof(uint32_t) };
       if(requiredBytes  > SSH_MAX_PACKET_SIZE - sizeof(uint32_t))
             throw InetException("readSsh: incoming packet greater than max ssh packet size.");
 
@@ -325,12 +326,12 @@ namespace tssh{
       }
    }
 
-   bool SshTransport::readSshEnc(int chan) noexcept(false){
+   bool SshTransport::readSshEnc(int chan) anyexcept{
       int           incomingEncLen,
                     plainTextLen;
-      size_t        reassembledLen  = 0,
+      size_t        reassembledLen  { 0 },
                     availableBytes;
-      bool          status          = true;
+      bool          status          { true };
 
       partialRead.clear();
       reassembledLen += safeSizeT(readBuffer(currentBlockLenD));
@@ -439,12 +440,12 @@ namespace tssh{
       return status;
    }
  
-   void SshTransport::writeSshEnc(vector<uint8_t>& msg,  uint8_t allign) noexcept(false){
-      size_t        encrTextLen      = 0;
-      int           outcomingEncLen  = 0;   
-      uint8_t       remind           = (msg.size() + 4) % allign,
-                    padding          = allign - remind + 4 ;
-      unsigned int  hashLen          = 0; 
+   void SshTransport::writeSshEnc(vector<uint8_t>& msg,  uint8_t allign) anyexcept{
+      size_t        encrTextLen      { 0 };
+      int           outcomingEncLen  { 0 };   
+      uint8_t       remind           { safeUint8((msg.size() + 4) % allign) },
+                    padding          { safeUint8(allign - remind + 4) };
+      unsigned int  hashLen          { 0 }; 
    
       msg[sizeof(uint32_t)]       = padding;
       addRandomBytes(padding, msg, msg.size()); 
@@ -477,9 +478,9 @@ namespace tssh{
       writeBuffer(outcomingEnc.data(), encrTextLen + hashLen);
    }
    
-   void SshTransport::disconnect(void) noexcept(false){
+   void SshTransport::disconnect(void) anyexcept{
       if(haveKeys){
-         string descr = "Closed by client";
+         string descr { "Closed by client" };
          addHeader(SSH_MSG_DISCONNECT, message);
    
          uint32ToUChars(message, SSH_DISCONNECT_BY_APPLICATION);
@@ -494,21 +495,21 @@ namespace tssh{
       }
    }
 
-   void SshTransport::writeSsh(const uint8_t* msg, size_t size) const noexcept(false){
+   void SshTransport::writeSsh(const uint8_t* msg, size_t size) const anyexcept{
       packetsSndCount++;
       writeBuffer(msg, size);
 
       TRACE("* Snd Sequence: " + to_string(packetsSndCount));
    }
    
-   void SshTransport::writeSsh(const string& msg) const noexcept(false){
+   void SshTransport::writeSsh(const string& msg) const anyexcept{
       packetsSndCount++;
       writeBuffer(msg);
 
       TRACE("* Snd Sequence: " + to_string(packetsSndCount));
    }
    
-   void SshTransport::checkSshHeader()       noexcept(false){
+   void SshTransport::checkSshHeader()       anyexcept{
       static_cast<void>(readLineTimeout(SSH_MAX_ID_STRING_SIZE));
 
       serverIdString = currentLine;
@@ -523,7 +524,7 @@ namespace tssh{
    }
    
    void SshTransport::addRandomBytes(size_t bytes, vector<uint8_t>& target, 
-                                     size_t offset) const noexcept(false){
+                                     size_t offset) const anyexcept{
       try{
          target.insert(target.end(), bytes, 0);
       }catch(...){
@@ -533,7 +534,7 @@ namespace tssh{
          throw(InetException("addRandomBytes: Can't read random bytes"));
    }
 
-   void SshTransport::checkServerAlgList(void) noexcept(false){
+   void SshTransport::checkServerAlgList(void) anyexcept{
       sshKexPacket   packet;
       
       try{
@@ -571,9 +572,9 @@ namespace tssh{
             "\n ** Padding: " + to_string(packet.padding_length) + "\n ** Kex Packet Type: " + 
             to_string(packet.kex_packet_type) + "\n ** Server Cookie: ", &(packet.server_cookie));
    
-      size_t offset = 22;
+      size_t offset { SERVER_ALG_OFFSET };
       vector<char>buff(buffCopy.size() + 1);
-      for(int i=0;i<10;i++){
+      for(int i{0};i<10;i++){
          offset += getVariableLengthValueCsv(buffCopy, buff,
                    packet.algorithmStrings, i, offset);
       }
@@ -611,7 +612,7 @@ namespace tssh{
       }
    }
    
-   void SshTransport::checkServerDhReply(void) noexcept(false){
+   void SshTransport::checkServerDhReply(void) anyexcept{
    
       get<PACKET_LENGTH>(dhReplyPacket)      = charToUint32(buffCopy.data());
 
@@ -650,19 +651,19 @@ namespace tssh{
    
       TRACE("\n ** Host Blob (Certificate) in B64: \n" + get<CERTIFICATE_B64>(dhReplyPacket) + "\n");
    
-      initializer_list<VarDataIn*> outerList    = 
+      initializer_list<VarDataIn*> outerList     
                        {new VarDataBlob<vector<uint8_t>>(get<PUBKEY_BLOB>(dhReplyPacket),    "PK Blob"),
                         new VarDataBNum(get<BN_KEYF>(dhReplyPacket),                         "Key F")}; 
-      initializer_list<VarDataIn*> innerList[2] = 
+      initializer_list<VarDataIn*> innerList[2]  
                       {{new VarDataBlob<string>(get<CERTIFICATE_ID>(dhReplyPacket),          "Cert. Id"),
                         new VarDataBNum(get<BN_EXPONENT>(dhReplyPacket),                     "Exponent"),
                         new VarDataBNum(get<BN_MODULUS>(dhReplyPacket),                      "Modulus")}, 
                        {new VarDataBlob<vector<uint8_t>>(get<SIGNATURE_ID>(dhReplyPacket),   "Sign. Id"),
                         new VarDataBlob<vector<uint8_t>>(get<HASH_SIGNATURE>(dhReplyPacket), "Sign. Hash")}};
 
-      size_t offset      = DATA_OFFSET, 
-             innerOffset = DATA_OFFSET + sizeof(uint32_t);
-      int    mainField   = 0;
+      size_t offset      { DATA_OFFSET }, 
+             innerOffset { DATA_OFFSET + sizeof(uint32_t) };
+      int    mainField   { 0 };
   
       for(auto outerElem : outerList){
          offset += outerElem->insertData(buffCopy, offset);
@@ -691,8 +692,8 @@ namespace tssh{
       appendVectBuffer(hashBuffer, get<PUBKEY_BLOB>(dhReplyPacket));
    
       // E, F, Shared
-      initializer_list<BIGNUM*> list = { crypto.getE(), get<BN_KEYF>(dhReplyPacket), 
-                                            crypto.getSharedKey() };
+      initializer_list<BIGNUM*> list   { crypto.getE(), get<BN_KEYF>(dhReplyPacket), 
+                                         crypto.getSharedKey() };
 
       for(auto elem : list) {
          try{
@@ -715,7 +716,7 @@ namespace tssh{
             &hashBuffer);
   
       try{    
-         sessionIdHash.resize(SHA_DIGEST_LENGTH);
+         sessionIdHash.resize(crypto.getDhHashSize());
       }catch(...){
          throw InetException("checkServerDhReply: d :  Data error.");
       }
@@ -738,8 +739,8 @@ namespace tssh{
       checkServerSignature();
    
       if(get<PACKET_LENGTH>(dhReplyPacket) < buffCopy.size()){
-         uint32_t next = charToUint32(buffCopy.data() + get<PACKET_LENGTH>(dhReplyPacket) +
-                                      sizeof(uint32_t));
+         uint32_t next { charToUint32(buffCopy.data() + get<PACKET_LENGTH>(dhReplyPacket) +
+                         sizeof(uint32_t))};
    
          TRACE("* Next Len: " + to_string(next));
        
@@ -764,20 +765,20 @@ namespace tssh{
       haveKeys = true;
    }
    
-   void SshTransport::checkServerSignature(void) noexcept(false){
-      size_t   idx        = 0;
+   void SshTransport::checkServerSignature(void) anyexcept{
+      size_t   idx        { 0 };
       Id       line;
-      bool     notPresent = true;
-      int      fd         = open(knownHosts.c_str(), O_RDWR | O_CREAT, S_IRWXU);
+      bool     notPresent { true };
+      int      fd         { open(knownHosts.c_str(), O_RDWR | O_CREAT, S_IRWXU) };
       if(fd == -1)
          throw InetException(string("checkServerSignature: Error opening in the file: ") + knownHosts);
    
       while(notPresent){
-         ssize_t size = read(fd, message.data(), SSH_MAX_PACKET_SIZE);
+         ssize_t size { read(fd, message.data(), SSH_MAX_PACKET_SIZE) };
          if(size <= 0) break;
          if(size <  0) throw InetException("checkServerSignature: Error reading knownhost file.");
          try{
-            for(size_t i=0; i<static_cast<size_t>(size) && notPresent; i++){
+            for(size_t i{0}; i<static_cast<size_t>(size) && notPresent; i++){
                switch(message[i]){
                   case ' ':
                      idx++;
@@ -853,10 +854,10 @@ namespace tssh{
       close(fd);
    }
    
-   void SshTransport::createKeys(size_t keyLen) noexcept(false){
+   void SshTransport::createKeys(size_t keyLen) anyexcept{
       // RFC 4253
    
-      for(auto i = keys.begin(); i != keys.end(); ++i){
+      for(auto i{keys.begin()}; i != keys.end(); ++i){
          get<KEYTEXT>(*i).clear();
          try{ 
             get<KEYTEXT>(*i).insert(get<KEYTEXT>(*i).end(), sharedKey.begin(), sharedKey.end());
@@ -867,8 +868,8 @@ namespace tssh{
             throw InetException("createKeys: a : Data error.");
          }
    
-         size_t currentKeyLen  = currentHashCLen;
-         size_t currentHashLen = EVP_MAX_MD_SIZE;
+         size_t currentKeyLen  { currentHashCLen };
+         size_t currentHashLen { EVP_MAX_MD_SIZE };
          try{
             get<KEYHASH>(*i).resize(currentKeyLen);
          }catch(...){
@@ -908,7 +909,7 @@ namespace tssh{
       crypto.initMacStC(&(get<KEYHASH>(keys[INTEGRITY_KEY_S_TO_C_IDX])));
    }
    
-   void SshTransport::addHeader(uint8_t packetType, vector<uint8_t>& buff) const noexcept(false){
+   void SshTransport::addHeader(uint8_t packetType, vector<uint8_t>& buff) const anyexcept{
          buff.clear();
          try{
             buff.insert(buff.end(), sizeof(uint32_t), 0);  // 4 bytes reserved for packet length
@@ -919,10 +920,10 @@ namespace tssh{
          }
    }
 
-   void  SshTransport::sendWithHeader(vector<uint8_t>& buff, uint8_t allign) const noexcept(false){
-         const uint8_t* vectHandler   = buff.data();
-         uint8_t        remind        = (buff.size() + 4) % allign,
-                        padding       = allign - remind + 4 ;
+   void  SshTransport::sendWithHeader(vector<uint8_t>& buff, uint8_t allign) const anyexcept{
+         const uint8_t* vectHandler   { buff.data() };
+         uint8_t        remind        { safeUint8((buff.size() + 4) % allign) },
+                        padding       { safeUint8(allign - remind + 4) } ;
    
          buff[PADDING_LEN_OFFSET] = padding;
          try{
@@ -931,7 +932,7 @@ namespace tssh{
             throw InetException("sendWithHeader : Data error.");
          }
    
-         size_t         bufferLength  = buff.size() ;
+         size_t         bufferLength  { buff.size() };
          uint32ToUChars(buff.data(), safeUint32(buff.size() - sizeof(uint32_t)));
                
          writeSsh(vectHandler, bufferLength);
@@ -942,7 +943,7 @@ namespace tssh{
    }
   
    void SshTransport::createSendPacket(const uint8_t packetType, 
-                                       initializer_list<VarData*>&& list) noexcept(false){
+                                       initializer_list<VarData*>&& list) anyexcept{
       addHeader(packetType, message); 
       for(auto elem : list) {
          elem->appendData(message);
@@ -952,20 +953,20 @@ namespace tssh{
       TRACE("* Buffer Capacity: " + to_string(message.capacity()));
    }
 
-   void Fsm::setInitStat(unsigned int status) noexcept(true){
+   void Fsm::setInitStat(unsigned int status) noexcept{
       currStat = status;
    }
 
-   void Fsm::setTree(StatusTree* tree) noexcept(true){ 
+   void Fsm::setTree(StatusTree* tree) noexcept{ 
       statuses = tree;
    }
 
-   void Fsm::checkStatus(unsigned int newStat) noexcept(false){
-      auto i  = statuses->find(newStat);
+   void Fsm::checkStatus(unsigned int newStat) anyexcept{
+      auto i  { statuses->find(newStat) };
       if( i  == statuses->end())
          throw InetException("checkStatus: Fsm Error: invalid status " + to_string(newStat) + ".");
 
-      auto ii = i->second.find(currStat);
+      auto ii { i->second.find(currStat) };
       if( ii == i->second.cend())
          throw InetException("checkStatus: Packet sequence error: unexpected packet sequence: " +
                              to_string(currStat) + " --> " + to_string(newStat));
@@ -996,12 +997,12 @@ namespace tssh{
    SshConnection::~SshConnection(){
       if(nonCanonical){
          if(tcsetattr(STDIN_FILENO, TCSANOW, &termOld) == -1)
-            throw InetException("~SshConnection: Error resetting terminal in canonical mode.");
+            cerr << "~SshConnection: Error resetting terminal in canonical mode.\n";
       }
       ERR_clear_error();  
    }
    
-   void  SshConnection::createAuthSign(vector<uint8_t>& msg, initializer_list<VarData*>&& list) noexcept(false){
+   void  SshConnection::createAuthSign(vector<uint8_t>& msg, initializer_list<VarData*>&& list) anyexcept{
       genericBuffer.clear();
       for(auto elem : list) {
          elem->appendData(genericBuffer);
@@ -1010,14 +1011,14 @@ namespace tssh{
       crypto.signMessage(privKey, genericBuffer, msg);
    }
    
-   void  SshConnection::createSendShellData() noexcept(false){
+   void  SshConnection::createSendShellData() anyexcept{
       addHeader(SSH_MSG_CHANNEL_DATA, message); 
       uint32ToUChars(message, channelNumber);
       addVarLengthDataString(keybInputData, message);
       writeSshEnc(message, AES_BLOCK_LEN_ALLIGN);
    }
 
-   void SshConnection::getUserKeyFiles(void) noexcept(false){
+   void SshConnection::getUserKeyFiles(void) anyexcept{
       try{
          pubKey.append(getenv("HOME")).append("/").append(SSH_CONF_DIRECTORY);
          privKey = pubKey;
@@ -1038,14 +1039,14 @@ namespace tssh{
       }
    }
 
-   void SshConnection::getUserPubK(void) noexcept(false){
+   void SshConnection::getUserPubK(void) anyexcept{
       try{
          loadFileMem(pubKey, genericBuffer, true);
       }catch(StringUtilsException& e){
-         TRACE("* Public Key - " + e.what() + "\n  Using Null Key.");
+         TRACE(string("* Public Key - ").append(e.what()).append("\n  Using Null Key."));
          genericBuffer.clear();
          try{
-            string nullKey = crypto.getDhId() + " " + crypto.getNullKey() + " " + user;
+            string nullKey { crypto.getDhId() + " " + crypto.getNullKey() + " " + user };
             genericBuffer.insert(genericBuffer.end(), nullKey.begin(), nullKey.end());
             genericBuffer.push_back(0);
          }catch(...){
@@ -1053,7 +1054,7 @@ namespace tssh{
          }
       }
       
-      char*       flag              = strtok(reinterpret_cast<char*>(genericBuffer.data()), " ");
+      char*       flag              { strtok(reinterpret_cast<char*>(genericBuffer.data()), " ") };
       get<PUBKEYTYPE>(clientPubKey) = flag;
       flag = strtok(nullptr, " ");
       decodeB64(string(flag), get<PUBKEYBLOB>(clientPubKey));
@@ -1064,17 +1065,16 @@ namespace tssh{
             get<PUBKEYUSR>(clientPubKey) + "\n ** Client PubK Blob: ", &get<PUBKEYBLOB>(clientPubKey));
    }
 
-   void SshConnection::connectionLoop(void) noexcept(false){
-      bool              again             = true,
-                        pubKeyAuth        = false,
-                        password          = false,
-                        keybInter         = false;
+   void SshConnection::connectionLoop(void) anyexcept{
+      bool              again             { true  },
+                        pubKeyAuth        { false },
+                        password          { false },
+                        keybInter         { false };
       uint32_t          errCode,
                         confirmedChannel;
       string            tmp;
-      size_t            offset            = 0;
-      StatusTree        tree              = 
-                        { 
+      size_t            offset            { 0 };
+      StatusTree        tree              { 
                           {SSH_MSG_SERVICE_ACCEPT,            {SSH_CONN_START}},  
                           {SSH_MSG_USERAUTH_FAILURE,          {SSH_MSG_SERVICE_ACCEPT,
                                                                SSH_MSG_USERAUTH_FAILURE,
@@ -1122,7 +1122,7 @@ namespace tssh{
                         getPassword(genericBuffer, &termOld, &termNew);
                      }catch(StringUtilsException& e){
                         nonCanonical = true;
-                        throw InetException(string("connectionLoop: " + e.what()));
+                        throw InetException(string("connectionLoop: ").append(e.what()));
                      }
                      createSendPacket(SSH_MSG_USERAUTH_INFO_RESPONSE,
                             {new VarDataUint32(numPrompts),
@@ -1211,7 +1211,7 @@ namespace tssh{
                      getPassword(genericBuffer, &termOld, &termNew);
                   }catch(StringUtilsException& e){
                      nonCanonical = true;
-                     throw InetException(string("connectionLoop: " + e.what()));
+                     throw InetException(string("connectionLoop: ").append(e.what()));
                   }
                   createSendPacket(SSH_MSG_USERAUTH_REQUEST, 
                          {new VarDataString<string>(user),
@@ -1233,6 +1233,11 @@ namespace tssh{
             break;
             case SSH_MSG_UNIMPLEMENTED:
                 throw InetException("connectionLoop: Error: SSH_MSG_UNIMPLEMENTED.");
+            case SSH_MSG_DEBUG:
+                TRACE( "* Received SSH_MSG_DEBUG.");
+                trace("Dump: ", &incomingEnc, 0, 0, 
+                      charToUint32(incomingEnc.data()) + sizeof(uint32_t));
+            break;
             case SSH_MSG_DISCONNECT:
                 offset  = DATA_OFFSET;
                 errCode = charToUint32(incomingEnc.data() + offset);
@@ -1275,14 +1280,15 @@ namespace tssh{
                     if(ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowAttr) == -1)
                        throw InetException("connectionLoop: Ioctl Error: reading window size.");
                     genericBuffer.clear();
-                    initializer_list<uint32_t> termAttr = {
+                    initializer_list<uint32_t> termAttr  {
                            termOld.c_cc[VINTR], termOld.c_cc[VQUIT],    termOld.c_cc[VERASE],
                            termOld.c_cc[VKILL], termOld.c_cc[VEOF],     termOld.c_cc[VEOL],
                            termOld.c_cc[VEOL2], termOld.c_cc[VSTART],   termOld.c_cc[VSTOP],
                            termOld.c_cc[VSUSP], termOld.c_cc[VREPRINT], termOld.c_cc[VWERASE],
-                           termOld.c_cc[VLNEXT] };
+                           termOld.c_cc[VLNEXT] 
+                    };
                     
-                    uint8_t idx = 0;
+                    uint8_t idx { 0 };
                     for(auto elem : termAttr){
                        idx += idx != 10 ? 1 : 2;
                        try{
@@ -1302,7 +1308,7 @@ namespace tssh{
                        throw InetException("connectionLoop: c : Data error.");
                     }
 
-                    const char* term = getenv("TERM");
+                    const char* term { getenv("TERM") };
                     if(term == nullptr) term = SSH_DEFAULT_TERM;
                     
                     TRACE("* Sent pty request - Rows: " + to_string(windowAttr.ws_row) + 
@@ -1348,9 +1354,9 @@ namespace tssh{
       }
    }
 
-   void SshConnection::shellLoop(void) noexcept(false){
+   void SshConnection::shellLoop(void) anyexcept{
       fd_set            readfds;
-      bool              again               = true;
+      bool              again               { true };
       uint8_t           inputKey;
 
       while(again){
@@ -1386,14 +1392,14 @@ namespace tssh{
 
    static SshConnection* sigRef;
    
-   void SshConnection::adjustWnwSize(void) const noexcept(true){
+   void SshConnection::adjustWnwSize(void) const noexcept{
       sWinch = 1;
    }
   
-   void SshConnection::shellLoopPty(void) noexcept(false){
+   void SshConnection::shellLoopPty(void) anyexcept{
                    sigRef             = this;
       fd_set       readfds;
-      bool         again              = true;
+      bool         again              { true };
 
       termNew                         = termOld;
       termNew.c_lflag                 &= static_cast<unsigned long>(~(ICANON | ISIG | ECHO));
@@ -1457,7 +1463,7 @@ namespace tssh{
          }
 
          if(FD_ISSET(STDIN_FILENO, &readfds) && sWinch == 0){
-            ssize_t rd = read(STDIN_FILENO, keybInputData.data(), 1);
+            ssize_t rd { read(STDIN_FILENO, keybInputData.data(), 1) };
             if(rd < 0 && errno != EINTR)
                throw InetException("shellLoopPty: Error reading stdin.");
             if(rd == 1){
@@ -1473,14 +1479,13 @@ namespace tssh{
       }
    }
 
-   bool SshConnection::parseShellPacket(void) noexcept(false){
-     size_t      offset             = 0;
-     bool        again              = true;
+   bool SshConnection::parseShellPacket(void) anyexcept{
+     size_t      offset             { 0 };
+     bool        again              { true };
      uint32_t    confirmedChannel,
                  dataTypeCode;
-     bool        firstWnwReceided   = true;
-     StatusTree  tree               = 
-                 { 
+     bool        firstWnwReceided   { true };
+     StatusTree  tree               { 
                    {SSH_MSG_CHANNEL_SUCCESS,           {SSH_MSG_CHANNEL_WINDOW_ADJUST,
                                                         SSH_MSG_CHANNEL_OPEN_CONFIRMATION,
                                                         SSH_MSG_CHANNEL_SUCCESS}},
@@ -1488,7 +1493,7 @@ namespace tssh{
                                                         SSH_MSG_CHANNEL_SUCCESS}},
                    {SSH_MSG_CHANNEL_WINDOW_ADJUST,     {SSH_MSG_CHANNEL_SUCCESS,
                                                         SSH_MSG_CHANNEL_OPEN_CONFIRMATION}}
-                 };
+     };
      fsm.setTree(&tree);
 
      switch(incomingEnc[PACKET_TYPE_OFFSET]){
@@ -1589,7 +1594,7 @@ namespace tssh{
      return again;
    }
 
-   void SshConnection::getShell() noexcept(false){
+   void SshConnection::getShell() anyexcept{
       writeBuffer(getClientId());
       checkSshHeader();
    

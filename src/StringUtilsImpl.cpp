@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------
 // Tssh - A ssh test client. 
-// Copyright (C) 2016  Gabriele Bonacini
+// Copyright (C) 2016-2021  Gabriele Bonacini
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,16 +34,16 @@ namespace stringutils{
   using typeutils::safeInt;
   using typeutils::safeSizeT;
 
-  static bool             debug         = false;
+  static bool             debug         { false };
 
-  static const  char      convTable[]   = {
+  static const  char      convTable[]   {
                                  'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P',
                                  'Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f',
                                  'g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v',
                                  'w','x','y','z','0','1','2','3','4','5','6','7','8','9','+','/'
   };
 
-  static const  uint8_t   checkTable[] = {
+  static const  uint8_t   checkTable[]  {
                                  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
                                  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
                                  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 62, 255, 255, 255,   63,
@@ -62,56 +62,56 @@ namespace stringutils{
                                  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255
    };
 
-   StringUtilsException::StringUtilsException(int errNum){
-           errorCode=errNum;
-           errorMessage="None";
-   }
+   StringUtilsException::StringUtilsException(int errNum)
+        :   errorMessage{"None"}, errorCode{errNum}
+   {}
    
-   StringUtilsException::StringUtilsException(string& errString){
-           errorMessage=errString;
-           errorCode=0;
-   }
+   StringUtilsException::StringUtilsException(string& errString)
+        :  errorMessage{errString}, errorCode{0}
+   {}
    
-   StringUtilsException::StringUtilsException(string&& errString){
-           errorMessage=move(errString);
-           errorCode=0;
-   }
+   StringUtilsException::StringUtilsException(string&& errString)
+        :  errorMessage{move(errString)}, errorCode{0}
+   {}
    
-   StringUtilsException::StringUtilsException(int errNum, string errString){
-           errorMessage=errString;
-           errorCode=errNum;
-   }
+   StringUtilsException::StringUtilsException(int errNum, string errString)
+        :  errorMessage{errString}, errorCode{errNum}
+   {}
    
-   string StringUtilsException::what() const noexcept(true){
-           return errorMessage;
+   const char* StringUtilsException::what() const noexcept{
+      return errorMessage.c_str();
+   }
+
+   int  StringUtilsException::getErrorCode(void)  const noexcept{
+      return errorCode;
    }
  
-  void setDebug(bool onOff) noexcept(true){
-     debug = onOff;
-  }
+   void setDebug(bool onOff) noexcept{
+      debug = onOff;
+   }
  
-  bool getDebug(void) noexcept(true){
-     return debug;
-  }
+   bool getDebug(void) noexcept{
+      return debug;
+   }
   
-  uint32_t charToUint32(const uint8_t* tmp) noexcept(false){
+  uint32_t charToUint32(const uint8_t* tmp) anyexcept{
      if(tmp == nullptr)
         throw StringUtilsException("charToUint32: invalid pointer.");
      uint32_t result;
-     uint8_t* handler = reinterpret_cast<uint8_t*>(&result);
+     uint8_t* handler { reinterpret_cast<uint8_t*>(&result) };
      static_cast<void>(memcpy(handler, tmp, sizeof(uint32_t)));
      return ntohl(result);
   }
   
-  void uint32ToUChars(uint8_t* dest, uint32_t number) noexcept(true){
-     uint32_t tmp = htonl(number);
-     uint8_t* handler = reinterpret_cast<uint8_t*>(&tmp);
+  void uint32ToUChars(uint8_t* dest, uint32_t number) noexcept{
+     uint32_t tmp { htonl(number) };
+     uint8_t* handler { reinterpret_cast<uint8_t*>(&tmp) };
      static_cast<void>(memcpy(dest, handler, sizeof(uint32_t)));
   }
   
-  void uint32ToUChars(vector<uint8_t>& dest, uint32_t number) noexcept(false){
-     uint32_t tmp = htonl(number);
-     uint8_t* handler = reinterpret_cast<uint8_t*>(&tmp);
+  void uint32ToUChars(vector<uint8_t>& dest, uint32_t number) anyexcept{
+     uint32_t tmp { htonl(number) };
+     uint8_t* handler { reinterpret_cast<uint8_t*>(&tmp) };
      try{
         dest.insert(dest.end(), handler, handler + sizeof(uint32_t));
      }catch(...){
@@ -120,14 +120,14 @@ namespace stringutils{
   }
   
   void appendStringAsUint32t(const string& orig, vector<uint8_t>& dest, 
-                                          size_t offset) noexcept(false){
+                                          size_t offset) anyexcept{
      if(orig.size() < offset)
         throw StringUtilsException("appendStringAsUint32t: Invalid offset.");
 
      try{
-        for(auto i=orig.cbegin()+safePtrdiff(offset); i!=orig.cend(); ++i){
-           uint32_t tmp     = htonl(static_cast<uint32_t>(*i));
-           uint8_t* handler = reinterpret_cast<uint8_t*>(&tmp);
+        for(auto i{orig.cbegin()+safePtrdiff(offset)}; i!=orig.cend(); ++i){
+           uint32_t tmp     { htonl(static_cast<uint32_t>(*i)) };
+           uint8_t* handler { reinterpret_cast<uint8_t*>(&tmp) };
            dest.insert(dest.end(), handler, handler+sizeof(uint32_t));
         }
      }catch(...){
@@ -136,7 +136,7 @@ namespace stringutils{
   }
   
   void appendVectBuffer(vector<uint8_t>& buffer, const char* orig, 
-                        size_t len, size_t start, size_t stop) noexcept(false){
+                        size_t len, size_t start, size_t stop) anyexcept{
 
      if(start > len-1 || stop > len-1 || len==0)
         throw StringUtilsException("appendVectBuffer : a : Invalid index merging vect and buffer.");
@@ -151,7 +151,7 @@ namespace stringutils{
   }
   
   void appendVectBuffer(vector<uint8_t>& buffer, const uint8_t* orig, 
-                        size_t len, size_t start, size_t stop) noexcept(false){
+                        size_t len, size_t start, size_t stop) anyexcept{
 
      if(start > len-1 || stop > len-1 || len==0)
         throw StringUtilsException("appendVectBuffer: b : Invalid index merging vect and buffer of unsigned.");
@@ -166,12 +166,12 @@ namespace stringutils{
   }
   
   void appendVectBuffer(vector<uint8_t>& buffer,
-                                     const vector<uint8_t>& orig) noexcept(false){
+                                     const vector<uint8_t>& orig) anyexcept{
      if(orig.size() == 0)
         throw StringUtilsException("appendVectBuffer: c : Invalid index merging vect and vect.");
   
-     uint8_t  mask     = 0x80,
-              positive = orig[0] & mask;
+     uint8_t  mask     { 0x80 },
+              positive { static_cast<uint8_t>(orig[0] & mask ) };
      uint32ToUChars(buffer, safeUint32(orig.size() + (positive != 0?1:0)) );
   
      try{ 
@@ -183,7 +183,7 @@ namespace stringutils{
   }
   
   void appendVectBuffer(vector<uint8_t>& buffer, const vector<uint8_t>& orig, size_t start, 
-                        size_t removePad) noexcept(false){
+                        size_t removePad) anyexcept{
 
      if(orig.size() == 0) throw StringUtilsException("appendVectBuffer: d : Invalid index merging vect and vect.");
   
@@ -198,13 +198,14 @@ namespace stringutils{
   }
   
   void  trace(const char* header, const uint8_t* buff, const size_t size,
-              size_t begin, size_t end) noexcept(true){
+              size_t begin, size_t end) noexcept{
      cerr << header << endl << endl;
   
-     bool last  = false, first = false;
-     for (size_t i = 0; i < size; i += 16) {
+     bool last  { false }, 
+          first { false };
+     for (size_t i{ 0 }; i < size; i += 16) {
         cerr << setfill('0') << setw(5) << dec << i << ":  ";
-        for (size_t j = i; j < i + 16; j++) {
+        for (size_t j{ i }; j < i + 16; j++) {
            if(end !=0){
               if(j == begin ){cerr <<  "\033[7m"; first = true;}
               if(j == end   ){cerr <<  "\033[0m"; last  = true;}
@@ -216,7 +217,7 @@ namespace stringutils{
         }
         if(first){cerr <<  "\033[0m"; }
         cerr << " ";
-        for (size_t j = i; j < i + 16; j++) {
+        for (size_t j{i}; j < i + 16; j++) {
            if(end !=0){
               if((last || j == begin)){cerr <<  "\033[7m"; last  = false; }
               if(j == end            ){cerr <<  "\033[0m"; last  = false; }
@@ -233,19 +234,20 @@ namespace stringutils{
      cerr << endl << endl;
   }
   
-  void trace(string header) noexcept(true){
+  void trace(string header) noexcept{
      cerr << header << endl << endl;
   }
 
   void trace(string header, const vector<uint8_t>* buff,
-             size_t begin, size_t end, size_t max) noexcept(true){
+             size_t begin, size_t end, size_t max) noexcept{
      cerr << header << endl << endl;
 
-     size_t len    = max ? max : buff->size();
-     bool   last   = false, first = false;
-     for (size_t i = 0; i < len; i += 16) {
+     size_t len    { max ? max : buff->size() };
+     bool   last   { false }, 
+            first  { false };
+     for (size_t i{0}; i < len; i += 16) {
         cerr << setfill('0') << setw(5) << dec << i << ":  ";
-        for (size_t j = i; j < i + 16; j++) {
+        for (size_t j{i}; j < i + 16; j++) {
            if(end !=0){
               if(j == begin ){cerr <<  "\033[7m"; first = true;}
               if(j == end   ){cerr <<  "\033[0m"; last  = true;}
@@ -257,7 +259,7 @@ namespace stringutils{
         }
         if(first){cerr <<  "\033[0m"; }
         cerr << " ";
-        for (size_t j = i; j < i + 16; j++) {
+        for (size_t j{i}; j < i + 16; j++) {
            if(end !=0){
               if(last && !first   ){cerr << "\033[7m"; last  = false; }
               if(j == begin       ){cerr << "\033[7m"; first = false; }
@@ -276,8 +278,8 @@ namespace stringutils{
   }
   
   template<class T>
-  void addVarLengthDataString(const T& item, vector<uint8_t>& target) noexcept(false){
-     size_t len = item.size();
+  void addVarLengthDataString(const T& item, vector<uint8_t>& target) anyexcept{
+     size_t len { item.size() };
      uint32ToUChars(target, static_cast<uint32_t>(len));
      try{
         if(len > 0) target.insert(target.end(), item.begin(), item.end());
@@ -286,8 +288,8 @@ namespace stringutils{
      }
   }
   
-  void addVarLengthDataCCharStr(const char* item, vector<uint8_t>& target) noexcept(false){
-     size_t len = strlen(item);
+  void addVarLengthDataCCharStr(const char* item, vector<uint8_t>& target) anyexcept{
+     size_t len { strlen(item) };
      uint32ToUChars(target, safeUint32(len));
      try{
         if(len > 0) target.insert(target.end(), item, item+len);
@@ -296,8 +298,8 @@ namespace stringutils{
      }
   }
   
-  size_t insVarLengthDataString(const string item, size_t start, vector<uint8_t>& target) noexcept(false){
-     size_t len = item.size();
+  size_t insVarLengthDataString(const string item, size_t start, vector<uint8_t>& target) anyexcept{
+     size_t len { item.size() };
      if( len == 0 )
          throw StringUtilsException("insVarLengthDataString: Attempt to use an empty string.");
      uint32ToUChars(target.data()+start, safeUint32(len));
@@ -307,7 +309,7 @@ namespace stringutils{
   }
   
   template<class T>
-  size_t getVariableLengthRawValue(const vector<uint8_t>& index, size_t offset, T& destination) noexcept(false){
+  size_t getVariableLengthRawValue(const vector<uint8_t>& index, size_t offset, T& destination) anyexcept{
      uint8_t   check;
      try{ 
         check = index.at(offset + sizeof(uint32_t) - 1);
@@ -315,7 +317,7 @@ namespace stringutils{
 	throw StringUtilsException("getVariableLengthRawValue: Invalid field length index.");
      }
 
-     uint32_t   length = charToUint32(index.data() + offset);
+     uint32_t   length { charToUint32(index.data() + offset) };
 
      try{ 
        if(length >0) check = index.at(length -1);
@@ -339,20 +341,20 @@ namespace stringutils{
   }
   
   size_t getVariableLengthRawValue(const vector<uint8_t>& index, size_t offset,
-                                   vector<uint8_t> destination[], int item) noexcept(false){
+                                   vector<uint8_t> destination[], int item) anyexcept{
      uint8_t   check;
      try{ 
         check = index.at(offset + sizeof(uint32_t) - 1);
      }catch(...){
-	throw StringUtilsException("getVariableLengthRawValue: Invalid field length index.");
+	throw StringUtilsException("getVariableLengthRawValue - item: Invalid field length index.");
      }
 
-     uint32_t       length = charToUint32(index.data() + offset);
+     uint32_t       length { charToUint32(index.data() + offset) };
 
      try{ 
        if(length >0) check = index.at(length -1);
      }catch(...){
-	throw StringUtilsException(string("getVariableLengthRawValue: Invalid field length :") 
+	throw StringUtilsException(string("getVariableLengthRawValue - item: Invalid field length :") 
                                    + to_string(length) + " elem: " + to_string(check));
      }
 
@@ -373,7 +375,7 @@ namespace stringutils{
   
   size_t getVariableLengthValueCsv(vector<uint8_t>& index, vector<char>& buff,
                                    vector<string>* algorithmStrings, int item, 
-                                   size_t offset) noexcept(false){
+                                   size_t offset) anyexcept{
      uint8_t   check;
      try{ 
         check = index.at(offset + sizeof(uint32_t) - 1);
@@ -381,7 +383,7 @@ namespace stringutils{
 	throw StringUtilsException("getVariableLengthValueCsv: Invalid field length index.");
      }
 
-     uint32_t       length  =    charToUint32(index.data() + offset);
+     uint32_t       length  {    charToUint32(index.data() + offset) };
 
      try{ 
        if(length >0) check = index.at(length -1);
@@ -397,7 +399,7 @@ namespace stringutils{
              buff.begin());
         if(length > 0){
            TRACE("* Parsed CSV Values: "); 
-           char*          flag =    strtok(buff.data(), ",");
+           char*          flag {    strtok(buff.data(), ",") };
            while(flag != nullptr){
               algorithmStrings[item].push_back(flag);
               TRACE((" ** Value " + to_string(item) + " : ").c_str(), 
@@ -416,7 +418,7 @@ namespace stringutils{
 
   size_t getVariableLengthValueCsv(vector<uint8_t>& index, vector<char>& buff,
                                    set<string>* algorithmStrings, int item, 
-                                   size_t offset) noexcept(false){
+                                   size_t offset) anyexcept{
      uint8_t   check;
      try{ 
         check = index.at(offset + sizeof(uint32_t) - 1);
@@ -424,7 +426,7 @@ namespace stringutils{
 	throw StringUtilsException("getVariableLengthValueCsv: Invalid field length index.");
      }
 
-     uint32_t       length  =    charToUint32(index.data() + offset);
+     uint32_t       length  {    charToUint32(index.data() + offset) };
 
      try{ 
         if(length >0) check = index.at(length -1);
@@ -440,7 +442,7 @@ namespace stringutils{
              buff.begin());
         if(length > 0){
            TRACE("* Parsed CSV Values: "); 
-           char*          flag =    strtok(buff.data(), ",");
+           char*          flag {    strtok(buff.data(), ",") };
            while(flag != nullptr){
               algorithmStrings[item].insert(flag);
               TRACE((" ** Value " + to_string(item) + " : ").c_str(), 
@@ -455,7 +457,7 @@ namespace stringutils{
      return length + sizeof(uint32_t);
   }
   
-  size_t getVariableLengthSingleBignum(const vector<uint8_t>& index, size_t offset,  BIGNUM* keyAndSign) noexcept(false){
+  size_t getVariableLengthSingleBignum(const vector<uint8_t>& index, size_t offset,  BIGNUM* keyAndSign) anyexcept{
      vector<uint8_t>        buff;
 
      uint8_t     check;
@@ -465,7 +467,7 @@ namespace stringutils{
 	throw StringUtilsException("getVariableLengthSingleBignum: Invalid field length index.");
      }
 
-     uint32_t    length = charToUint32(index.data() + offset);
+     uint32_t    length { charToUint32(index.data() + offset) };
 
      try{ 
        if(length >0) check = index.at(length -1);
@@ -489,8 +491,9 @@ namespace stringutils{
   
   template<class T>
   void insArrayVals(const T& orig, size_t origOffset, 
-                    vector<uint8_t>& dest, size_t destOffset) noexcept(false){
-     size_t origSize = orig.size(), destSize = dest.size();
+                    vector<uint8_t>& dest, size_t destOffset) anyexcept{
+     size_t origSize { orig.size() },
+            destSize { dest.size() };
      if( ((origSize - origOffset) > (destSize - destOffset)) ||
                origSize == 0                                 ||
                destSize == 0){
@@ -498,7 +501,7 @@ namespace stringutils{
      }
      try{
         dest.insert(dest.begin()  + static_cast<ptrdiff_t>(destOffset),
-                    orig.begin() + static_cast<ptrdiff_t>(origOffset), 
+                    orig.begin()  + static_cast<ptrdiff_t>(origOffset), 
                     orig.end()
         );
      }catch(...){
@@ -507,14 +510,14 @@ namespace stringutils{
   }
   
   template<class T, class T2>
-  void decodeB64(const T& in, T2& out) noexcept(false){
+  void decodeB64(const T& in, T2& out) anyexcept{
          #ifdef __GNUC__
          #pragma GCC diagnostic push
          #pragma GCC diagnostic ignored "-Wtype-limits"
          #endif
 
          try{
-            out.resize( [&in]() -> size_t { auto i = in.cbegin(); auto j = i; 
+            out.resize( [&in]() -> size_t { auto i{in.cbegin()}; auto j{i}; 
                                             for(; *i != 255 && i!= in.cend(); ++i); 
                                             return ( ((static_cast<size_t>(i-j) + 2) / 4) * 3); }()
                        );
@@ -526,8 +529,8 @@ namespace stringutils{
          #pragma GCC diagnostic pop
          #endif
   
-         auto i=in.cbegin(); auto j=out.begin();
-         for(; i<in.cend()-4; i=i+4, j=j+3){
+         auto i{in.cbegin()}; auto j{out.begin()};
+         for(; i<in.cend()-4; i+=4, j+=3){
                  *j      = static_cast<uint8_t>(checkTable[static_cast<size_t>(*i)]     << 2 | 
                            checkTable[static_cast<size_t>(*(i+1))] >> 4);
                  *(j+1)  = static_cast<uint8_t>(checkTable[static_cast<size_t>(*(i+1))] << 4 | 
@@ -548,15 +551,15 @@ namespace stringutils{
   }
   
   template<class T, class T2>
-  void encodeB64(const T& in, T2& out) noexcept(false){
+  void encodeB64(const T& in, T2& out) anyexcept{
          try{
              out.resize((in.size() + 2) / 3 * 4);
          }catch(...){
             throw StringUtilsException("encodeB64: Data error.");
          }
   
-          auto i=in.cbegin(); auto j=out.begin();
-          for(; i<in.cend()-2; i=i+3, j=j+4){
+          auto i{in.cbegin()}; auto j{out.begin()};
+          for(; i<in.cend()-2; i+=3, j+=4){
                   *j     = convTable[(*i >> 2) & 0x3F];
                   *(j+1) = convTable[static_cast<size_t>(((*i     & 0x3) << 4) | 
                                                              static_cast<int>(((*(i+1) & 0xF0) >> 4 )))];
@@ -579,11 +582,11 @@ namespace stringutils{
           }
   }
 
-  void encodeHex(const std::vector<uint8_t>& in, std::vector<uint8_t>& out) noexcept(false){
-     const uint8_t hexConv[] = {'0', '1', '2', '3', '4', '5', '6', '7',
-                                '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+  void encodeHex(const std::vector<uint8_t>& in, std::vector<uint8_t>& out) anyexcept{
+     const uint8_t hexConv[]  {'0', '1', '2', '3', '4', '5', '6', '7',
+                               '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
      try{
-        for(auto i = in.cbegin(); i != in.cend(); ++i){
+        for(auto i{in.cbegin()}; i != in.cend(); ++i){
            out.insert(out.end(), hexConv[ *i >> 4     ]);
            out.insert(out.end(), hexConv[ *i &  0x0F  ]);
         }
@@ -592,7 +595,7 @@ namespace stringutils{
      }
   }
 
-  void getPassword(vector<uint8_t>& pwd) noexcept(false){
+  void getPassword(vector<uint8_t>& pwd) anyexcept{
      struct termios   termOld, termNew;
      tcgetattr(STDIN_FILENO, &termOld);
      termNew          = termOld;
@@ -631,7 +634,7 @@ namespace stringutils{
   }
   
   void getPassword(vector<uint8_t>& pwd, struct termios* oldTerm, 
-                   struct termios* newTerm) noexcept(false){
+                   struct termios* newTerm) anyexcept{
      *newTerm           =  *oldTerm;
      newTerm->c_lflag   &= static_cast<unsigned long>(~(ICANON | ECHO));
      uint8_t           currChar;
@@ -667,23 +670,23 @@ namespace stringutils{
         throw StringUtilsException("getPassword: b : Can't activate terminal echo.");
   }
   
-  void* secureZeroing(void *orig, size_t len) noexcept(true){
-     volatile uint8_t* ptr = reinterpret_cast<volatile uint8_t*>(orig);
+  void* secureZeroing(void *orig, size_t len) noexcept{
+     volatile uint8_t* ptr { reinterpret_cast<volatile uint8_t*>(orig) };
      while (len--) *ptr++ = 0; 
      return orig;
   }
 
   template<class T>
-  void loadFileMem(string fileName, T& dest, bool terminator) noexcept(false){
+  void loadFileMem(string fileName, T& dest, bool terminator) anyexcept{
 	struct stat fileAttr;
-	int         fd = open(fileName.c_str(), O_RDONLY);
+	int         fd { open(fileName.c_str(), O_RDONLY) };
         if(fd == -1)
                 throw(StringUtilsException(string("loadFileMem: Can't open file: ") + fileName));
 
         if(fstat(fd, &fileAttr) != 0)
                 throw(StringUtilsException(string("loadFileMem: Can't read file attributes: ") + fileName));
      
-        size_t bytes   = safeSizeT(fileAttr.st_size + (terminator ? 1 : 0)); 
+        size_t bytes   { safeSizeT(fileAttr.st_size + (terminator ? 1 : 0)) }; 
 	if(bytes == 0)
                 throw(StringUtilsException(string("loadFileMem: Error reading file, too big: .") + fileName));
 
@@ -711,20 +714,20 @@ namespace stringutils{
   #pragma clang diagnostic ignored "-Wundefined-func-template"
   #endif
 
-  template void   encodeB64(const std::vector<uint8_t>& in, std::string& out)                    noexcept(false);
-  template void   decodeB64(const std::string& in, std::vector<uint8_t>& out)                    noexcept(false);
+  template void   encodeB64(const std::vector<uint8_t>& in, std::string& out)                    anyexcept;
+  template void   decodeB64(const std::string& in, std::vector<uint8_t>& out)                    anyexcept;
   template void   insArrayVals(const std::vector<uint8_t>& orig, size_t origOffset, 
-                               std::vector<uint8_t>& dest, size_t destOffset)                    noexcept(false);
+                               std::vector<uint8_t>& dest, size_t destOffset)                    anyexcept;
   template void   addVarLengthDataString(const std::string& item,
-                                         std::vector<uint8_t>& target)                           noexcept(false);
+                                         std::vector<uint8_t>& target)                           anyexcept;
   template void   addVarLengthDataString(const std::vector<uint8_t>&item,
-                                         std::vector<uint8_t>& target)                           noexcept(false); 
+                                         std::vector<uint8_t>& target)                           anyexcept; 
   template size_t getVariableLengthRawValue(const std::vector<uint8_t>& index,
-                                            size_t offset, std::string& destination)             noexcept(false);
+                                            size_t offset, std::string& destination)             anyexcept;
   template size_t getVariableLengthRawValue(const std::vector<uint8_t>& index,
-                                            size_t offset, std::vector<uint8_t>&destination)     noexcept(false);
+                                            size_t offset, std::vector<uint8_t>&destination)     anyexcept;
   template void   loadFileMem(std::string fileName, std::vector<uint8_t>& dest, 
-                              bool terminator)                                                   noexcept(false);
+                              bool terminator)                                                   anyexcept;
 
   #ifdef __GNUC__
   #pragma GCC diagnostic pop

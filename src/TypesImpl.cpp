@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------
 // Tssh - A ssh test client. 
-// Copyright (C) 2016  Gabriele Bonacini
+// Copyright (C) 2016-2021  Gabriele Bonacini
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -39,23 +39,29 @@ namespace typeutils{
   TypesUtilsException::TypesUtilsException(int errNum, std::string errString) : 
                        errorMessage(errString), errorCode(errNum) {}   
   
-  std::string TypesUtilsException::what() const noexcept(true){
-          return errorMessage;
+  const char* TypesUtilsException::what() const noexcept{
+      return errorMessage.c_str();
   }   
 
-  template ptrdiff_t       safePtrdiff(size_t size)            noexcept(false);
-  template ssize_t         safeSsizeT(size_t size)             noexcept(false);
-  template int             safeInt(unsigned int size)          noexcept(false);
-  template int             safeInt(size_t size)                noexcept(false);
-  template size_t          safeSizeT(ssize_t size)             noexcept(false);
-  template size_t          safeSizeT(int size)                 noexcept(false);
-  template size_t          safeSizeT(uint32_t size)            noexcept(false);
-  template size_t          safeSizeT(long long int size)       noexcept(false);
-  template uint32_t        safeUint32(int size)                noexcept(false);
-  template uint32_t        safeUint32(unsigned long size)      noexcept(false);
-  template unsigned int    safeUInt(size_t size)               noexcept(false);
-  template unsigned long   safeULong(int size)                 noexcept(false);
-  template unsigned long   safeULong(long int size)            noexcept(false);
+  int  TypesUtilsException::getErrorCode(void)  const noexcept{
+      return errorCode;
+  }
+
+  template ptrdiff_t       safePtrdiff(size_t size)            anyexcept;
+  template ssize_t         safeSsizeT(size_t size)             anyexcept;
+  template int             safeInt(unsigned int size)          anyexcept;
+  template int             safeInt(size_t size)                anyexcept;
+  template size_t          safeSizeT(ssize_t size)             anyexcept;
+  template size_t          safeSizeT(int size)                 anyexcept;
+  template size_t          safeSizeT(uint32_t size)            anyexcept;
+  template size_t          safeSizeT(long long int size)       anyexcept;
+  template uint8_t         safeUint8(size_t size)              anyexcept;
+  template uint8_t         safeUint8(int size)                 anyexcept;
+  template uint32_t        safeUint32(int size)                anyexcept;
+  template uint32_t        safeUint32(unsigned long size)      anyexcept;
+  template unsigned int    safeUInt(size_t size)               anyexcept;
+  template unsigned long   safeULong(int size)                 anyexcept;
+  template unsigned long   safeULong(long int size)            anyexcept;
 }
 
 #ifdef __GNUC__

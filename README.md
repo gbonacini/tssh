@@ -14,9 +14,9 @@ This alpha version implements the basic functions to connect the client to a rem
 
 At the moment, only few cryptographic algorithms are implemented:
 
-- Kex: diffie-hellman-group14-sha1 (rsa 2048 bits);
+- Kex: diffie-hellman-group14-sha1 (rsa 2048 bits), diffie-hellman-group14-sha256;
 - Block encryption: AES 128 bits (aes128-ctr);
-- HMAC: hmac-sha1;
+- HMAC: hmac-sha1, hmac-sha2-256;
 
 That provides the base to connect to all the reasonably modern server configurations.
 

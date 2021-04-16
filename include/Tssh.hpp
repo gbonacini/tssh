@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------
 // Tssh - A ssh test client. 
-// Copyright (C) 2016  Gabriele Bonacini
+// Copyright (C) 2016-2021  Gabriele Bonacini
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@
 #include <map>
 #include <set>
 
+#include <anyexcept.hpp>
 #include <Types.hpp>
 #include <StringUtils.hpp>
 #include <Inet.hpp>
@@ -44,7 +45,7 @@ enum CONFILEN { COOKIE_LEN                  = 16,    KEX_RESERVED_BYTES_LEN     
                 PACKET_TYPE_OFFSET          = 5,     SSH_RSA_MIN_MODULUS_LENGTH    = 768,
                 SSH_MAX_PACKET_SIZE         = 35000, SSH_MAX_ID_STRING_SIZE        = 255, 
                 SSH_STD_KEYS_NUMBER         = 6,     BEGINNING_BLOCK_LEN_ALLIGN    = 8,
-                AES_BLOCK_LEN_ALLIGN        = 64
+                AES_BLOCK_LEN_ALLIGN        = 64,    SERVER_ALG_OFFSET             = 22
 };
 
 enum HNDSHKIDX { INITIAL_IV_C_TO_S_IDX      = 0,     INITIAL_IV_S_TO_C_IDX         = 1,
@@ -59,10 +60,11 @@ enum PUBKEYIDX { PUBKEYTYPE                 = 0,     PUBKEYBLOB    = 1,      PUB
 //      SSH_MSG_USERAUTH_PK_OK              60
 //      SSH_MSG_REQUEST_SUCCESS             81
 
-enum STATUS { SSH_CONN_START                 = 0,    SSH_MSG_DISCONNECT                = 1,
-              SSH_MSG_IGNORE                 = 2,    SSH_MSG_UNIMPLEMENTED             = 3,
-              SSH_DISCONNECT_BY_APPLICATION  = 11,   SSH_MSG_SERVICE_REQUEST           = 5,
-              SSH_MSG_SERVICE_ACCEPT         = 6,    SSH_MSG_KEXINIT                   = 20,
+enum STATUS { SSH_CONN_START                 = 0,    
+              SSH_MSG_DISCONNECT             = 1,    SSH_MSG_IGNORE                    = 2,
+              SSH_MSG_UNIMPLEMENTED          = 3,    SSH_MSG_DEBUG                     = 4,    
+              SSH_MSG_SERVICE_REQUEST        = 5,    SSH_MSG_SERVICE_ACCEPT            = 6,    
+              SSH_DISCONNECT_BY_APPLICATION  = 11,   SSH_MSG_KEXINIT                   = 20,
               SSH_MSG_NEWKEYS                = 21,   SSH_MSG_KEX_DH_GEX_REQUEST_OLD    = 30,
               SSH_MSG_USERAUTH_REQUEST       = 50,   SSH_MSG_USERAUTH_FAILURE          = 51,
               SSH_MSG_USERAUTH_SUCCESS       = 52,   SSH_MSG_USERAUTH_BANNER           = 53,
@@ -135,8 +137,8 @@ namespace tssh{
    class VarDataBin : public VarData{
       public:
          explicit VarDataBin(std::vector<uint8_t>& val);
-         void     appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
-         size_t   size(void)                                       noexcept(true)    override;
+         void     appendData(std::vector<uint8_t>& dest)           anyexcept   override;
+         size_t   size(void)                                       noexcept    override;
       private:
          std::vector<uint8_t>& data;
    };
@@ -144,8 +146,8 @@ namespace tssh{
    class VarDataChar : public VarData{
       public:
          explicit VarDataChar(char val);
-         void     appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
-         size_t   size(void)                                       noexcept(true)    override;
+         void     appendData(std::vector<uint8_t>& dest)           anyexcept   override;
+         size_t   size(void)                                       noexcept    override;
       private:
          char data;
    };
@@ -153,8 +155,8 @@ namespace tssh{
    class VarDataUint32 : public VarData{
       public:
          explicit VarDataUint32(uint32_t val);
-         void     appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
-         size_t   size(void)                                       noexcept(true)    override;
+         void     appendData(std::vector<uint8_t>& dest)           anyexcept   override;
+         size_t   size(void)                                       noexcept    override;
       private:
          uint32_t data;
    };
@@ -163,8 +165,8 @@ namespace tssh{
    class VarDataString : public VarData{
       public:
          explicit VarDataString(T& val);
-         void     appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
-         size_t   size(void)                                       noexcept(true)    override;
+         void     appendData(std::vector<uint8_t>& dest)           anyexcept   override;
+         size_t   size(void)                                       noexcept    override;
       private:
          T& data;
    };
@@ -172,9 +174,9 @@ namespace tssh{
    class VarDataCharArr : public VarData{
       public:
          explicit VarDataCharArr(const char* val);
-                  ~VarDataCharArr(void);
-         void     appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
-         size_t   size(void)                                       noexcept(true)    override;
+                  ~VarDataCharArr(void)                                        override;
+         void     appendData(std::vector<uint8_t>& dest)           anyexcept   override;
+         size_t   size(void)                                       noexcept    override;
       private:
          const char* data; 
    };
@@ -182,11 +184,11 @@ namespace tssh{
    class VarDataRecursive : public VarData{
       public:
          explicit VarDataRecursive(std::initializer_list<VarData*>&& sList);
-                  ~VarDataRecursive(void);
-         void     appendData(std::vector<uint8_t>& dest)           noexcept(false)   override;
-         size_t   size(void)                                       noexcept(true)    override;
+                  ~VarDataRecursive(void)                                      override;
+         void     appendData(std::vector<uint8_t>& dest)           anyexcept   override;
+         size_t   size(void)                                       noexcept    override;
       private:
-         void     addSize(size_t len)                              noexcept(true);
+         void     addSize(size_t len)                              noexcept;
          std::initializer_list<VarData*>  subList;
          size_t                           globalSize;
    };
@@ -210,7 +212,7 @@ namespace tssh{
       public:
          VarDataBlob(T& dest, std::string dsc);
          size_t  insertData(std::vector<uint8_t>& buff,
-                            size_t offset)                       noexcept(false)   override;
+                            size_t offset)                       anyexcept   override;
       private:
          T&               data;
          std::string      descr;
@@ -220,7 +222,7 @@ namespace tssh{
       public:
          VarDataBNum(BIGNUM* dest, std::string dsc);
          size_t  insertData(std::vector<uint8_t>& buff,
-                            size_t offset)                       noexcept(false)   override;
+                            size_t offset)                       anyexcept   override;
       private:
          BIGNUM*          data; 
          std::string      descr;
@@ -234,7 +236,7 @@ namespace tssh{
       public:
          SshTransport(std::string host, std::string port);
          ~SshTransport();
-         void                   disconnect(void)                               noexcept(false); 
+         void                   disconnect(void)                               anyexcept; 
    
       private:
          int                    rndFd;
@@ -279,30 +281,30 @@ namespace tssh{
                                  termNew;
          std::string             knownHosts;
 
-         void                   readSsh(void)                                            noexcept(false); 
-         bool                   readSshEnc(int chan=-1)                                  noexcept(false); 
-         void                   writeSsh(const uint8_t* msg, size_t size)         const  noexcept(false); 
-         void                   writeSsh(const std::string& msg)                  const  noexcept(false);
+         void                   readSsh(void)                                            anyexcept; 
+         bool                   readSshEnc(int chan=-1)                                  anyexcept; 
+         void                   writeSsh(const uint8_t* msg, size_t size)         const  anyexcept; 
+         void                   writeSsh(const std::string& msg)                  const  anyexcept;
          void                   writeSshEnc(std::vector<uint8_t>& msg, 
-                                            uint8_t allign)                              noexcept(false); 
-         void                   checkSshHeader(void)                                     noexcept(false); 
+                                            uint8_t allign)                              anyexcept; 
+         void                   checkSshHeader(void)                                     anyexcept; 
          void                   addRandomBytes(size_t  bytes, 
                                                std::vector<uint8_t>& target, 
-                                               size_t offset)                     const  noexcept(false); 
-         std::vector<uint8_t>&  setKexMsg(void)                                          noexcept(false); 
-         void                   checkServerAlgList(void)                                 noexcept(false); 
-         void                   checkServerDhReply(void)                                 noexcept(false); 
-         void                   checkServerSignature(void)                               noexcept(false); 
-         void                   createKeys(size_t keyLen)                                noexcept(false); 
-         const std::string&     getServerId(void)                                 const  noexcept(true); 
-         const std::string&     getClientId(void)                                 const  noexcept(true); 
-         void                   getStatistics(void)                               const  noexcept(true); 
+                                               size_t offset)                     const  anyexcept; 
+         std::vector<uint8_t>&  setKexMsg(void)                                          anyexcept; 
+         void                   checkServerAlgList(void)                                 anyexcept; 
+         void                   checkServerDhReply(void)                                 anyexcept; 
+         void                   checkServerSignature(void)                               anyexcept; 
+         void                   createKeys(size_t keyLen)                                anyexcept; 
+         const std::string&     getServerId(void)                                 const  noexcept; 
+         const std::string&     getClientId(void)                                 const  noexcept; 
+         void                   getStatistics(void)                               const  noexcept; 
          void                   addHeader(uint8_t packetType,                        
-                                          std::vector<uint8_t>& buff)             const  noexcept(false); 
+                                          std::vector<uint8_t>& buff)             const  anyexcept; 
          void                   sendWithHeader(std::vector<uint8_t>& buff,
-                                               uint8_t allign)                    const  noexcept(false);
+                                               uint8_t allign)                    const  anyexcept;
          void                   createSendPacket(const uint8_t packetType,
-                                      std::initializer_list<VarData*>&& list)            noexcept(false); 
+                                      std::initializer_list<VarData*>&& list)            anyexcept; 
    };
 
    using StatusTree  = std::map<unsigned int, std::set<unsigned int>>;
@@ -312,9 +314,9 @@ namespace tssh{
          unsigned int  currStat;
          StatusTree*   statuses;
       public:
-         void                  setInitStat(unsigned int status)                          noexcept(true); 
-         void                  setTree(StatusTree* tree)                                 noexcept(true); 
-         void                  checkStatus(unsigned int newStat)                         noexcept(false); 
+         void                  setInitStat(unsigned int status)                          noexcept; 
+         void                  setTree(StatusTree* tree)                                 noexcept; 
+         void                  checkStatus(unsigned int newStat)                         anyexcept; 
    };
    
    class SshConnection : public  SshTransport{
@@ -322,7 +324,7 @@ namespace tssh{
          SshConnection(std::string& usr, std::string& host, std::string& port, 
                        bool noTerm, std::string& identity, uint32_t chan=0);
          ~SshConnection();
-         void                    getShell()                                              noexcept(false); 
+         void                    getShell()                                              anyexcept; 
       private:
          mutable
          volatile sig_atomic_t   sWinch;
@@ -345,16 +347,16 @@ namespace tssh{
                                  sigsetBlockAll;
          Fsm                     fsm;
    
-         void                    getUserKeyFiles(void)                                   noexcept(false); 
-         void                    getUserPubK(void)                                       noexcept(false); 
-         void                    connectionLoop(void)                                    noexcept(false); 
-         void                    shellLoop(void)                                         noexcept(false); 
-         void                    shellLoopPty(void)                                      noexcept(false); 
-         void                    adjustWnwSize(void)                              const  noexcept(true); 
+         void                    getUserKeyFiles(void)                                   anyexcept; 
+         void                    getUserPubK(void)                                       anyexcept; 
+         void                    connectionLoop(void)                                    anyexcept; 
+         void                    shellLoop(void)                                         anyexcept; 
+         void                    shellLoopPty(void)                                      anyexcept; 
+         void                    adjustWnwSize(void)                              const  noexcept; 
          void                    createAuthSign(std::vector<uint8_t>& msg, 
-                                          std::initializer_list<VarData*>&& list)        noexcept(false); 
-         bool                    parseShellPacket(void)                                  noexcept(false); 
-         void                    createSendShellData()                                   noexcept(false); 
+                                          std::initializer_list<VarData*>&& list)        anyexcept; 
+         bool                    parseShellPacket(void)                                  anyexcept; 
+         void                    createSendShellData()                                   anyexcept; 
    };
 
 }

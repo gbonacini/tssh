@@ -15,10 +15,9 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 // -----------------------------------------------------------------
 
-#ifndef TSSH_MAIN
-#define TSSH_MAIN
+#ifndef  ANYEXCEPT_H
+#define  ANYEXCEPT_H
 
-void paramError(const char* progname, const char* err) __attribute__ ((noreturn));
-void versionInfo(void) __attribute__ ((noreturn));
+#define  anyexcept noexcept(false)
 
 #endif
