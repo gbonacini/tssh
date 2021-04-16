@@ -25,6 +25,38 @@ Prerequisites:
 
 The program is intended to be used in a *nix environment and it is tested on various Linux distributions and OS X:
 
+- OS X 10.15.7;
+
+using, as compiler, one in this list:
+
+- Apple clang version 12.0.0 (clang-1200.0.32.29)
+
+and, as ssh server, one of the following:
+
+- OpenSSH_8.2p1 
+
+The only external dependency is the OpenSSL library, used for the cryptographic functions.
+I could introduce alternatives to OpenSSL in the next versions.
+This program is intended to be used with an OpenSSL version equal or superior to:
+
+- OpenSSL 1.1.1k;
+
+( This means that with OS X, an upgrade is mandatory).
+
+To compile the program, this tools/libraries are necessary:
+
+- a c++ compiler ( with c++11 support);
+- automake/autoconf;
+- libtool;
+- OpenSSL 1.1.1k ("dev" packages) 
+
+Legacy Version:
+===============
+
+To compile this software with the old OpenSSL versiona 1.0.x, use the CryptoImpl.cpp in the 'legacy' directory, replacing the one present in the 'src' directory.
+
+The old version was tested in the following OSs:
+
 - RHEL7 Linux  x86_64;
 - Debian 7 ("wheezy");
 - Ubuntu 16.04 LTS;
@@ -32,15 +64,19 @@ The program is intended to be used in a *nix environment and it is tested on var
 - OS X 10.10.5;
 - OS X 10.15.7;
 
-using, as compiler, one in this list:
+with these compilers:
 
-- clang version 4.0.0;
 - Apple clang version 12.0.0 (clang-1200.0.32.29)
+- clang version 4.0.0;
 - clang version 3.8.1;
 - gcc version 4.8.5 20150623 (Red Hat 4.8.5-4) (GCC);
 - gcc version 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3);
 - gcc version 4.7.2 (Debian 4.7.2-5);
 - Apple LLVM version 6.0 (clang-600.0.57) (based on LLVM 3.5svn)
+
+and this OpenSSL version:
+
+- OpenSSL 1.0.2h;
 
 and, as ssh server, one of the following:
 
@@ -50,20 +86,6 @@ and, as ssh server, one of the following:
 - OpenSSH_7.2p2
 - OpenSSH_8.2p1 
 
-The only external dependency is the OpenSSL libraryi, used for the cryptographic functions.
-I could introduce alternatives to OpenSSL in the next versions.
-This program is intended to be used with an OpenSSL version equal or superior to:
-
-- OpenSSL 1.0.2h;
-
-( This means that with OS X, an upgrade is mandatory).
-
-To compile the program, this tools/libraries are necessary:
-
-- a c++ compiler ( with c++11 support);
-- automake/autoconf;
-- libtool;
-- OpenSSL 1.0.2h ("dev" packages) - about superios versions: the interface was changed at some point so I can't certify newer verions at moment, I'll release a pached version of tssh asap.
 
 Installation:
 =============

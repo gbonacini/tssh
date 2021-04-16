@@ -533,6 +533,7 @@ namespace crypto{
       bnPrime       = BN_new();
       bnE           = BN_new();
       ctx           = BN_CTX_new();
+      BN_CTX_init(ctx);
    }
 
    CryptoKeyRsa::~CryptoKeyRsa(void){
@@ -688,8 +689,9 @@ namespace crypto{
    void CryptoKeyRsa::signDH(vector<uint8_t>& buff, vector<uint8_t>& sign,
                                BIGNUM* mod, BIGNUM* exp) const anyexcept{
       RSA       *serverPublicKey  { RSA_new() };
-      
-      RSA_set0_key(serverPublicKey, mod, exp, nullptr);
+
+      serverPublicKey->n          = mod;
+      serverPublicKey->e          = exp;
 
       TRACE("* Signature - N: ", reinterpret_cast<uint8_t*>(BN_bn2hex(mod)), 
             static_cast<size_t>(BN_num_bytes(mod)));

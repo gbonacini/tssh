@@ -1235,7 +1235,7 @@ namespace tssh{
                 throw InetException("connectionLoop: Error: SSH_MSG_UNIMPLEMENTED.");
             case SSH_MSG_DEBUG:
                 TRACE( "* Received SSH_MSG_DEBUG.");
-                trace("Dump: ", &incomingEnc, 0, 0, 
+                TRACE("Dump: ", &incomingEnc, 0, 0, 
                       charToUint32(incomingEnc.data()) + sizeof(uint32_t));
             break;
             case SSH_MSG_DISCONNECT:
