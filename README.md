@@ -25,10 +25,12 @@ Prerequisites:
 
 The program is intended to be used in a *nix environment and it is tested on various Linux distributions and OS X:
 
+- Ubuntu 20.04.2 LTS
 - OS X 10.15.7;
 
 using, as compiler, one in this list:
 
+- gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04)
 - Apple clang version 12.0.0 (clang-1200.0.32.29)
 
 and, as ssh server, one of the following:
@@ -39,7 +41,12 @@ The only external dependency is the OpenSSL library, used for the cryptographic 
 I could introduce alternatives to OpenSSL in the next versions.
 This program is intended to be used with an OpenSSL version equal or superior to:
 
-- OpenSSL 1.1.1k;
+- OpenSSL 1.1.x;
+
+tested  with:
+
+- OpenSSL 1.1.1f  
+- OpenSSL 1.1.1k
 
 ( This means that with OS X, an upgrade is mandatory).
 
