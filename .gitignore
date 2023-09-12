@@ -8,6 +8,7 @@
 *tar
 *afp
 Makefile
+src/Makefile
 autom4te.cache
 config.status
 src/.deps/*
@@ -22,3 +23,15 @@ include/stamp-h1
 files
 .DS_Store
 configure~
+Makefile.in
+src/Makefile.in
+aclocal.m4
+compile
+config.guess
+config.sub
+configure
+depcomp
+include/config.h.in
+install-sh
+ltmain.sh
+
