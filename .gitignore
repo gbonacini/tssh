@@ -20,3 +20,5 @@ include/Inet.hpp.in~
 include/config.h.in~
 include/stamp-h1
 files
+.DS_Store
+configure~
