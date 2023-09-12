@@ -1,7 +1,7 @@
 Description:
 ============
 
-Tssh is a SSH 2 client I wrote in C++11 from scratch, starting from the RFCs.
+Tssh is a SSH 2 client I wrote in C++11 (now updated to c++20)  from scratch, starting from the RFCs.
 
 This is a screeshoot of the output that the program produces in debug mode, with the contents of the initial packets exchange:
 
@@ -14,7 +14,7 @@ This alpha version implements the basic functions to connect the client to a rem
 
 At the moment, only few cryptographic algorithms are implemented:
 
-- Kex: diffie-hellman-group14-sha1 (rsa 2048 bits), diffie-hellman-group14-sha256;
+- Kex: diffie-hellman-group14-sha1 (rsa-sha and rsa-sha2-256 2048 bits), diffie-hellman-group14-sha256;
 - Block encryption: AES 128 bits (aes128-ctr);
 - HMAC: hmac-sha1, hmac-sha2-256;
 
@@ -26,27 +26,26 @@ Prerequisites:
 The program is intended to be used in a *nix environment and it is tested on various Linux distributions and OS X:
 
 - Ubuntu 20.04.2 LTS
-- OS X 10.15.7;
+- OS X 13.5
 
 using, as compiler, one in this list:
 
 - gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04)
-- Apple clang version 12.0.0 (clang-1200.0.32.29)
+- Apple clang version 14.0.3 (clang-1403.0.22.14.1)
 
 and, as ssh server, one of the following:
 
-- OpenSSH_8.2p1 
+- OpenSSH_8.9p1 
 
 The only external dependency is the OpenSSL library, used for the cryptographic functions.
 I could introduce alternatives to OpenSSL in the next versions.
 This program is intended to be used with an OpenSSL version equal or superior to:
 
-- OpenSSL 1.1.x;
+- OpenSSL 3.0.10;
 
 tested  with:
 
-- OpenSSL 1.1.1f  
-- OpenSSL 1.1.1k
+- OpenSSL 3.0.10
 
 ( This means that with OS X, an upgrade is mandatory).
 
@@ -55,7 +54,7 @@ To compile the program, this tools/libraries are necessary:
 - a c++ compiler ( with c++11 support);
 - automake/autoconf;
 - libtool;
-- OpenSSL 1.1.1k ("dev" packages) 
+- OpenSSL 3.0.10 ("dev" packages) 
 
 Legacy Version:
 ===============
@@ -97,6 +96,8 @@ and, as ssh server, one of the following:
 Installation:
 =============
 
+- create compilation scripts:
+  make -f makefile.dist
 - launch the configure script:
   ./configure
 - Compile the program:
