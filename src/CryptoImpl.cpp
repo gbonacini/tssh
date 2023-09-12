@@ -77,7 +77,7 @@ namespace crypto{
    Crypto::Crypto(void) :
       kexalg(nullptr),  hKeyalg(nullptr),    macCtS(nullptr),  
       macStC(nullptr),  blkEncCtS(nullptr),  blkEncStC(nullptr),
-      clientHKeyAlg        { "ssh-rsa" },
+      clientHKeyAlg        { "ssh-rsa", "rsa-sha2-256" },
       clientKexAlg         { "diffie-hellman-group14-sha256", "diffie-hellman-group14-sha1"},
       clientMacCtSAlg      { "hmac-sha2-256", "hmac-sha1"},
       clientMacStCAlg      { "hmac-sha2-256", "hmac-sha1"},
@@ -254,7 +254,7 @@ namespace crypto{
       size_t  idx   { 0 };
       for(auto i {clientHKeyAlg.cbegin()}; i != clientHKeyAlg.cend(); ++i){
          if(serverHKeyAlg->find(*i) != serverHKeyAlg->end()){
-		    found  = true;
+		      found  = true;
             break;
          }
          idx++;
@@ -266,6 +266,9 @@ namespace crypto{
         case 0:
            hKeyalg = new CryptoKeyRsa();
            TRACE("* DH Selected: ssh-rsa");
+        case 1:
+           hKeyalg = new CryptoKeyRsa2_256();
+           TRACE("* DH Selected: rsa-sha2-256");
         break;
         default:
            throw CryptoException("setHKeyAlg: key type error.");
@@ -526,7 +529,7 @@ namespace crypto{
       return sha256Len;
    }
 
-   CryptoKeyRsa::CryptoKeyRsa(void) : keyFilePrefix("id_rsa"), nullKey("FFFFFFFF"), 
+   CryptoKeyRsa::CryptoKeyRsa(string ids) : keyFilePrefix(ids), nullKey("FFFFFFFF"), 
                                       id("rsa-ssh"), descr("RSA"){
       bnSharedKey   = BN_new();
       bnPrivKey     = BN_new();
@@ -759,6 +762,132 @@ namespace crypto{
    const string& CryptoKeyRsa::getNullKey(void) const noexcept{
       return nullKey;
    }
+
+   // --------- NEW  ----------
+
+   CryptoKeyRsa2_256::CryptoKeyRsa2_256(string ids) 
+      : CryptoKeyRsa(ids)
+   {}
+
+   CryptoKeyRsa2_256::~CryptoKeyRsa2_256(void)
+   {}
+
+   void CryptoKeyRsa2_256::signMessage(std::string& privKey, std::vector<uint8_t>& msg,
+                                  std::vector<uint8_t>& sign) const anyexcept{
+      EVP_PKEY*     vkey       { EVP_PKEY_new() };
+      EVP_MD_CTX*   mctx       { EVP_MD_CTX_create() };
+      const EVP_MD* md         { EVP_get_digestbyname("SHA256") };
+
+      #ifdef __clang__
+      #pragma clang diagnostic push
+      #pragma clang diagnostic ignored "-Wold-style-cast"
+      #endif
+
+      if(EVP_DigestInit_ex(mctx, md, nullptr) != 1)
+         throw CryptoException(string("signMessage: EVP_PKEY_assign_RSA (1) failed: ") +
+                               ERR_error_string(ERR_get_error(), nullptr));
+      #ifdef __clang__
+      #pragma clang diagnostic pop
+      #endif
+
+      TRACE("* Msg To Sign: ", &msg);
+
+      vector<uint8_t> b64PrivKey;
+  
+      loadFileMem(privKey, b64PrivKey, false);
+  
+      TRACE("* Auth Private Key: " + privKey, &b64PrivKey);
+  
+      BIO* bioPrivKey { BIO_new_mem_buf(b64PrivKey.data(), safeInt(b64PrivKey.size()))};
+      RSA* rsaPrivKey { RSA_new()};
+  
+      if(PEM_read_bio_RSAPrivateKey(bioPrivKey, &rsaPrivKey, nullptr, nullptr) == nullptr)
+         throw(CryptoException(string("signMessage: Error loading private key in BIO object.") +
+               ERR_error_string(ERR_get_error(), nullptr)));
+  
+      sign.resize(safeSizeT(RSA_size(rsaPrivKey)));
+  
+      #ifdef __clang__
+      #pragma clang diagnostic push
+      #pragma clang diagnostic ignored "-Wold-style-cast"
+      #endif
+
+      if(EVP_PKEY_assign_RSA(vkey, rsaPrivKey) != 1)
+         throw CryptoException(string("signMessage: EVP_PKEY_assign_RSA (2) failed: ") +
+                               ERR_error_string(ERR_get_error(), nullptr));
+      #ifdef __clang__
+      #pragma clang diagnostic pop
+      #endif
+
+      if(EVP_DigestSignInit(mctx, nullptr, md, nullptr, vkey) != 1)
+         throw CryptoException(string("signMessage: EVP_DigestSignInit failed: ") +
+                               ERR_error_string(ERR_get_error(), nullptr));
+
+      if(EVP_DigestSignUpdate(mctx, msg.data(), msg.size()) != 1)
+         throw CryptoException(string("signMessage: EVP_DigestSignUpdate failed: ") +
+                               ERR_error_string(ERR_get_error(), nullptr));
+      size_t signlen { sign.size() };
+      if(EVP_DigestSignFinal(mctx, sign.data(), &signlen) != 1)
+         throw CryptoException(string("signMessage: EVP_DigestVerifyFinal failed: ") +
+                               ERR_error_string(ERR_get_error(), nullptr));
+      TRACE("* Auth Msg Sign: ", &sign);
+
+      secureZeroing(b64PrivKey.data(), b64PrivKey.size());
+
+      BIO_vfree(bioPrivKey);
+      EVP_MD_CTX_destroy(mctx);
+      EVP_PKEY_free(vkey);
+   }
+
+   void CryptoKeyRsa2_256::signDH(vector<uint8_t>& buff, vector<uint8_t>& sign,
+                               BIGNUM* mod, BIGNUM* exp) const anyexcept{
+      RSA       *serverPublicKey  { RSA_new() };
+      
+      RSA_set0_key(serverPublicKey, mod, exp, nullptr);
+
+      TRACE("* Signature - N: ", reinterpret_cast<uint8_t*>(BN_bn2hex(mod)), 
+            static_cast<size_t>(BN_num_bytes(mod)));
+
+      size_t rsasize {  safeSizeT(RSA_size(serverPublicKey))};
+      TRACE("* Signature - Server Pubkey Length in bits: " + to_string(rsasize * BYTE_LENGHT) );
+
+      EVP_PKEY  *vkey             { EVP_PKEY_new() };
+      EVP_MD_CTX* mctx            { EVP_MD_CTX_create() };
+      const EVP_MD* md            { EVP_get_digestbyname("SHA256") };
+      if(EVP_DigestInit_ex(mctx, md, nullptr) != 1)
+         throw CryptoException(string("signDH: EVP_PKEY_assign_RSA (1) failed: ") +
+                                          ERR_error_string(ERR_get_error(), nullptr));
+      #ifdef __clang__
+      #pragma clang diagnostic push
+      #pragma clang diagnostic ignored "-Wold-style-cast"
+      #endif
+
+      if(EVP_PKEY_assign_RSA(vkey, RSAPublicKey_dup(serverPublicKey)) != 1)
+         throw CryptoException(string("signDH: EVP_PKEY_assign_RSA (2) failed: ") +
+                               ERR_error_string(ERR_get_error(), nullptr));
+      #ifdef __clang__
+      #pragma clang diagnostic pop
+      #endif
+
+      TRACE("* Signature - Buffer: ",  &buff);
+      TRACE("* Signature - Signature: ",  &sign);
+      if(EVP_DigestVerifyInit(mctx, nullptr, md, nullptr, vkey) != 1)
+         throw CryptoException(string("signDH: EVP_DigestVerifyInit failed: ") +
+                                      ERR_error_string(ERR_get_error(), nullptr));
+
+      if(EVP_DigestVerifyUpdate(mctx, buff.data(), buff.size()) != 1)
+         throw CryptoException(string("signDH: EVP_DigestVerifyUpdate failed: ") +
+                                      ERR_error_string(ERR_get_error(), nullptr));
+
+      if(EVP_DigestVerifyFinal(mctx, sign.data(), sign.size()) != 1)
+         throw CryptoException(string("signDH: EVP_DigestVerifyFinal failed: ") +
+                                      ERR_error_string(ERR_get_error(), nullptr));
+      EVP_MD_CTX_destroy(mctx);
+      EVP_PKEY_free(vkey);
+
+      OPENSSL_free(serverPublicKey);
+   }
+   // --------- End NEW  ----------
 
    CryptoMacCtS::~CryptoMacCtS(void){}
 

@@ -131,19 +131,20 @@ namespace crypto {
                                getNullKey(void)                         const = 0;
    };
 
-   class CryptoKeyRsa final : public CryptoHKeyAlg{
-      private:
+   class CryptoKeyRsa : public CryptoHKeyAlg{
+      protected:
          BIGNUM               *bnSharedKey,
                               *bnPrivKey,
                               *bnPrime,
                               *bnE;
          BN_CTX               *ctx;
          const std::string    keyFilePrefix,                  
-                              nullKey;                  
-         const std::string    id;
-         const std::string    descr;
+                              nullKey,                  
+                              id,
+                              descr;
+
       public: 
-         CryptoKeyRsa(void);
+         CryptoKeyRsa(std::string ids="rsa-ssh");
          ~CryptoKeyRsa(void)                                                    override;
          void           setDhKeys(std::vector<uint8_t>& genBuff,
                                   std::vector<uint8_t>& res)          anyexcept override;
@@ -164,6 +165,21 @@ namespace crypto {
                         getKeyFilePrefix(void)                  const noexcept  override;
          const std::string&   
                         getNullKey(void)                        const noexcept  override;
+   };
+
+   class CryptoKeyRsa2_256 final : public CryptoKeyRsa{
+      public: 
+         CryptoKeyRsa2_256( std::string ids="rsa-sha2-256");
+         ~CryptoKeyRsa2_256(void)                                               override;
+                                  
+         void           signDH(std::vector<uint8_t>& buff,
+                               std::vector<uint8_t>& sign,
+                               BIGNUM* mod, BIGNUM* exp)        const anyexcept override;
+
+         void           signMessage(std::string& privKey,
+                                    std::vector<uint8_t>& msg, 
+                                    std::vector<uint8_t>& sign) const anyexcept override;
+
    };
    
    class CryptoMacCtS{
