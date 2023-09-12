@@ -19,20 +19,19 @@
 
 namespace stringutils{
 
-  using std::cerr;
-  using std::dec;
-  using std::endl;
-  using std::hex;
-  using std::setfill;
-  using std::setw;
-  using std::string;
-  using std::to_string;
-  using std::vector;
-  using std::set;
-  using typeutils::safePtrdiff;
-  using typeutils::safeUint32;
-  using typeutils::safeInt;
-  using typeutils::safeSizeT;
+  using std::cerr,
+        std::dec,
+        std::hex,
+        std::setfill,
+        std::setw,
+        std::string,
+        std::to_string,
+        std::vector,
+        std::set,
+        typeutils::safePtrdiff,
+        typeutils::safeUint32,
+        typeutils::safeInt,
+        typeutils::safeSizeT;
 
   static bool             debug         { false };
 
@@ -199,7 +198,7 @@ namespace stringutils{
   
   void  trace(const char* header, const uint8_t* buff, const size_t size,
               size_t begin, size_t end) noexcept{
-     cerr << header << endl << endl;
+     cerr << header << "\n\n";
   
      bool last  { false }, 
           first { false };
@@ -229,18 +228,18 @@ namespace stringutils{
            }
         }
         first = false;
-        cerr << endl;
+        cerr << '\n';
      }
-     cerr << endl << endl;
+     cerr << "\n\n";
   }
   
   void trace(string header) noexcept{
-     cerr << header << endl << endl;
+     cerr << header << "\n\n";
   }
 
   void trace(string header, const vector<uint8_t>* buff,
              size_t begin, size_t end, size_t max) noexcept{
-     cerr << header << endl << endl;
+     cerr << header << "\n\n";
 
      size_t len    { max ? max : buff->size() };
      bool   last   { false }, 
@@ -272,9 +271,9 @@ namespace stringutils{
            }
         }
         first = false;
-        cerr << endl;
+        cerr << '\n';
      }
-     cerr << endl << endl;
+     cerr << "\n\n";
   }
   
   template<class T>
@@ -603,7 +602,7 @@ namespace stringutils{
      uint8_t          currChar;
      fd_set           readfds;
   
-     cerr << "Password:" << endl;
+     cerr << "Password:" << '\n';
   
      if(tcsetattr(STDIN_FILENO, TCSANOW, &termNew) == -1)
         throw StringUtilsException("getPassword: a : Can't deactivate terminal echo.");
@@ -640,7 +639,7 @@ namespace stringutils{
      uint8_t           currChar;
      fd_set            readfds;
   
-     cerr << "Password:" << endl;
+     cerr << "Password:" << '\n';
   
      if(tcsetattr(STDIN_FILENO, TCSANOW, newTerm) == -1)
         throw StringUtilsException("getPassword: b : Can't deactivate terminal echo.");

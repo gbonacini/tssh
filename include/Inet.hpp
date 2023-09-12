@@ -21,7 +21,7 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include <string.h>
+#include <cstring>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>

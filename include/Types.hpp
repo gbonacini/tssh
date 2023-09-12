@@ -18,13 +18,14 @@
 #ifndef  TYPES_UTILS
 #define  TYPES_UTILS
 
-#include <exception>
-#include <limits>
 #include <cstddef>
-#include <string>
+#include <cstdint> 
 
 #include <sys/types.h>
-#include <stdint.h> 
+
+#include <exception>
+#include <limits>
+#include <string>
 
 #include <anyexcept.hpp>
 

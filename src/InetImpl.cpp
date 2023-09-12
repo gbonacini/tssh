@@ -19,11 +19,10 @@
 
 namespace inet {
 
-   using std::cerr;
-   using std::endl;
-   using std::string;
-   using typeutils::safeSsizeT;
-   using typeutils::safeSizeT;
+   using std::cerr,
+         std::string,
+         typeutils::safeSsizeT,
+         typeutils::safeSizeT;
    
    InetException::InetException(int errNum)
     : errorMessage{"None"}, errorCode{errNum}
@@ -326,7 +325,7 @@ namespace inet {
    }
    
    InetClient::~InetClient(void){
-      cerr << "Closing lower connection." << endl;
+      cerr << "Closing lower connection." << '\n';
       cleanResurces();
    }
 

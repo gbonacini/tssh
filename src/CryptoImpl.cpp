@@ -20,24 +20,22 @@
 
 namespace crypto{
 
-   using std::string;
-   using std::to_string;
-   using std::vector;
-   using std::set;
-   using std::get;
-   using std::initializer_list;
-
-   using stringutils::trace;
-   using stringutils::getDebug;
-   using stringutils::encodeB64;
-   using stringutils::appendVectBuffer;
-   using stringutils::encodeHex;
-   using stringutils::secureZeroing;
-   using stringutils::loadFileMem;
-   using stringutils::StringUtilsException;
-
-   using typeutils::safeInt;
-   using typeutils::safeSizeT;
+   using std::string,
+         std::to_string,
+         std::vector,
+         std::set,
+         std::get,
+         std::initializer_list,
+         stringutils::trace,
+         stringutils::getDebug,
+         stringutils::encodeB64,
+         stringutils::appendVectBuffer,
+         stringutils::encodeHex,
+         stringutils::secureZeroing,
+         stringutils::loadFileMem,
+         stringutils::StringUtilsException,
+         typeutils::safeInt,
+         typeutils::safeSizeT;
 
    static const char *RFC3526_PRIME    {  "0FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A637ED6B0BFF5CB6F406B7EDEE386BFB5A899FA5AE9F24117C4B1FE649286651ECE45B3DC2007CB8A163BF0598DA48361C55D39A69163FA8FD24CF5F83655D23DCA3AD961C62F356208552BB9ED529077096966D670C354E4ABC9804F1746C08CA18217C32905E462E36CE3BE39E772C180E86039B2783A2EC07A28FB5C55DF06F4C52C9DE2BCBF6955817183995497CEA956AE515D2261898FA051015728E5A8AACAA68FFFFFFFFFFFFFFFF" };
 
@@ -700,9 +698,9 @@ namespace crypto{
       size_t rsasize {  safeSizeT(RSA_size(serverPublicKey))};
       TRACE("* Signature - Server Pubkey Length in bits: " + to_string(rsasize * BYTE_LENGHT) );
 
-      EVP_PKEY  *vkey             { EVP_PKEY_new() };
-      EVP_MD_CTX* mctx            { EVP_MD_CTX_create() };
-      const EVP_MD* md            { EVP_get_digestbyname("SHA1") };
+      EVP_PKEY     *vkey          { EVP_PKEY_new() };
+      EVP_MD_CTX   *mctx          { EVP_MD_CTX_create() };
+      const EVP_MD *md            { EVP_get_digestbyname("SHA1") };
       if(EVP_DigestInit_ex(mctx, md, nullptr) != 1)
          throw CryptoException(string("signDH: EVP_PKEY_assign_RSA (1) failed: ") +
                                           ERR_error_string(ERR_get_error(), nullptr));
@@ -762,8 +760,6 @@ namespace crypto{
    const string& CryptoKeyRsa::getNullKey(void) const noexcept{
       return nullKey;
    }
-
-   // --------- NEW  ----------
 
    CryptoKeyRsa2_256::CryptoKeyRsa2_256(string ids) 
       : CryptoKeyRsa(ids)
@@ -887,7 +883,6 @@ namespace crypto{
 
       OPENSSL_free(serverPublicKey);
    }
-   // --------- End NEW  ----------
 
    CryptoMacCtS::~CryptoMacCtS(void){}
 

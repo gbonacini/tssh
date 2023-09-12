@@ -18,49 +18,44 @@
 #include <Tssh.hpp>
 
 namespace tssh{
-   using  std::string;
-   using  std::vector;
-   using  std::initializer_list;
-   using  std::tuple;
-   using  std::to_string;
-   using  std::fill;
-   using  std::equal;
-   using  std::cerr;
-   using  std::cin;
-   using  std::cout;
-   using  std::endl;
-   using  std::get;
-
-   using  stringutils::addVarLengthDataCCharStr;
-   using  stringutils::addVarLengthDataString;
-   using  stringutils::appendVectBuffer;
-   using  stringutils::charToUint32;
-   using  stringutils::decodeB64;
-   using  stringutils::encodeB64;
-   using  stringutils::getPassword;
-   using  stringutils::getVariableLengthRawValue;
-   using  stringutils::getVariableLengthSingleBignum;
-   using  stringutils::getVariableLengthValueCsv;
-   using  stringutils::insArrayVals;
-   using  stringutils::loadFileMem;
-   using  stringutils::secureZeroing;
-   using  stringutils::trace;
-   using  stringutils::getDebug;
-   using  stringutils::uint32ToUChars;
-   using  stringutils::StringUtilsException;
-
-   using  typeutils::safePtrdiff;
-   using  typeutils::safeUint32;
-   using  typeutils::safeUint8;
-   using  typeutils::safeSizeT;
-   using  typeutils::safeInt;
-   using  typeutils::safeUInt;
-   using  typeutils::safeULong;
-   using  typeutils::safeSizeT;
-
-   using  inet::InetException;
-
-   using  crypto::Crypto;
+   using  std::string,
+          std::vector,
+          std::initializer_list,
+          std::tuple,
+          std::to_string,
+          std::fill,
+          std::equal,
+          std::cerr,
+          std::cin,
+          std::cout,
+          std::get,
+          stringutils::addVarLengthDataCCharStr,
+          stringutils::addVarLengthDataString,
+          stringutils::appendVectBuffer,
+          stringutils::charToUint32,
+          stringutils::decodeB64,
+          stringutils::encodeB64,
+          stringutils::getPassword,
+          stringutils::getVariableLengthRawValue,
+          stringutils::getVariableLengthSingleBignum,
+          stringutils::getVariableLengthValueCsv,
+          stringutils::insArrayVals,
+          stringutils::loadFileMem,
+          stringutils::secureZeroing,
+          stringutils::trace,
+          stringutils::getDebug,
+          stringutils::uint32ToUChars,
+          stringutils::StringUtilsException,
+          typeutils::safePtrdiff,
+          typeutils::safeUint32,
+          typeutils::safeUint8,
+          typeutils::safeSizeT,
+          typeutils::safeInt,
+          typeutils::safeUInt,
+          typeutils::safeULong,
+          typeutils::safeSizeT,
+          inet::InetException,
+          crypto::Crypto;
 
    static const char INITIAL_IV_C_TO_S                { 'A' };
    static const char INITIAL_IV_S_TO_C                { 'B' };
@@ -249,7 +244,7 @@ namespace tssh{
    }
    
    SshTransport::~SshTransport(){
-      cerr << "\nSsh Connection terminated." << endl;
+      cerr << "\nSsh Connection terminated." << '\n';
    
       BN_free(get<BN_KEYF>(dhReplyPacket));        
       BN_free(get<BN_EXPONENT>(dhReplyPacket));        
@@ -289,8 +284,8 @@ namespace tssh{
    }
    
    void SshTransport::getStatistics(void) const noexcept{
-      cerr << "* Received " << packetsRcvCount << " ssh packets." << endl 
-           << "* Sent     " << packetsSndCount << " ssh packets." << endl;
+      cerr << "* Received " << packetsRcvCount << " ssh packets." << '\n' 
+           << "* Sent     " << packetsSndCount << " ssh packets." << '\n';
    }
   
    void SshTransport::readSsh(void) anyexcept{
@@ -816,14 +811,14 @@ namespace tssh{
       if(notPresent){
          vector<uint8_t> srvIdSign;
          crypto.serverKeyHash(get<CERTIFICATE_B64>(dhReplyPacket), srvIdSign);
-         cerr << "The authenticity of host '" << hostname << "' can't be established." << endl
-              << "The " << crypto.getDhDescr() << " key fingerprint (SHA256) is:" << endl 
-              << srvIdSign.data()  <<  "." << endl
-              << "Are you sure you want to continue connecting (yes/no)? " << endl;
+         cerr << "The authenticity of host '" << hostname << "' can't be established." << '\n'
+              << "The " << crypto.getDhDescr() << " key fingerprint (SHA256) is:" << '\n' 
+              << srvIdSign.data()  <<  "." << '\n'
+              << "Are you sure you want to continue connecting (yes/no)? " << '\n';
    
          getline (cin, confirm);
          while(confirm.compare("yes") != 0  && confirm.compare("no") != 0){
-            cerr << "Please type 'yes' or 'no': " << endl;
+            cerr << "Please type 'yes' or 'no': " << '\n';
             getline (cin, confirm);
          }
    
@@ -846,7 +841,7 @@ namespace tssh{
 
             cerr << "Warning: Permanently added '" + hostname + 
                     "' (" + get<1>(line) + ") to the list of known hosts." 
-                 << endl;
+                 << '\n';
          }else{
             throw InetException("checkServerSignature: Host key verification failed.");
          }

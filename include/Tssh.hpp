@@ -20,12 +20,12 @@
 
 #include <openssl/bn.h>
 
+#include <cstdlib>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <termios.h>
-#include <stdlib.h>
 #include <signal.h>
 
 #include <initializer_list>
