@@ -1,0 +1,16 @@
+all:
+	aclocal
+	autoheader
+	libtoolize 
+	automake -a 
+	#autoreconf -f -i -Wall,no-obsolete
+	autoreconf -ivf
+
+configure:
+	./configure
+
+clean:
+	rm -f ./aclocal.m4 ./config.log ./config.status ./configure ./include/config.h ./include/config.h.in ./include/config.h.in~ ./include/stamp-h1 ./include/y.tab.h ./libtool ./Makefile ./Makefile.in ./src/Makefile.in 
+	rm -fr ./autom4te.cache/ ./src/.deps/ 
+
+.PHONY: all configure clean
