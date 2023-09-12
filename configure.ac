@@ -40,14 +40,14 @@ case $host_os in
   darwin* )
               OPTIMIZATION="-O2 "
               if test "x$CC" = xgcc; then
-                    CXXFLAGS=" -std=c++11 -g -Weverything \
+                    CXXFLAGS=" -std=c++20 -g -Weverything \
                              -D_FORTIFY_SOURCE=2 ${OPTIMIZATION} -fstack-protector \
                              --param=ssp-buffer-size=4 -Wformat -Werror=format-security \
                              -Wno-deprecated-declarations -Wno-documentation -Wno-c++98-compat \
                              -Wno-padded -Wno-c++98-compat-pedantic -Wno-undefined-func-template ${INC_SSL_CUSTOM}"
 		    LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM}"
               else
-                    CXXFLAGS=" -std=c++11 -O2 -g -Wall "
+                    CXXFLAGS=" -std=c++20 -O2 -g -Wall "
 		    LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM}"
               fi
 
@@ -55,17 +55,17 @@ case $host_os in
   linux*)
               OPTIMIZATION="-O2 "
               if test "x$CC" = xgcc; then
-                    CXXFLAGS=" -std=c++11 -g -Wall -Wextra \
+                    CXXFLAGS=" -std=c++20 -g -Wall -Wextra \
                              -D_FORTIFY_SOURCE=2 ${OPTIMIZATION} -fstack-protector \
                              --param=ssp-buffer-size=4 -Wformat -Werror=format-security ${INC_SSL_CUSTOM}"
                     LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM}-Wl,-z,relro"
               else
-                    CXXFLAGS=" -std=c++11 -O2 -g -Wall "
+                    CXXFLAGS=" -std=c++20 -O2 -g -Wall "
 		    LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM}"
               fi
         ;;
     *)
-            CXXFLAGS=" -std=c++11  -O2 -g -Wall "
+            CXXFLAGS=" -std=c++20  -O2 -g -Wall "
 	    LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM}"
             #AC_MSG_ERROR([Your platform is not currently supported])
         ;;
