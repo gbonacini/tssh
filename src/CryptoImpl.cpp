@@ -264,6 +264,7 @@ namespace crypto{
         case 0:
            hKeyalg = new CryptoKeyRsa();
            TRACE("* DH Selected: ssh-rsa");
+        break;
         case 1:
            hKeyalg = new CryptoKeyRsa2_256();
            TRACE("* DH Selected: rsa-sha2-256");
@@ -527,8 +528,8 @@ namespace crypto{
       return sha256Len;
    }
 
-   CryptoKeyRsa::CryptoKeyRsa(string ids) : keyFilePrefix(ids), nullKey("FFFFFFFF"), 
-                                      id("rsa-ssh"), descr("RSA"){
+   CryptoKeyRsa::CryptoKeyRsa(string ids) : keyFilePrefix("id_rsa"), nullKey("FFFFFFFF"), 
+                                      id(ids), descr("RSA"){
       bnSharedKey   = BN_new();
       bnPrivKey     = BN_new();
       bnPrime       = BN_new();
