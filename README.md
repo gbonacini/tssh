@@ -25,8 +25,9 @@ Prerequisites:
 
 The program is intended to be used in a *nix environment and it is tested on various Linux distributions and OS X:
 
-- Ubuntu 20.04.2 LTS
-- OS X 13.5
+- Ubuntu Ubuntu 22.04.2 LTS  ARM
+- MacOS  13.5                ARM
+- MAcOS  12.6.8              X86-64
 
 using, as compiler, one in this list:
 
@@ -35,7 +36,9 @@ using, as compiler, one in this list:
 
 and, as ssh server, one of the following:
 
-- OpenSSH_8.9p1 
+- OpenSSH_8.9p1  Ubuntu 22.04.2 LTS ARM
+- OpenSSH_9.0p1, LibreSSL 3.3.6  MacOs  13.5    ARM
+- OpenSSH_8.6p1, LibreSSL 3.3.6  MacOs  12.6.8  x86_64
 
 The only external dependency is the OpenSSL library, used for the cryptographic functions.
 I could introduce alternatives to OpenSSL in the next versions.
