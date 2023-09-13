@@ -103,7 +103,7 @@ namespace inet{
          void     setTimeoutMax(long int seconds, int useconds=0)           noexcept;
 
       protected:
-         static   int        socketFd;
+         static   inline int socketFd { -1 };
          mutable  Handler    handler;
          ssize_t             readLen;
          Addrinfo            hints,
