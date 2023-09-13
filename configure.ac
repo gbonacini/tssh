@@ -38,7 +38,7 @@ AC_CHECK_LIB([ssl],[RSA_set0_key],[],[AC_MSG_FAILURE([could not find lib ssl])])
 AC_CANONICAL_HOST
 case $host_os in
   darwin* )
-              OPTIMIZATION="-O2 "
+              OPTIMIZATION="-O3 "
               if test "x$CC" = xgcc; then
                     CXXFLAGS=" -std=c++20 -g -Weverything \
                              -D_FORTIFY_SOURCE=2 ${OPTIMIZATION} -fstack-protector \
@@ -47,25 +47,25 @@ case $host_os in
                              -Wno-padded -Wno-c++98-compat-pedantic -Wno-undefined-func-template ${INC_SSL_CUSTOM}"
 		    LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM}"
               else
-                    CXXFLAGS=" -std=c++20 -O2 -g -Wall "
+                    CXXFLAGS=" -std=c++20 ${OPTIMIZATION} -g -Wall "
 		    LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM}"
               fi
 
         ;;
   linux*)
-              OPTIMIZATION="-O2 "
+              OPTIMIZATION="-O3 "
               if test "x$CC" = xgcc; then
                     CXXFLAGS=" -std=c++20 -g -Wall -Wextra \
                              -D_FORTIFY_SOURCE=2 ${OPTIMIZATION} -fstack-protector \
                              --param=ssp-buffer-size=4 -Wformat -Werror=format-security ${INC_SSL_CUSTOM}"
                     LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM}-Wl,-z,relro"
               else
-                    CXXFLAGS=" -std=c++20 -O2 -g -Wall "
+                    CXXFLAGS=" -std=c++20 ${OPTIMIZATION} -g -Wall "
 		    LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM}"
               fi
         ;;
     *)
-            CXXFLAGS=" -std=c++20  -O2 -g -Wall "
+            CXXFLAGS=" -std=c++20  -O3 -g -Wall "
 	    LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM}"
             #AC_MSG_ERROR([Your platform is not currently supported])
         ;;
