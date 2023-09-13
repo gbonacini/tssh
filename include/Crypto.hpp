@@ -65,7 +65,7 @@ namespace crypto {
 
            private:
                    std::string errorMessage;
-                   int errorCode;
+                   int         errorCode;
    };
 
    #ifdef __clang__
