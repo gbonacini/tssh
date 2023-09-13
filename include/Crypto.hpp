@@ -21,10 +21,6 @@
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wreserved-id-macro"
-#endif
-
-#ifdef __clang__
-#pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wold-style-cast"
 #endif
 
@@ -34,10 +30,6 @@
 #include <openssl/err.h>
 #include <openssl/rsa.h>
 #include <openssl/sha.h>
-
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
 
 #ifdef __clang__
 #pragma clang diagnostic pop
