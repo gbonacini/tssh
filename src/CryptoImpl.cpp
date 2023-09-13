@@ -270,7 +270,7 @@ namespace crypto{
       size_t  idx   { 0 };
       for(auto i {clientHKeyAlg.cbegin()}; i != clientHKeyAlg.cend(); ++i){
          if(serverHKeyAlg->find(*i) != serverHKeyAlg->end()){
-		      found  = true;
+    	      found  = true;
             break;
          }
          idx++;
@@ -317,7 +317,7 @@ namespace crypto{
       size_t  idx   { 0 };
       for(auto i {clientKexAlg.cbegin()}; i != clientKexAlg.cend(); ++i){
          if(serverKexAlg->find(*i) != serverKexAlg->end()){
-		      found  = true;
+    	      found  = true;
             break;
          }
          idx++;
@@ -390,7 +390,7 @@ namespace crypto{
       size_t  idx   { 0 };
       for(auto i {clientBlkEncCtSAlg.cbegin()}; i != clientBlkEncCtSAlg.cend(); ++i){
          if(serverBlkEncCtSAlg->find(*i) != serverBlkEncCtSAlg->end()){
-		      found  = true;
+    	      found  = true;
             break;
          }
          idx++;
@@ -413,7 +413,7 @@ namespace crypto{
       size_t  idx   { 0 };
       for(auto i{clientBlkEncStCAlg.cbegin()}; i != clientBlkEncStCAlg.cend(); ++i){
          if(serverBlkEncStCAlg->find(*i) != serverBlkEncStCAlg->end()){
-		    found  = true;
+    	      found  = true;
             break;
          }
          idx++;
@@ -504,7 +504,7 @@ namespace crypto{
          }
          out[out.size() - 1] = 0;
      }catch(StringUtilsException& e){
-	throw(string("serverKeyHash: ").append(e.what()));
+         throw(string("serverKeyHash: ").append(e.what()));
      }catch(...){
         throw CryptoException("serverKeyHash: data error.");
      }
@@ -709,7 +709,7 @@ namespace crypto{
 
    void CryptoKeyRsa::signDH(vector<uint8_t>& buff, vector<uint8_t>& sign,
                                BIGNUM* mod, BIGNUM* exp) const anyexcept{
-      RSA       *serverPublicKey  { RSA_new() };
+      RSA   *serverPublicKey  { RSA_new() };
       
       RSA_set0_key(serverPublicKey, mod, exp, nullptr);
 
@@ -858,7 +858,7 @@ namespace crypto{
 
    void CryptoKeyRsa2_256::signDH(vector<uint8_t>& buff, vector<uint8_t>& sign,
                                BIGNUM* mod, BIGNUM* exp) const anyexcept{
-      RSA       *serverPublicKey  { RSA_new() };
+      RSA   *serverPublicKey  { RSA_new() };
       
       RSA_set0_key(serverPublicKey, mod, exp, nullptr);
 
