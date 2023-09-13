@@ -555,10 +555,10 @@ namespace crypto{
    }
 
    void CryptoKeyRsa::setDhKeys(vector<uint8_t>& genBuff, vector<uint8_t>& res) anyexcept{
-      BIGNUM* bnQ           = BN_new();
-      BIGNUM* bnOne         = BN_new();
-      BIGNUM* bnBase        = BN_new();
-      BIGNUM* bnExp         = BN_new();
+      BIGNUM* bnQ      { BN_new() };
+      BIGNUM* bnOne    { BN_new() };
+      BIGNUM* bnBase   { BN_new() };
+      BIGNUM* bnExp    { BN_new() };
 
       if(BN_hex2bn(&bnPrime, RFC3526_PRIME) == 0)
          throw CryptoException("setDhKeys: Error converting prime string to bignum.");
