@@ -61,9 +61,7 @@ int main(int argc, char **argv){
             versionInfo();
          default:
             cerr << "Invalid parameter." << endl << endl;
-         #ifdef __clang__
-            [[clang::fallthrough]];
-         #endif
+         [[fallthrough]];
          case 'h':
             paramError(argv[0], nullptr);
       }
