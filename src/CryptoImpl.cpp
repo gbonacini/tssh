@@ -75,7 +75,7 @@ namespace crypto{
    Crypto::Crypto(void) :
       kexalg(nullptr),  hKeyalg(nullptr),    macCtS(nullptr),  
       macStC(nullptr),  blkEncCtS(nullptr),  blkEncStC(nullptr),
-      clientHKeyAlg        { "ssh-rsa", "rsa-sha2-256" },
+      clientHKeyAlg        { "rsa-sha2-256", "ssh-rsa" },
       clientKexAlg         { "diffie-hellman-group14-sha256", "diffie-hellman-group14-sha1"},
       clientMacCtSAlg      { "hmac-sha2-256", "hmac-sha1"},
       clientMacStCAlg      { "hmac-sha2-256", "hmac-sha1"},
@@ -262,12 +262,12 @@ namespace crypto{
 
       switch(idx){
         case 0:
-           hKeyalg = new CryptoKeyRsa();
-           TRACE("* DH Selected: ssh-rsa");
-        break;
-        case 1:
            hKeyalg = new CryptoKeyRsa2_256();
            TRACE("* DH Selected: rsa-sha2-256");
+        break;
+        case 1:
+           hKeyalg = new CryptoKeyRsa();
+           TRACE("* DH Selected: ssh-rsa");
         break;
         default:
            throw CryptoException("setHKeyAlg: key type error.");
