@@ -15,8 +15,7 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 // -----------------------------------------------------------------
 
-#ifndef TSSH_LIB
-#define TSSH_LIB
+#pragma once
 
 #ifdef __clang__
 #pragma clang diagnostic push
@@ -29,23 +28,14 @@
 #pragma clang diagnostic pop
 #endif
 
-#include <cstdlib>
-#include <fcntl.h>
-#include <sys/stat.h>
 #include <sys/types.h>
-#include <sys/ioctl.h>
 #include <termios.h>
-#include <signal.h>
 
 #include <initializer_list>
-#include <algorithm>
-#include <utility>
 #include <map>
 #include <set>
 
 #include <anyexcept.hpp>
-#include <Types.hpp>
-#include <StringUtils.hpp>
 #include <Inet.hpp>
 #include <Crypto.hpp>
 
@@ -369,5 +359,3 @@ namespace tssh{
    };
 
 }
-
-#endif

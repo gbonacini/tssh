@@ -15,7 +15,17 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 // -----------------------------------------------------------------
 
+#include <errno.h>
+#include <unistd.h>
+
+#include <fcntl.h>
+#include <sys/socket.h>
+
+#include <cstring>
+#include <iostream>
+
 #include <Inet.hpp>
+#include <Types.hpp>
 
 namespace inet {
 
@@ -51,8 +61,6 @@ namespace inet {
    Inet::Inet(readFunc rFx, writeFunc wFx) 
    {
       FD_ZERO(&fdset);
-      // memset(&handler, 0, sizeof(Handler));
-      // memset(&hints, 0, sizeof(Addrinfo));
    
       hints.ai_socktype       = SOCK_STREAM;
       hints.ai_family         = AF_INET;

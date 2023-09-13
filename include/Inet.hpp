@@ -15,26 +15,17 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 // -----------------------------------------------------------------
 
-#ifndef INET_CLASS
-#define INET_CLASS
+#pragma once
 
-#include <unistd.h>
-#include <errno.h>
-
-#include <cstring>
-#include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <fcntl.h>
 
 #include <exception>
-#include <iostream>
 #include <string>
 #include <vector>
 
 #include <anyexcept.hpp>
-#include <Types.hpp>
    
 namespace inet{
    
@@ -141,4 +132,3 @@ namespace inet{
    void Inet::getBufferCopy(std::vector<uint8_t>& dest, bool append=false)  const anyexcept;
 }
    
-#endif

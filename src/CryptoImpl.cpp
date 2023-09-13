@@ -15,8 +15,26 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 // -----------------------------------------------------------------
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreserved-id-macro"
+#pragma clang diagnostic ignored "-Wold-style-cast"
+#endif
+
+#include <openssl/ssl.h>
+#include <openssl/bn.h>
+#include <openssl/rsa.h>
+#include <openssl/sha.h>
+#include <openssl/evp.h>
+
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+
 #include <Crypto.hpp>
 
+#include <Types.hpp>
+#include <StringUtils.hpp>
 
 namespace crypto{
 

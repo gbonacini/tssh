@@ -15,8 +15,7 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 // -----------------------------------------------------------------
 
-#ifndef CRYPTO_LIB
-#define CRYPTO_LIB
+#pragma once
 
 #ifdef __clang__
 #pragma clang diagnostic push
@@ -24,18 +23,12 @@
 #pragma clang diagnostic ignored "-Wold-style-cast"
 #endif
 
-#include <openssl/ssl.h>
-#include <openssl/bn.h>
 #include <openssl/rand.h>
 #include <openssl/err.h>
-#include <openssl/rsa.h>
-#include <openssl/sha.h>
 
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
-
-#include <openssl/evp.h>
 
 #include <exception>
 #include <string>
@@ -44,8 +37,6 @@
 #include <tuple>
 
 #include <anyexcept.hpp>
-#include <Types.hpp>
-#include <StringUtils.hpp>
 
 enum CRYPTOCFG { AES_BLOCK_LEN        = 16, 
                  SHA1_DIGEST_LENGTH   = 20, 
@@ -414,5 +405,3 @@ namespace crypto {
    void Crypto::serverKeyHash(const std::string& in, 
                               std::vector<uint8_t>& out)         const anyexcept;
 }
-
-#endif

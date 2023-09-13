@@ -15,8 +15,7 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 // -----------------------------------------------------------------
 
-#ifndef  TYPES_UTILS
-#define  TYPES_UTILS
+#pragma once
 
 #include <cstddef>
 #include <cstdint> 
@@ -144,4 +143,4 @@ namespace typeutils{
    #pragma GCC diagnostic pop
    #endif
 }
-#endif
+

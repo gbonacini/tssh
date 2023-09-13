@@ -15,7 +15,21 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 // -----------------------------------------------------------------
 
+#include <cstdlib>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <sys/stat.h>
+#include <signal.h>
+#include <unistd.h>
+
 #include <Tssh.hpp>
+
+#include <utility>
+#include <algorithm>
+#include <iostream>
+
+#include <StringUtils.hpp>
+#include <Types.hpp>
 
 namespace tssh{
    using  std::string,

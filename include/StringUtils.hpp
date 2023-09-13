@@ -15,24 +15,15 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 // -----------------------------------------------------------------
 
-#ifndef STRING_UTILS
-#define STRING_UTILS
+#pragma once
 
 #include <exception>
-#include <iostream>
-#include <iomanip>
 #include <vector>
 #include <set>
 #include <string>
-#include <cstring>
 
 #include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
 #include <termios.h>
-
-#include <arpa/inet.h>
 
 #ifdef __clang__
 #pragma clang diagnostic push
@@ -156,4 +147,3 @@ namespace stringutils{
 
  }
    
-#endif

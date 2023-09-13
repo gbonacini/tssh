@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------
 // Tssh - A ssh test client. 
-// Copyright (C) 2016-2021  Gabriele Bonacini
+// Copyright (C) 2016-2023  Gabriele Bonacini
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,9 +15,6 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 // -----------------------------------------------------------------
 
-#ifndef  ANYEXCEPT_H
-#define  ANYEXCEPT_H
+#pragma once
 
 #define  anyexcept noexcept(false)
-
-#endif
