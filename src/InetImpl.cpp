@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------
 // Tssh - A ssh test client. 
-// Copyright (C) 2016-2021  Gabriele Bonacini
+// Copyright (C) 2016-2023  Gabriele Bonacini
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -48,11 +48,11 @@ namespace inet {
       return errorCode;
    }
    
-   Inet::Inet(readFunc rFx, writeFunc wFx) : result(nullptr), bufferPtr(nullptr), 
-                                             tvMin{3,0}, tvMax{10,0}, nfds(-1) {
+   Inet::Inet(readFunc rFx, writeFunc wFx) 
+   {
       FD_ZERO(&fdset);
-      memset(&handler, 0, sizeof(Handler));
-      memset(&hints, 0, sizeof(Addrinfo));
+      // memset(&handler, 0, sizeof(Handler));
+      // memset(&hints, 0, sizeof(Addrinfo));
    
       hints.ai_socktype       = SOCK_STREAM;
       hints.ai_family         = AF_INET;

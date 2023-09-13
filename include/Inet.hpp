@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------
 // Tssh - A ssh test client. 
-// Copyright (C) 2016-2021  Gabriele Bonacini
+// Copyright (C) 2016-2023  Gabriele Bonacini
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -103,16 +103,16 @@ namespace inet{
          void     setTimeoutMax(long int seconds, int useconds=0)           noexcept;
 
       protected:
-         static   inline int socketFd { -1 };
-         mutable  Handler    handler;
-         ssize_t             readLen;
-         Addrinfo            hints,
-                             *result, 
-                             *resElement;
+         static   inline int socketFd    { -1 };
+         mutable  Handler    handler     {};
+         ssize_t             readLen     { 0 };
+         Addrinfo            hints       {},
+                             *result     { nullptr }, 
+                             *resElement { nullptr };
          virtual  
          void      cleanResurces(void)                               = 0;
    
-         void*                 bufferPtr;
+         void*                 bufferPtr { nullptr };
          std::vector<uint8_t>  buffer;
          std::string           currentLine;
          readFunc              rFunc;
@@ -120,19 +120,19 @@ namespace inet{
 
       private:
          using Timeval=struct timeval;
-         Timeval               tvMin,
-                               tvMax;
+         Timeval               tvMin     { 3,0 },
+                               tvMax     { 10,0 };
          fd_set                fdset;
-         int                   nfds;
+         int                   nfds      { -1 };
    };
 
    class InetClient : public Inet{
            public:
                    InetClient(const char* ifc, const char* port) ;
-                   ~InetClient(void)                                                   override;                                              
+                   ~InetClient(void)                                                         override;                                              
 
            private:
-                   void cleanResurces(void)                                 noexcept   override;
+                   void cleanResurces(void)                                       noexcept   override;
    };
 
    extern template 
