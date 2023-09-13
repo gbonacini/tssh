@@ -299,7 +299,7 @@ namespace crypto{
       size_t  idx   { 0 };
       for(auto i {clientKexAlg.cbegin()}; i != clientKexAlg.cend(); ++i){
          if(serverKexAlg->find(*i) != serverKexAlg->end()){
-		    found  = true;
+		      found  = true;
             break;
          }
          idx++;
@@ -372,7 +372,7 @@ namespace crypto{
       size_t  idx   { 0 };
       for(auto i {clientBlkEncCtSAlg.cbegin()}; i != clientBlkEncCtSAlg.cend(); ++i){
          if(serverBlkEncCtSAlg->find(*i) != serverBlkEncCtSAlg->end()){
-		    found  = true;
+		      found  = true;
             break;
          }
          idx++;
@@ -674,10 +674,12 @@ namespace crypto{
       if(EVP_DigestSignUpdate(mctx, msg.data(), msg.size()) != 1)
          throw CryptoException(string("signMessage: EVP_DigestSignUpdate failed: ") +
                                ERR_error_string(ERR_get_error(), nullptr));
+
       size_t signlen { sign.size() };
       if(EVP_DigestSignFinal(mctx, sign.data(), &signlen) != 1)
          throw CryptoException(string("signMessage: EVP_DigestVerifyFinal failed: ") +
                                ERR_error_string(ERR_get_error(), nullptr));
+
       TRACE("* Auth Msg Sign: ", &sign);
 
       secureZeroing(b64PrivKey.data(), b64PrivKey.size());

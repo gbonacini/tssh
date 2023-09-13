@@ -62,7 +62,8 @@ namespace crypto {
                    explicit    CryptoException(std::string&& errString);
                    const char* what(void)                        const noexcept override;
                    int         getErrorCode(void)                const noexcept;
-              private:
+
+           private:
                    std::string errorMessage;
                    int errorCode;
    };
@@ -85,6 +86,7 @@ namespace crypto {
    class CryptoDHG14Sha1 final : public CryptoDH{
       private:
          size_t      sha1Len;
+
       public: 
          CryptoDHG14Sha1(void);
          ~CryptoDHG14Sha1(void)                                                 override;
@@ -98,6 +100,7 @@ namespace crypto {
    class CryptoDHG14Sha256 final : public CryptoDH{
       private:
          size_t      sha256Len;
+
       public: 
          CryptoDHG14Sha256(void);
          ~CryptoDHG14Sha256(void)                                               override;

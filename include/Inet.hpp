@@ -48,7 +48,7 @@ namespace inet{
          int         getErrorCode(void)                                const noexcept;
       private:
          std::string errorMessage;
-         int errorCode;
+         int         errorCode;
    };
    
    struct Handler{
@@ -58,6 +58,8 @@ namespace inet{
    
    typedef ssize_t ( *readFunc)  ( Handler*, void*, size_t );
    typedef ssize_t ( *writeFunc) ( Handler*, void*, size_t );
+
+   using Addrinfo=struct addrinfo;
 
    class Inet{
       public:
@@ -99,32 +101,36 @@ namespace inet{
    
          void     setTimeoutMin(long int seconds, int useconds=0)           noexcept;
          void     setTimeoutMax(long int seconds, int useconds=0)           noexcept;
+
       protected:
-         static   int                socketFd;
-         mutable  Handler            handler;
-         ssize_t  readLen;
-         struct   addrinfo           hints,
-                                    *result, 
-                                    *resElement;
+         static   int        socketFd;
+         mutable  Handler    handler;
+         ssize_t             readLen;
+         Addrinfo            hints,
+                             *result, 
+                             *resElement;
          virtual  
          void      cleanResurces(void)                               = 0;
    
-         void*                      bufferPtr;
-         std::vector<uint8_t>       buffer;
-         std::string                currentLine;
-         readFunc                   rFunc;
-         writeFunc                  wFunc;
+         void*                 bufferPtr;
+         std::vector<uint8_t>  buffer;
+         std::string           currentLine;
+         readFunc              rFunc;
+         writeFunc             wFunc;
+
       private:
-         struct  timeval            tvMin,
-                                    tvMax;
-         fd_set                     fdset;
-         int                        nfds;
+         using Timeval=struct timeval;
+         Timeval               tvMin,
+                               tvMax;
+         fd_set                fdset;
+         int                   nfds;
    };
 
    class InetClient : public Inet{
            public:
                    InetClient(const char* ifc, const char* port) ;
                    ~InetClient(void)                                                   override;                                              
+
            private:
                    void cleanResurces(void)                                 noexcept   override;
    };
@@ -133,7 +139,6 @@ namespace inet{
    void Inet::getBufferCopy(std::string& dest, bool append=false)           const anyexcept;
    extern template 
    void Inet::getBufferCopy(std::vector<uint8_t>& dest, bool append=false)  const anyexcept;
-
 }
    
 #endif

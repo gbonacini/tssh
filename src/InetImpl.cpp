@@ -52,7 +52,7 @@ namespace inet {
                                              tvMin{3,0}, tvMax{10,0}, nfds(-1) {
       FD_ZERO(&fdset);
       memset(&handler, 0, sizeof(Handler));
-      memset(&hints, 0, sizeof(struct addrinfo));
+      memset(&hints, 0, sizeof(Addrinfo));
    
       socketFd                = -1;
 
@@ -193,7 +193,7 @@ namespace inet {
       void**  localBuff;
       void*   indBuff;
       Handler *localHandler   { hdlr ? hdlr : &handler };
-      size_t bufLen           { len ? len : buffer.size() };
+      size_t  bufLen          { len ? len : buffer.size() };
       if(hdlr != nullptr){
          localBuff            = buff;
       }else{

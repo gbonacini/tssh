@@ -103,13 +103,13 @@ namespace stringutils{
   }
   
   void uint32ToUChars(uint8_t* dest, uint32_t number) noexcept{
-     uint32_t tmp { htonl(number) };
+     uint32_t tmp     { htonl(number) };
      uint8_t* handler { reinterpret_cast<uint8_t*>(&tmp) };
      static_cast<void>(memcpy(dest, handler, sizeof(uint32_t)));
   }
   
   void uint32ToUChars(vector<uint8_t>& dest, uint32_t number) anyexcept{
-     uint32_t tmp { htonl(number) };
+     uint32_t tmp     { htonl(number) };
      uint8_t* handler { reinterpret_cast<uint8_t*>(&tmp) };
      try{
         dest.insert(dest.end(), handler, handler + sizeof(uint32_t));
@@ -145,7 +145,7 @@ namespace stringutils{
      try{ 
         buffer.insert(buffer.end(), orig, orig+stop+1);
      }catch(...){
-	throw StringUtilsException("appendVectBuffer: a : Data error.");
+	     throw StringUtilsException("appendVectBuffer: a : Data error.");
      }
   }
   
@@ -160,7 +160,7 @@ namespace stringutils{
      try{ 
         buffer.insert(buffer.end(), orig, orig+stop+1);
      }catch(...){
-	throw StringUtilsException("appendVectBuffer: b : Data error.");
+	     throw StringUtilsException("appendVectBuffer: b : Data error.");
      }
   }
   
@@ -192,7 +192,7 @@ namespace stringutils{
         buffer.insert(buffer.end(), (orig.cbegin() + safePtrdiff(start)), 
                       (orig.cend() - safePtrdiff(removePad)));
      }catch(...){
-	throw StringUtilsException("appendVectBuffer: d : Data error.");
+	     throw StringUtilsException("appendVectBuffer: d : Data error.");
      }
   }
   
@@ -283,7 +283,7 @@ namespace stringutils{
      try{
         if(len > 0) target.insert(target.end(), item.begin(), item.end());
      }catch(...){
-	throw StringUtilsException("addVarLengthDataString: Data error.");
+	     throw StringUtilsException("addVarLengthDataString: Data error.");
      }
   }
   
@@ -293,7 +293,7 @@ namespace stringutils{
      try{
         if(len > 0) target.insert(target.end(), item, item+len);
      }catch(...){
-	throw StringUtilsException("addVarLengthDataCCharStr: Data error.");
+	     throw StringUtilsException("addVarLengthDataCCharStr: Data error.");
      }
   }
   
@@ -301,6 +301,7 @@ namespace stringutils{
      size_t len { item.size() };
      if( len == 0 )
          throw StringUtilsException("insVarLengthDataString: Attempt to use an empty string.");
+
      uint32ToUChars(target.data()+start, safeUint32(len));
      insArrayVals(item, 0, target, sizeof(uint32_t));
   
@@ -313,7 +314,7 @@ namespace stringutils{
      try{ 
         check = index.at(offset + sizeof(uint32_t) - 1);
      }catch(...){
-	throw StringUtilsException("getVariableLengthRawValue: Invalid field length index.");
+	     throw StringUtilsException("getVariableLengthRawValue: Invalid field length index.");
      }
 
      uint32_t   length { charToUint32(index.data() + offset) };
@@ -321,7 +322,7 @@ namespace stringutils{
      try{ 
        if(length >0) check = index.at(length -1);
      }catch(...){
-	throw StringUtilsException(string("getVariableLengthRawValue: Invalid field length :") 
+	     throw StringUtilsException(string("getVariableLengthRawValue: Invalid field length :") 
                                    + to_string(length) + " elem: " + to_string(check));
      }
 
@@ -334,7 +335,7 @@ namespace stringutils{
               TRACE(" ** Parsed an empty Value." ); 
         }
      }catch(...){
-	throw StringUtilsException("getVariableLengthRawValue: a : Data error.");
+	     throw StringUtilsException("getVariableLengthRawValue: a : Data error.");
      }
      return length + sizeof(uint32_t);
   }
@@ -345,7 +346,7 @@ namespace stringutils{
      try{ 
         check = index.at(offset + sizeof(uint32_t) - 1);
      }catch(...){
-	throw StringUtilsException("getVariableLengthRawValue - item: Invalid field length index.");
+	     throw StringUtilsException("getVariableLengthRawValue - item: Invalid field length index.");
      }
 
      uint32_t       length { charToUint32(index.data() + offset) };
@@ -353,7 +354,7 @@ namespace stringutils{
      try{ 
        if(length >0) check = index.at(length -1);
      }catch(...){
-	throw StringUtilsException(string("getVariableLengthRawValue - item: Invalid field length :") 
+	     throw StringUtilsException(string("getVariableLengthRawValue - item: Invalid field length :") 
                                    + to_string(length) + " elem: " + to_string(check));
      }
 
@@ -367,7 +368,7 @@ namespace stringutils{
               TRACE(" ** Empty Value: " + to_string(item)); 
         }
      }catch(...){
-	throw StringUtilsException("getVariableLengthRawValue: b : Data error.");
+	     throw StringUtilsException("getVariableLengthRawValue: b : Data error.");
      }
      return length + sizeof(uint32_t);
   }
@@ -379,7 +380,7 @@ namespace stringutils{
      try{ 
         check = index.at(offset + sizeof(uint32_t) - 1);
      }catch(...){
-	throw StringUtilsException("getVariableLengthValueCsv: Invalid field length index.");
+	     throw StringUtilsException("getVariableLengthValueCsv: Invalid field length index.");
      }
 
      uint32_t       length  {    charToUint32(index.data() + offset) };
@@ -387,7 +388,7 @@ namespace stringutils{
      try{ 
        if(length >0) check = index.at(length -1);
      }catch(...){
-	throw StringUtilsException(string("getVariableLengthValueCsv: Invalid field length :") 
+	     throw StringUtilsException(string("getVariableLengthValueCsv: Invalid field length :") 
                                    + to_string(length) + " elem: " + to_string(check));
      }
 
@@ -410,7 +411,7 @@ namespace stringutils{
               algorithmStrings[item].push_back("");
         }
      }catch(...){
-	throw StringUtilsException("getVariableLengthValueCsv: a : Data error.");
+	     throw StringUtilsException("getVariableLengthValueCsv: a : Data error.");
      }
      return length + sizeof(uint32_t);
   }
@@ -422,7 +423,7 @@ namespace stringutils{
      try{ 
         check = index.at(offset + sizeof(uint32_t) - 1);
      }catch(...){
-	throw StringUtilsException("getVariableLengthValueCsv: Invalid field length index.");
+	     throw StringUtilsException("getVariableLengthValueCsv: Invalid field length index.");
      }
 
      uint32_t       length  {    charToUint32(index.data() + offset) };
@@ -430,7 +431,7 @@ namespace stringutils{
      try{ 
         if(length >0) check = index.at(length -1);
      }catch(...){
-	throw StringUtilsException(string("getVariableLengthValueCsv: Invalid field length :") 
+	     throw StringUtilsException(string("getVariableLengthValueCsv: Invalid field length :") 
                                    + to_string(length) + " elem: " + to_string(check));
      }
 
@@ -450,7 +451,7 @@ namespace stringutils{
            }
         }
      }catch(...){
-	throw StringUtilsException("getVariableLengthValueCsv: b : Data error.");
+	     throw StringUtilsException("getVariableLengthValueCsv: b : Data error.");
      }
 
      return length + sizeof(uint32_t);
@@ -463,7 +464,7 @@ namespace stringutils{
      try{ 
         check = index.at(offset + sizeof(uint32_t) - 1);
      }catch(...){
-	throw StringUtilsException("getVariableLengthSingleBignum: Invalid field length index.");
+	     throw StringUtilsException("getVariableLengthSingleBignum: Invalid field length index.");
      }
 
      uint32_t    length { charToUint32(index.data() + offset) };
@@ -471,7 +472,7 @@ namespace stringutils{
      try{ 
        if(length >0) check = index.at(length -1);
      }catch(...){
-	throw StringUtilsException(string("getVariableLengthSingleBignum: Invalid field length :") 
+	     throw StringUtilsException(string("getVariableLengthSingleBignum: Invalid field length :") 
                                    + to_string(length) + " elem: " + to_string(check));
      }
 
@@ -479,7 +480,7 @@ namespace stringutils{
         buff.insert(buff.end(), index.begin() + safePtrdiff(offset + sizeof(uint32_t)), 
                     index.begin() + safePtrdiff(offset + sizeof(uint32_t) + length));
      }catch(...){
-	throw StringUtilsException("getVariableLengthSingleBignum: Data error.");
+	     throw StringUtilsException("getVariableLengthSingleBignum: Data error.");
      }
   
      if(BN_bin2bn(buff.data(), safeInt(length), keyAndSign ) == nullptr)
@@ -504,7 +505,7 @@ namespace stringutils{
                     orig.end()
         );
      }catch(...){
-	throw StringUtilsException("insArrayVals: Data error.");
+	     throw StringUtilsException("insArrayVals: Data error.");
      }
   }
   
@@ -686,19 +687,19 @@ namespace stringutils{
                 throw(StringUtilsException(string("loadFileMem: Can't read file attributes: ") + fileName));
      
         size_t bytes   { safeSizeT(fileAttr.st_size + (terminator ? 1 : 0)) }; 
-	if(bytes == 0)
+	     if(bytes == 0)
                 throw(StringUtilsException(string("loadFileMem: Error reading file, too big: .") + fileName));
 
         try{
            dest.resize(bytes);
-	   if(terminator) dest[bytes -1] = 0;
+	        if(terminator) dest[bytes -1] = 0;
            else dest.push_back(0);
         }catch(...){
            throw StringUtilsException("loadFileMem: Data error.");
         }
 
         if( read(fd, dest.data(), bytes) == -1 ) 
-                throw(StringUtilsException(string("Error reading file: .") + fileName));
+           throw(StringUtilsException(string("Error reading file: .") + fileName));
         close(fd);
   }
 

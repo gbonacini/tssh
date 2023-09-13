@@ -60,7 +60,7 @@ int main(int argc, char **argv){
             if(argc != 2) paramError(argv[0], "-V parameter must be present alone.");
             versionInfo();
          default:
-            cerr << "Invalid parameter." << endl << endl;
+            cerr << "Invalid parameter.\n\n";
          [[fallthrough]];
          case 'h':
             paramError(argv[0], nullptr);
@@ -82,15 +82,15 @@ int main(int argc, char **argv){
       ssh.disconnect();
       
    } catch(stringutils::StringUtilsException& e){
-      cerr << "Exception Rised: " << e.what() << endl;
+      cerr << "Exception Rised: " << e.what() << '\n';
    } catch(inet::InetException& e){
-      cerr << "Exception Rised: " << e.what() << endl;
+      cerr << "Exception Rised: " << e.what() << '\n';
    } catch(crypto::CryptoException& e){
-      cerr << "Exception Rised: " << e.what() << endl;
+      cerr << "Exception Rised: " << e.what() << '\n';
    } catch(typeutils::TypesUtilsException& e){
-      cerr << "Exception Rised: " << e.what() << endl;
+      cerr << "Exception Rised: " << e.what() << '\n';
    } catch(...){
-      cerr << "Unexpected Exception Rised. "  << endl;
+      cerr << "Unexpected Exception Rised. \n";
    }
 
    return 0;
@@ -98,24 +98,24 @@ int main(int argc, char **argv){
 
 void paramError(const char* progname, const char* err){
    if(err != nullptr)
-      cerr << err << endl << endl;
-   cerr << "tssh - a test ssh client. GBonacini - (C) 2016   " << endl;
-   cerr << "Syntax: " << endl;
+      cerr << err << "\n\n";
+   cerr << "tssh - a test ssh client. GBonacini - (C) 2016-2023   \n";
+   cerr << "Syntax: \n";
    #ifndef NOTRACE
-   cerr << "       " << progname << " [-p port] [-l user] [-i identity] [-T] [-d] host | [-h] | [-V]" << endl;
+   cerr << "       " << progname << " [-p port] [-l user] [-i identity] [-T] [-d] host | [-h] | [-V]\n";
    #else
-   cerr << "       " << progname << " [-p port] [-l user] [-i identity] [-T] host | [-h] | [-V]" << endl;
+   cerr << "       " << progname << " [-p port] [-l user] [-i identity] [-T] host | [-h] | [-V]\n";
    #endif
-   cerr << "       " << "-T doesn't allocate a pty." << endl;
+   cerr << "       " << "-T doesn't allocate a pty.\n";
    #ifndef NOTRACE
-   cerr << "       " << "-d enable debug mode." << endl;
+   cerr << "       " << "-d enable debug mode.\n";
    #endif
-   cerr << "       " << "-h print this help message." << endl;
-   cerr << "       " << "-V version information." << endl;
+   cerr << "       " << "-h print this help message.\n";
+   cerr << "       " << "-V version information.\n";
    exit(1);
 }
 
 void versionInfo(void){
-   cerr << PACKAGE << " version: " VERSION << endl;
+   cerr << PACKAGE << " version: " VERSION << '\n';
    exit(1);
 }
