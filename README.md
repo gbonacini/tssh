@@ -44,11 +44,11 @@ The only external dependency is the OpenSSL library, used for the cryptographic 
 I could introduce alternatives to OpenSSL in the next versions.
 This program is intended to be used with an OpenSSL version equal or superior to:
 
-- OpenSSL 3.0.10;
+- OpenSSL 3.0.10 LTS
 
 tested  with:
 
-- OpenSSL 3.0.10
+- OpenSSL 3.0.10 LTS
 
 ( This means that with OS X, an upgrade is mandatory).
 
@@ -99,13 +99,13 @@ and, as ssh server, one of the following:
 Installation:
 =============
 
-- create compilation scripts:
+- create compilation scripts:<BR>
   make -f makefile.dist
-- launch the configure script:
+- launch the configure script:<BR>
   ./configure
-- Compile the program:
+- Compile the program:<BR>
   make
-- Install the program and the man page:
+- Install the program and the man page:<BR>
   sudo make install
 
 Instructions:
