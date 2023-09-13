@@ -18,7 +18,16 @@
 #ifndef TSSH_LIB
 #define TSSH_LIB
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wold-style-cast"
+#endif
+
 #include <openssl/bn.h>
+
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
 #include <cstdlib>
 #include <fcntl.h>
@@ -235,7 +244,7 @@ namespace tssh{
    class SshTransport : public inet::InetClient{
       public:
          SshTransport(std::string host, std::string port);
-         ~SshTransport();
+         ~SshTransport()                                                       override; 
          void                   disconnect(void)                               anyexcept; 
    
       private:
@@ -323,7 +332,7 @@ namespace tssh{
       public:
          SshConnection(std::string& usr, std::string& host, std::string& port, 
                        bool noTerm, std::string& identity, uint32_t chan=0);
-         ~SshConnection();
+         ~SshConnection()                                                                override;
          void                    getShell()                                              anyexcept; 
       private:
          mutable

@@ -147,7 +147,7 @@ namespace tssh{
          return strlen(data);
    }
    
-   VarDataRecursive::VarDataRecursive(initializer_list<VarData*>&& sList) : subList(move(sList)), globalSize(0){}
+   VarDataRecursive::VarDataRecursive(initializer_list<VarData*>&& sList) : subList(std::move(sList)), globalSize(0){}
    
    VarDataRecursive::~VarDataRecursive(void){}
    

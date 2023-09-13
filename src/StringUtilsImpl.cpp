@@ -70,7 +70,7 @@ namespace stringutils{
    {}
    
    StringUtilsException::StringUtilsException(string&& errString)
-        :  errorMessage{move(errString)}, errorCode{0}
+        :  errorMessage{std::move(errString)}, errorCode{0}
    {}
    
    StringUtilsException::StringUtilsException(int errNum, string errString)

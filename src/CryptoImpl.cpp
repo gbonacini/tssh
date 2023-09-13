@@ -48,7 +48,7 @@ namespace crypto{
    {}
 
    CryptoException::CryptoException(string&& errString)
-        :  errorMessage{move(errString)}, errorCode{0}
+        :  errorMessage{std::move(errString)}, errorCode{0}
    {}
 
    CryptoException::CryptoException(int errNum, string errString)

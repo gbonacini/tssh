@@ -33,7 +33,7 @@ namespace inet {
    {}
    
    InetException::InetException(string&& errString)
-      : errorMessage{move(errString)}, errorCode{0}
+      : errorMessage{std::move(errString)}, errorCode{0}
    {}
    
    InetException::InetException(int errNum, string errString)
