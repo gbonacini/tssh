@@ -29,7 +29,9 @@
 #endif
 
 #include <sys/types.h>
+#include <sys/ioctl.h>
 #include <termios.h>
+#include <signal.h>
 
 #include <initializer_list>
 #include <map>
