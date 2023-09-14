@@ -16,8 +16,8 @@
 // -----------------------------------------------------------------
 
 #include <cstdlib>
+#include <cstring>
 #include <fcntl.h>
-#include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <signal.h>
 #include <unistd.h>
