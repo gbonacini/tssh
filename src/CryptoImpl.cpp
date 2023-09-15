@@ -52,7 +52,8 @@ namespace crypto{
          stringutils::loadFileMem,
          stringutils::StringUtilsException,
          typeutils::safeInt,
-         typeutils::safeSizeT;
+         typeutils::safeSizeT,
+         conceptsLib::is_constantIterable;
 
    static const char *RFC3526_PRIME    {  "0FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A637ED6B0BFF5CB6F406B7EDEE386BFB5A899FA5AE9F24117C4B1FE649286651ECE45B3DC2007CB8A163BF0598DA48361C55D39A69163FA8FD24CF5F83655D23DCA3AD961C62F356208552BB9ED529077096966D670C354E4ABC9804F1746C08CA18217C32905E462E36CE3BE39E772C180E86039B2783A2EC07A28FB5C55DF06F4C52C9DE2BCBF6955817183995497CEA956AE515D2261898FA051015728E5A8AACAA68FFFFFFFFFFFFFFFF" };
 
@@ -259,8 +260,7 @@ namespace crypto{
       hKeyalg->signDH(buff, sign, mod, exp);
    }
 
-   void Crypto::signMessage(std::string& privKey, std::vector<uint8_t>& msg,
-                            std::vector<uint8_t>& sign) const anyexcept{
+   void Crypto::signMessage(string& privKey, vector<uint8_t>& msg, vector<uint8_t>& sign) const anyexcept{
       hKeyalg->signMessage(privKey, msg, sign);
    }
 
@@ -291,11 +291,11 @@ namespace crypto{
       }
    }
 
-   const std::string& Crypto::getDhId(void) const noexcept{ 
+   const string& Crypto::getDhId(void) const noexcept{ 
       return hKeyalg->getDhId();;
    }
 
-   const std::string& Crypto::getDhDescr(void) const noexcept{ 
+   const string& Crypto::getDhDescr(void) const noexcept{ 
       return hKeyalg->getDhDescr();;
    }
 
@@ -481,7 +481,9 @@ namespace crypto{
    }
 
    template<typename T>
-   void Crypto::serverKeyHash(const T& in, std::vector<uint8_t>& out) const anyexcept requires conceptsLib::is_constantIterable<T>{
+   void Crypto::serverKeyHash(const T& in, vector<uint8_t>& out) const anyexcept 
+        requires is_constantIterable<T>
+   {
       vector<uint8_t>  buffIn,
                        buffHash,
                        buffHex;
@@ -546,7 +548,8 @@ namespace crypto{
    }
 
    CryptoKeyRsa::CryptoKeyRsa(string ids) : keyFilePrefix("id_rsa"), nullKey("FFFFFFFF"), 
-                                      id(ids), descr("RSA"){
+                                      id(ids), descr("RSA")
+   {
       bnSharedKey   = BN_new();
       bnPrivKey     = BN_new();
       bnPrime       = BN_new();
@@ -563,11 +566,11 @@ namespace crypto{
       BN_CTX_free(ctx);
    }
 
-   const std::string& CryptoKeyRsa::getDhId(void) const noexcept{ 
+   const string& CryptoKeyRsa::getDhId(void) const noexcept{ 
       return id;
    }
 
-   const std::string& CryptoKeyRsa::getDhDescr(void) const noexcept{ 
+   const string& CryptoKeyRsa::getDhDescr(void) const noexcept{ 
       return descr;
    }
 
@@ -637,8 +640,7 @@ namespace crypto{
       BN_free(bnExp);
    }
 
-   void CryptoKeyRsa::signMessage(std::string& privKey, std::vector<uint8_t>& msg,
-                                  std::vector<uint8_t>& sign) const anyexcept{
+   void CryptoKeyRsa::signMessage(string& privKey, vector<uint8_t>& msg, vector<uint8_t>& sign) const anyexcept{
       EVP_PKEY*     vkey       { EVP_PKEY_new() };
       EVP_MD_CTX*   mctx       { EVP_MD_CTX_create() };
       const EVP_MD* md         { EVP_get_digestbyname("SHA1") };
@@ -788,8 +790,7 @@ namespace crypto{
    CryptoKeyRsa2_256::~CryptoKeyRsa2_256(void)
    {}
 
-   void CryptoKeyRsa2_256::signMessage(std::string& privKey, std::vector<uint8_t>& msg,
-                                  std::vector<uint8_t>& sign) const anyexcept{
+   void CryptoKeyRsa2_256::signMessage(string& privKey, vector<uint8_t>& msg, vector<uint8_t>& sign) const anyexcept{
       EVP_PKEY*     vkey       { EVP_PKEY_new() };
       EVP_MD_CTX*   mctx       { EVP_MD_CTX_create() };
       const EVP_MD* md         { EVP_get_digestbyname("SHA256") };
@@ -856,7 +857,8 @@ namespace crypto{
    }
 
    void CryptoKeyRsa2_256::signDH(vector<uint8_t>& buff, vector<uint8_t>& sign,
-                               BIGNUM* mod, BIGNUM* exp) const anyexcept{
+                               BIGNUM* mod, BIGNUM* exp) const anyexcept
+   {
       RSA   *serverPublicKey  { RSA_new() };
       
       RSA_set0_key(serverPublicKey, mod, exp, nullptr);
@@ -1018,8 +1020,7 @@ namespace crypto{
    #pragma clang diagnostic ignored "-Wundefined-func-template"
    #endif
    
-   template void Crypto::serverKeyHash(const std::string& in, std::vector<uint8_t>& out)      const anyexcept;
-   
+   template void Crypto::serverKeyHash(const string& in, vector<uint8_t>& out)      const anyexcept;
    #if defined  __clang_major__ && __clang_major__ >= 4 && !defined __APPLE__ && __clang_major__ >= 4
    #pragma clang diagnostic pop
    #endif

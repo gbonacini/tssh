@@ -31,6 +31,7 @@ namespace inet {
 
    using std::cerr,
          std::string,
+         std::vector,
          conceptsLib::is_appendable,
          typeutils::safeSsizeT,
          typeutils::safeSizeT;
@@ -340,8 +341,8 @@ namespace inet {
    #pragma clang diagnostic ignored "-Wundefined-func-template"
    #endif
 
-   template void Inet::getBufferCopy(std::string& dest, bool append=false)           const anyexcept;
-   template void Inet::getBufferCopy(std::vector<uint8_t>& dest, bool append=false)  const anyexcept;
+   template void Inet::getBufferCopy(string& dest, bool append=false)           const anyexcept;
+   template void Inet::getBufferCopy(vector<uint8_t>& dest, bool append=false)  const anyexcept;
 
    #if defined  __clang_major__ && __clang_major__ >= 4 && !defined __APPLE__ && __clang_major__ >= 4
    #pragma clang diagnostic pop

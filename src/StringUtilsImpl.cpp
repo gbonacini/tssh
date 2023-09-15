@@ -40,7 +40,10 @@ namespace stringutils{
         typeutils::safePtrdiff,
         typeutils::safeUint32,
         typeutils::safeInt,
-        typeutils::safeSizeT;
+        typeutils::safeSizeT,
+        conceptsLib::is_rawdata_accessible,
+        conceptsLib::is_iterable,
+        conceptsLib::is_constantIterable;
 
   static bool             debug         { false };
 
@@ -287,7 +290,7 @@ namespace stringutils{
 
   template<typename T> 
   void addVarLengthDataString(const T& item, vector<uint8_t>& target) anyexcept
-       requires conceptsLib::is_constantIterable<T>
+       requires is_constantIterable<T>
    {
         size_t len { item.size() };
         uint32ToUChars(target, static_cast<uint32_t>(len));
@@ -321,7 +324,7 @@ namespace stringutils{
 
   template <typename T> 
   size_t getVariableLengthRawValue(const vector<uint8_t>& index, size_t offset, T& destination) anyexcept
-      requires conceptsLib::is_iterable<T> 
+      requires is_iterable<T> 
   {
         uint8_t   check;
         try{ 
@@ -504,7 +507,7 @@ namespace stringutils{
 
   template <typename T> 
   void insArrayVals(const T& orig, size_t origOffset, vector<uint8_t>& dest, size_t destOffset) anyexcept
-       requires conceptsLib::is_iterable<T>
+       requires is_iterable<T>
   {
      size_t origSize { orig.size() },
             destSize { dest.size() };
@@ -525,7 +528,7 @@ namespace stringutils{
   
   template<typename T, typename U> 
   void decodeB64(const T& in, U& out) anyexcept
-     requires conceptsLib::is_constantIterable<T> && conceptsLib::is_constantIterable<U>{
+     requires is_constantIterable<T> && is_constantIterable<U>{
          #ifdef __GNUC__
          #pragma GCC diagnostic push
          #pragma GCC diagnostic ignored "-Wtype-limits"
@@ -567,7 +570,7 @@ namespace stringutils{
 
   template<typename T, typename U> 
   void encodeB64(const T& in, U& out) anyexcept 
-     requires conceptsLib::is_constantIterable<T> && conceptsLib::is_constantIterable<U>{
+     requires is_constantIterable<T> && is_constantIterable<U>{
          try{
              out.resize((in.size() + 2) / 3 * 4);
          }catch(...){
@@ -598,7 +601,7 @@ namespace stringutils{
           }
   }
 
-  void encodeHex(const std::vector<uint8_t>& in, std::vector<uint8_t>& out) anyexcept{
+  void encodeHex(const vector<uint8_t>& in, vector<uint8_t>& out) anyexcept{
      const uint8_t hexConv[]  {'0', '1', '2', '3', '4', '5', '6', '7',
                                '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
      try{
@@ -694,7 +697,7 @@ namespace stringutils{
 
   template<typename T>
   void loadFileMem(string fileName, T& dest, bool terminator) anyexcept
-      requires conceptsLib::is_rawdata_accessible<T>
+      requires is_rawdata_accessible<T>
   {
     struct stat fileAttr;
     int         fd { open(fileName.c_str(), O_RDONLY) };
@@ -732,20 +735,20 @@ namespace stringutils{
   #pragma clang diagnostic ignored "-Wundefined-func-template"
   #endif
 
-  template void   encodeB64(const std::vector<uint8_t>& in, std::string& out)                    anyexcept;
-  template void   decodeB64(const std::string& in, std::vector<uint8_t>& out)                    anyexcept;
-  template void   insArrayVals(const std::vector<uint8_t>& orig, size_t origOffset, 
-                               std::vector<uint8_t>& dest, size_t destOffset)                    anyexcept;
-  template void   addVarLengthDataString(const std::string& item,
-                                         std::vector<uint8_t>& target)                           anyexcept;
-  template void   addVarLengthDataString(const std::vector<uint8_t>& item,
-                                         std::vector<uint8_t>& target)                           anyexcept; 
-  template size_t getVariableLengthRawValue(const std::vector<uint8_t>& index,
-                                            size_t offset, std::string& destination)             anyexcept;
-  template size_t getVariableLengthRawValue(const std::vector<uint8_t>& index,
-                                            size_t offset, std::vector<uint8_t>&destination)     anyexcept;
-  template void   loadFileMem(std::string fileName, std::vector<uint8_t>& dest, 
-                              bool terminator)                                                   anyexcept;
+  template void   encodeB64(const vector<uint8_t>& in, string& out)                         anyexcept;
+  template void   decodeB64(const string& in, vector<uint8_t>& out)                         anyexcept;
+  template void   insArrayVals(const vector<uint8_t>& orig, size_t origOffset, 
+                               vector<uint8_t>& dest, size_t destOffset)                    anyexcept;
+  template void   addVarLengthDataString(const string& item,
+                                         vector<uint8_t>& target)                           anyexcept;
+  template void   addVarLengthDataString(const vector<uint8_t>& item,
+                                         vector<uint8_t>& target)                           anyexcept; 
+  template size_t getVariableLengthRawValue(const vector<uint8_t>& index,
+                                            size_t offset, string& destination)             anyexcept;
+  template size_t getVariableLengthRawValue(const vector<uint8_t>& index,
+                                            size_t offset, vector<uint8_t>&destination)     anyexcept;
+  template void   loadFileMem(string fileName, vector<uint8_t>& dest, 
+                              bool terminator)                                              anyexcept;
 
   #ifdef __GNUC__
   #pragma GCC diagnostic pop

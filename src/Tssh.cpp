@@ -42,6 +42,7 @@ namespace tssh{
           std::cin,
           std::cout,
           std::get,
+          std::numeric_limits,
           stringutils::addVarLengthDataCCharStr,
           stringutils::addVarLengthDataString,
           stringutils::appendVectBuffer,
@@ -226,8 +227,8 @@ namespace tssh{
       if(rndFd == -1)
          throw(InetException("SshTransport: Can't open random generator."));
    
-      packetsRcvCount = std::numeric_limits<uint32_t>::max();   
-      packetsSndCount = std::numeric_limits<uint32_t>::max();
+      packetsRcvCount = numeric_limits<uint32_t>::max();   
+      packetsSndCount = numeric_limits<uint32_t>::max();
 
       initBuffer(SSH_MAX_PACKET_SIZE);
       try{
@@ -982,11 +983,11 @@ namespace tssh{
       currStat = newStat;
    }
    
-   SshConnection::SshConnection(string& usr, string& host, string& port,
-                                 bool noTerm, std::string& identity,uint32_t chan) : 
-            SshTransport(host, port), sWinch(0), noTTY(noTerm), nonCanonical(false), user(usr), 
-            idFilePref(identity), channelNumber(chan), remoteChannelNumber(0), initialWindowsSize(0), 
-            maxPacketSize(0)                    {
+   SshConnection::SshConnection(string& usr, string& host, string& port, bool noTerm, string& identity,uint32_t chan)  
+       : SshTransport(host, port), sWinch(0), noTTY(noTerm), nonCanonical(false), user(usr), 
+         idFilePref(identity), channelNumber(chan), remoteChannelNumber(0), initialWindowsSize(0), 
+         maxPacketSize(0) 
+   {
 
       if(tcgetattr(STDIN_FILENO, &termOld) == -1 )
          throw InetException("SshConnection: Error getting terminal attributes.");
