@@ -32,7 +32,6 @@
 #endif
 
 #include <Crypto.hpp>
-
 #include <Types.hpp>
 #include <StringUtils.hpp>
 
@@ -481,8 +480,7 @@ namespace crypto{
       blkEncStC->decrFin(decrypt, dsize);
    }
 
-   template<class T>
-   void Crypto::serverKeyHash(const T& in, std::vector<uint8_t>& out) const anyexcept{
+   void Crypto::serverKeyHash(const auto& in, std::vector<uint8_t>& out) const anyexcept{
       vector<uint8_t>  buffIn,
                        buffHash,
                        buffHex;

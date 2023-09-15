@@ -360,4 +360,4 @@ namespace tssh{
          void                    createSendShellData()                                   anyexcept; 
    };
 
-}
+} // End Namespace

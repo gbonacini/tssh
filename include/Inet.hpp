@@ -87,8 +87,7 @@ namespace inet{
          void     addLine(std::string* dest)                          const noexcept;
          ssize_t  getReadLen(void)                                    const noexcept;
          void     initBuffer(size_t len)                                    anyexcept;
-         template<class T>
-         void     getBufferCopy(T& dest, bool append=false)           const anyexcept;
+         void     getBufferCopy(auto& dest, bool append=false)        const anyexcept;
    
          void     setTimeoutMin(long int seconds, int useconds=0)           noexcept;
          void     setTimeoutMax(long int seconds, int useconds=0)           noexcept;

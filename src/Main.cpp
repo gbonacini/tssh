@@ -17,12 +17,13 @@
 
 #include <unistd.h>
 
+#include <config.h> 
+
 #include <iostream>
 
 #include <Tssh.hpp>
 #include <StringUtils.hpp>
 #include <Main.hpp>
-#include <config.h> 
 
 using namespace std;
 using namespace tssh;

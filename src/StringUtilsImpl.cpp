@@ -18,10 +18,9 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-
 #include <arpa/inet.h>
-
 #include <cstring>
+
 #include <iostream>
 #include <iomanip>
 
@@ -286,8 +285,7 @@ namespace stringutils{
      cerr << "\n\n";
   }
   
-  template<class T>
-  void addVarLengthDataString(const T& item, vector<uint8_t>& target) anyexcept{
+  void addVarLengthDataString(const auto& item, vector<uint8_t>& target) anyexcept{
      size_t len { item.size() };
      uint32ToUChars(target, static_cast<uint32_t>(len));
      try{
@@ -318,8 +316,7 @@ namespace stringutils{
      return len + sizeof(uint32_t);
   }
   
-  template<class T>
-  size_t getVariableLengthRawValue(const vector<uint8_t>& index, size_t offset, T& destination) anyexcept{
+  size_t getVariableLengthRawValue(const vector<uint8_t>& index, size_t offset, auto& destination) anyexcept{
      uint8_t   check;
      try{ 
          check = index.at(offset + sizeof(uint32_t) - 1);
@@ -499,8 +496,7 @@ namespace stringutils{
      return length + sizeof(uint32_t);
   }
   
-  template<class T>
-  void insArrayVals(const T& orig, size_t origOffset, 
+  void insArrayVals(const auto& orig, size_t origOffset, 
                     vector<uint8_t>& dest, size_t destOffset) anyexcept{
      size_t origSize { orig.size() },
             destSize { dest.size() };
@@ -519,8 +515,7 @@ namespace stringutils{
      }
   }
   
-  template<class T, class T2>
-  void decodeB64(const T& in, T2& out) anyexcept{
+  void decodeB64(const auto& in, auto& out) anyexcept{
          #ifdef __GNUC__
          #pragma GCC diagnostic push
          #pragma GCC diagnostic ignored "-Wtype-limits"
@@ -560,8 +555,7 @@ namespace stringutils{
                            checkTable[static_cast<size_t>(*(i+3))]     );
   }
   
-  template<class T, class T2>
-  void encodeB64(const T& in, T2& out) anyexcept{
+  void encodeB64(const auto& in, auto& out) anyexcept{
          try{
              out.resize((in.size() + 2) / 3 * 4);
          }catch(...){
@@ -686,8 +680,7 @@ namespace stringutils{
      return orig;
   }
 
-  template<class T>
-  void loadFileMem(string fileName, T& dest, bool terminator) anyexcept{
+  void loadFileMem(string fileName, auto& dest, bool terminator) anyexcept{
     struct stat fileAttr;
     int         fd { open(fileName.c_str(), O_RDONLY) };
         if(fd == -1)

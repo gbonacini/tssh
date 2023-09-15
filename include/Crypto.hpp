@@ -396,8 +396,7 @@ namespace crypto {
                                    std::vector<uint8_t>& iv)     const anyexcept;
          void           initBlkDec(std::vector<uint8_t>& key, 
                                    std::vector<uint8_t>& iv)     const anyexcept;
-         template<class T>
-         void           serverKeyHash(const T& in, 
+         void           serverKeyHash(const auto& in, 
                                    std::vector<uint8_t> &out)    const anyexcept;
    };
 
