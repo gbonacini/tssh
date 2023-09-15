@@ -1,3 +1,9 @@
+tssh (0.7.5c) any; urgency=low
+
+ * Alpha Test
+ Upgraded: Added DH sha256. Started porting to c++20. This is OpenSSL 3.0.x compliant.
+ -- Gabriele Bonacini <gabriele.bonacini@protonmail.com> Sat, 17 Apr 2021 00:50:00 -0100
+
 tssh (0.7.0a) any; urgency=low
 
  * Alpha Test
