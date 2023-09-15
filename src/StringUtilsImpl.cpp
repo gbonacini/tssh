@@ -284,15 +284,18 @@ namespace stringutils{
      }
      cerr << "\n\n";
   }
-  
-  void addVarLengthDataString(const auto& item, vector<uint8_t>& target) anyexcept{
-     size_t len { item.size() };
-     uint32ToUChars(target, static_cast<uint32_t>(len));
-     try{
-         if(len > 0) target.insert(target.end(), item.begin(), item.end());
-     }catch(...){
-         throw StringUtilsException("addVarLengthDataString: Data error.");
-     }
+
+  template<typename T> 
+  void addVarLengthDataString(const T& item, vector<uint8_t>& target) anyexcept
+       requires conceptsLib::is_constantIterable<T>
+   {
+        size_t len { item.size() };
+        uint32ToUChars(target, static_cast<uint32_t>(len));
+        try{
+            if(len > 0) target.insert(target.end(), item.cbegin(), item.cend());
+        }catch(...){
+            throw StringUtilsException("addVarLengthDataString: Data error.");
+        }
   }
   
   void addVarLengthDataCCharStr(const char* item, vector<uint8_t>& target) anyexcept{
@@ -315,36 +318,39 @@ namespace stringutils{
   
      return len + sizeof(uint32_t);
   }
-  
-  size_t getVariableLengthRawValue(const vector<uint8_t>& index, size_t offset, auto& destination) anyexcept{
-     uint8_t   check;
-     try{ 
-         check = index.at(offset + sizeof(uint32_t) - 1);
-     }catch(...){
-         throw StringUtilsException("getVariableLengthRawValue: Invalid field length index.");
-     }
 
-     uint32_t   length { charToUint32(index.data() + offset) };
-
-     try{ 
-         if(length >0) check = index.at(length -1);
-     }catch(...){
-         throw StringUtilsException(string("getVariableLengthRawValue: Invalid field length :") 
-                                   + to_string(length) + " elem: " + to_string(check));
-     }
-
-     try{
-        if(length > 0){
-              destination.insert(destination.end(), index.begin() + safePtrdiff(sizeof(uint32_t) + offset),
-                                 index.begin() + safePtrdiff(sizeof(uint32_t) + offset + length));
-        }else{
-              destination.push_back(0);
-              TRACE(" ** Parsed an empty Value." ); 
+  template <typename T> 
+  size_t getVariableLengthRawValue(const vector<uint8_t>& index, size_t offset, T& destination) anyexcept
+      requires conceptsLib::is_iterable<T> 
+  {
+        uint8_t   check;
+        try{ 
+            check = index.at(offset + sizeof(uint32_t) - 1);
+        }catch(...){
+            throw StringUtilsException("getVariableLengthRawValue: Invalid field length index.");
         }
-     }catch(...){
-         throw StringUtilsException("getVariableLengthRawValue: a : Data error.");
-     }
-     return length + sizeof(uint32_t);
+
+        uint32_t   length { charToUint32(index.data() + offset) };
+
+        try{ 
+            if(length >0) check = index.at(length -1);
+        }catch(...){
+            throw StringUtilsException(string("getVariableLengthRawValue: Invalid field length :") 
+                                      + to_string(length) + " elem: " + to_string(check));
+        }
+
+        try{
+           if(length > 0){
+                 destination.insert(destination.end(), index.begin() + safePtrdiff(sizeof(uint32_t) + offset),
+                                    index.begin() + safePtrdiff(sizeof(uint32_t) + offset + length));
+           }else{
+                 destination.push_back(0);
+                 TRACE(" ** Parsed an empty Value." ); 
+           }
+        }catch(...){
+            throw StringUtilsException("getVariableLengthRawValue: a : Data error.");
+        }
+        return length + sizeof(uint32_t);
   }
   
   size_t getVariableLengthRawValue(const vector<uint8_t>& index, size_t offset,
@@ -495,9 +501,11 @@ namespace stringutils{
   
      return length + sizeof(uint32_t);
   }
-  
-  void insArrayVals(const auto& orig, size_t origOffset, 
-                    vector<uint8_t>& dest, size_t destOffset) anyexcept{
+
+  template <typename T> 
+  void insArrayVals(const T& orig, size_t origOffset, vector<uint8_t>& dest, size_t destOffset) anyexcept
+       requires conceptsLib::is_iterable<T>
+  {
      size_t origSize { orig.size() },
             destSize { dest.size() };
      if( ((origSize - origOffset) > (destSize - destOffset)) ||
@@ -515,7 +523,9 @@ namespace stringutils{
      }
   }
   
-  void decodeB64(const auto& in, auto& out) anyexcept{
+  template<typename T, typename U> 
+  void decodeB64(const T& in, U& out) anyexcept
+     requires conceptsLib::is_constantIterable<T> && conceptsLib::is_constantIterable<U>{
          #ifdef __GNUC__
          #pragma GCC diagnostic push
          #pragma GCC diagnostic ignored "-Wtype-limits"
@@ -554,8 +564,10 @@ namespace stringutils{
                  *(j+2)  = static_cast<uint8_t>(checkTable[static_cast<size_t>(*(i+2))] << 6 | 
                            checkTable[static_cast<size_t>(*(i+3))]     );
   }
-  
-  void encodeB64(const auto& in, auto& out) anyexcept{
+
+  template<typename T, typename U> 
+  void encodeB64(const T& in, U& out) anyexcept 
+     requires conceptsLib::is_constantIterable<T> && conceptsLib::is_constantIterable<U>{
          try{
              out.resize((in.size() + 2) / 3 * 4);
          }catch(...){
@@ -680,7 +692,10 @@ namespace stringutils{
      return orig;
   }
 
-  void loadFileMem(string fileName, auto& dest, bool terminator) anyexcept{
+  template<typename T>
+  void loadFileMem(string fileName, T& dest, bool terminator) anyexcept
+      requires conceptsLib::is_rawdata_accessible<T>
+  {
     struct stat fileAttr;
     int         fd { open(fileName.c_str(), O_RDONLY) };
         if(fd == -1)
@@ -694,7 +709,7 @@ namespace stringutils{
                 throw(StringUtilsException(string("loadFileMem: Error reading file, too big: .") + fileName));
 
         try{
-           dest.resize(bytes);
+            dest.resize(bytes);
             if(terminator) dest[bytes -1] = 0;
             else dest.push_back(0);
         }catch(...){
@@ -723,7 +738,7 @@ namespace stringutils{
                                std::vector<uint8_t>& dest, size_t destOffset)                    anyexcept;
   template void   addVarLengthDataString(const std::string& item,
                                          std::vector<uint8_t>& target)                           anyexcept;
-  template void   addVarLengthDataString(const std::vector<uint8_t>&item,
+  template void   addVarLengthDataString(const std::vector<uint8_t>& item,
                                          std::vector<uint8_t>& target)                           anyexcept; 
   template size_t getVariableLengthRawValue(const std::vector<uint8_t>& index,
                                             size_t offset, std::string& destination)             anyexcept;

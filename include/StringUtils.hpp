@@ -83,12 +83,17 @@ namespace stringutils{
                    size_t begin = 0, size_t end = 0, size_t max = 0 )                               noexcept;
    void      trace(const  char*  header, const uint8_t* buff, const size_t size = 0,
                    size_t begin = 0, size_t end = 0 )                                               noexcept;
-   void      addVarLengthDataString(const auto& item, std::vector<uint8_t>& target)                 anyexcept;
+   template<typename T>
+   void      addVarLengthDataString(const T& item, std::vector<uint8_t>& target)                    anyexcept
+             requires conceptsLib::is_constantIterable<T>;
    void      addVarLengthDataCCharStr(const char* item, std::vector<uint8_t>& target)               anyexcept;
    size_t    insVarLengthDataString(const std::string item, size_t start,
                                     std::vector<uint8_t>& target)                                   anyexcept;
+
+   template <typename T>
    size_t    getVariableLengthRawValue(const std::vector<uint8_t>& index, 
-                                       size_t offset, auto& destination)                            anyexcept;
+                                       size_t offset, T& destination)                               anyexcept
+             requires conceptsLib::is_iterable<T>;
 
    size_t    getVariableLengthRawValue(const std::vector<uint8_t>& index, 
                                        size_t offset,
@@ -105,16 +110,26 @@ namespace stringutils{
    size_t    getVariableLengthSingleBignum(const std::vector<uint8_t>& index, 
                                            size_t offset,
                                            BIGNUM* keyAndSign)                                      anyexcept;
-   void      insArrayVals(const auto& orig, size_t origOffset,
-                          std::vector<uint8_t>& dest, size_t destOffset)                            anyexcept;
-   void      decodeB64(const auto& in, auto& out)                                                   anyexcept;
-   void      encodeB64(const auto& in, auto& out)                                                   anyexcept;
+   template<typename T>
+   void      insArrayVals(const T& orig, size_t origOffset,
+                          std::vector<uint8_t>& dest, size_t destOffset)                            anyexcept
+               requires conceptsLib::is_iterable<T>;
+   template<typename T, typename U>
+   void      decodeB64(const T& in, U& out)                                                         anyexcept
+                requires conceptsLib::is_constantIterable<T> 
+                &&       conceptsLib::is_constantIterable<U>;
+   template<typename T, typename U>
+   void      encodeB64(const T& in, U& out)                                                         anyexcept
+                requires conceptsLib::is_constantIterable<T> 
+                &&       conceptsLib::is_constantIterable<U>;
    void      encodeHex(const std::vector<uint8_t>& in, std::vector<uint8_t>& out)                   anyexcept;
    void      getPassword(std::vector<uint8_t>& pwd)                                                 anyexcept;
    void      getPassword(std::vector<uint8_t>& pwd, struct termios* oldTerm, 
                          struct termios* newTerm)                                                   anyexcept;
    void*     secureZeroing(void *orig, size_t len)                                                  noexcept;
-   void      loadFileMem(std::string fileName, auto& dest, bool terminator)                         anyexcept;
+   template<typename T>
+   void      loadFileMem(std::string fileName, T& dest, bool terminator)                            anyexcept
+             requires conceptsLib::is_rawdata_accessible<T>;
 
    extern template
    void   encodeB64(const std::vector<uint8_t>& in, std::string& out)                               anyexcept;
@@ -127,7 +142,7 @@ namespace stringutils{
    void   addVarLengthDataString(const std::string& item,
                                  std::vector<uint8_t>& target)                                      anyexcept;
    extern template 
-   void   addVarLengthDataString(const std::vector<uint8_t>&item,
+   void   addVarLengthDataString(const std::vector<uint8_t>& item,
                                  std::vector<uint8_t>& target)                                      anyexcept;
    extern template 
    size_t getVariableLengthRawValue(const std::vector<uint8_t>& index,

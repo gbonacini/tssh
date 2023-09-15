@@ -37,6 +37,7 @@
 #include <tuple>
 
 #include <anyexcept.hpp>
+#include <ConceptsLib.hpp>
 
 enum CRYPTOCFG { AES_BLOCK_LEN        = 16, 
                  SHA1_DIGEST_LENGTH   = 20, 
@@ -396,8 +397,10 @@ namespace crypto {
                                    std::vector<uint8_t>& iv)     const anyexcept;
          void           initBlkDec(std::vector<uint8_t>& key, 
                                    std::vector<uint8_t>& iv)     const anyexcept;
-         void           serverKeyHash(const auto& in, 
-                                   std::vector<uint8_t> &out)    const anyexcept;
+         template<typename T>
+         void           serverKeyHash(const T& in, 
+                                   std::vector<uint8_t> &out)    const anyexcept
+                        requires conceptsLib::is_constantIterable<T>;
    };
 
    extern template 

@@ -26,6 +26,7 @@
 #include <string>
 
 #include <anyexcept.hpp>
+#include <ConceptsLib.hpp>
 
 namespace typeutils{
 
@@ -52,25 +53,29 @@ namespace typeutils{
    #pragma GCC diagnostic ignored "-Wtype-limits"
    #endif
 
-   ssize_t safeSsizeT(auto size)  anyexcept{     
+   template<typename T>
+   ssize_t safeSsizeT(T size)  anyexcept requires conceptsLib::is_integral<T> {     
       if(size > std::numeric_limits<ssize_t>::max())
          throw TypesUtilsException("Invalid conversion to ssize_t: overflow.");
       return static_cast<ssize_t>(size);
    }
 
-   int safeInt(auto size)  anyexcept{        
+   template<typename T>
+   int safeInt(T size)  anyexcept requires conceptsLib::is_integral<T>{        
       if(size > std::numeric_limits<int>::max())
          throw TypesUtilsException("Invalid conversion to int: overflow.");
       return static_cast<int>(size);
    }
 
-   ptrdiff_t safePtrdiff(auto offset)  anyexcept{  
+   template<typename T>
+   ptrdiff_t safePtrdiff(T offset)  anyexcept requires conceptsLib::is_integral<T> {  
       if(offset > std::numeric_limits<ptrdiff_t>::max())
          throw TypesUtilsException("Invalid conversion to ptrdiff_t: overflow.");
       return static_cast<ptrdiff_t>(offset);
    }
 
-   size_t safeSizeT(auto size)  anyexcept{
+   template<typename T>
+   size_t safeSizeT(T size)  anyexcept requires conceptsLib::is_integral<T>{
       if(size < 0)       
          throw TypesUtilsException("Invalid conversion to size_t: negative value.");
       if(size > std::numeric_limits<size_t>::max())
@@ -78,7 +83,8 @@ namespace typeutils{
       return static_cast<size_t>(size);
    }
 
-   uint8_t safeUint8(auto size)  anyexcept{
+   template<typename T>
+   uint8_t safeUint8(T size)  anyexcept requires conceptsLib::is_integral<T>{
       if(size < 0)       
          throw TypesUtilsException("Invalid conversion to uint8_t: negative value.");
       if(size > std::numeric_limits<uint8_t>::max())
@@ -86,7 +92,8 @@ namespace typeutils{
       return static_cast<uint8_t>(size);
    }
 
-   unsigned int safeUInt(auto size)  anyexcept{       
+   template<typename T>
+   unsigned int safeUInt(T size)  anyexcept requires conceptsLib::is_integral<T>{       
       if(size < 0)       
          throw TypesUtilsException("Invalid conversion to unsigned int: negative value.");
       if(size > std::numeric_limits<unsigned int>::max())
@@ -94,7 +101,8 @@ namespace typeutils{
       return static_cast<unsigned int>(size);
    }
 
-   unsigned long safeULong(auto size)  anyexcept{      
+   template<typename T>
+   unsigned long safeULong(T size)  anyexcept requires conceptsLib::is_integral<T>{      
       if(size < 0)       
          throw TypesUtilsException("Invalid conversion to unsigned long: negative value.");
       if(size > std::numeric_limits<unsigned long>::max())
@@ -102,7 +110,8 @@ namespace typeutils{
       return static_cast<unsigned long>(size);
    }
 
-   uint32_t safeUint32(auto size)  anyexcept{     
+   template<typename T>
+   uint32_t safeUint32(T size)  anyexcept requires conceptsLib::is_integral<T>{     
       if(size < 0)       
          throw TypesUtilsException("Invalid conversion to uint32_t: negative value.");
       if(size > std::numeric_limits<uint32_t>::max())

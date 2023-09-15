@@ -31,6 +31,7 @@ namespace inet {
 
    using std::cerr,
          std::string,
+         conceptsLib::is_appendable,
          typeutils::safeSsizeT,
          typeutils::safeSizeT;
    
@@ -180,8 +181,10 @@ namespace inet {
    ssize_t Inet::getReadLen(void) const noexcept{
       return readLen;
    }
-   
-   void Inet::getBufferCopy(auto& dest, bool append)  const anyexcept{
+
+   template<typename T> 
+   void Inet::getBufferCopy(T& dest, bool append)  const anyexcept requires is_appendable<T> {
+      
       if(buffer.size() == 0)
          throw InetException("getBufferCopy: Attempt of copy an unitialized buffer.");
       try{
@@ -193,8 +196,8 @@ namespace inet {
    }
    
    ssize_t Inet::readBuffer(size_t len, Handler* hdlr, void** buff) anyexcept{
-      void**  localBuff;
-      void*   indBuff;
+      void**  localBuff { nullptr };
+      void*   indBuff   { nullptr };
       Handler *localHandler   { hdlr ? hdlr : &handler };
       size_t  bufLen          { len ? len : buffer.size() };
       if(hdlr != nullptr){

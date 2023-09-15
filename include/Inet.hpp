@@ -26,6 +26,7 @@
 #include <vector>
 
 #include <anyexcept.hpp>
+#include <ConceptsLib.hpp>
    
 namespace inet{
    
@@ -87,7 +88,9 @@ namespace inet{
          void     addLine(std::string* dest)                          const noexcept;
          ssize_t  getReadLen(void)                                    const noexcept;
          void     initBuffer(size_t len)                                    anyexcept;
-         void     getBufferCopy(auto& dest, bool append=false)        const anyexcept;
+         template<typename T> 
+         void     getBufferCopy(T& dest, bool append=false)            const anyexcept 
+                  requires conceptsLib::is_appendable<T>;
    
          void     setTimeoutMin(long int seconds, int useconds=0)           noexcept;
          void     setTimeoutMax(long int seconds, int useconds=0)           noexcept;

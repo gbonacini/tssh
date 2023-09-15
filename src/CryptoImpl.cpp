@@ -480,7 +480,8 @@ namespace crypto{
       blkEncStC->decrFin(decrypt, dsize);
    }
 
-   void Crypto::serverKeyHash(const auto& in, std::vector<uint8_t>& out) const anyexcept{
+   template<typename T>
+   void Crypto::serverKeyHash(const T& in, std::vector<uint8_t>& out) const anyexcept requires conceptsLib::is_constantIterable<T>{
       vector<uint8_t>  buffIn,
                        buffHash,
                        buffHex;
