@@ -36,14 +36,16 @@ namespace stringutils{
         std::string,
         std::to_string,
         std::vector,
+        std::array,
         std::set,
+        std::initializer_list,
         typeutils::safePtrdiff,
         typeutils::safeUint32,
         typeutils::safeInt,
         typeutils::safeSizeT,
-        conceptsLib::is_rawdata_accessible,
-        conceptsLib::is_iterable,
-        conceptsLib::is_constantIterable;
+        conceptsLib::RawdataAccessible,
+        conceptsLib::Iterable,
+        conceptsLib::ConstantIterable;
 
   static bool             debug         { false };
 
@@ -95,6 +97,15 @@ namespace stringutils{
 
    int  StringUtilsException::getErrorCode(void)  const noexcept{
       return errorCode;
+   }
+
+   string mergeStrings(initializer_list<const char*> list) noexcept{
+       string buff {""};
+
+       for( auto elem : list)
+           buff.append(elem);
+
+       return buff;
    }
  
    void setDebug(bool onOff) noexcept{
@@ -249,8 +260,7 @@ namespace stringutils{
      cerr << header << "\n\n";
   }
 
-  void trace(string header, const vector<uint8_t>* buff,
-             size_t begin, size_t end, size_t max) noexcept{
+  void trace(string header, const vector<uint8_t>* buff, size_t begin, size_t end, size_t max) noexcept {
      cerr << header << "\n\n";
 
      size_t len    { max ? max : buff->size() };
@@ -288,9 +298,7 @@ namespace stringutils{
      cerr << "\n\n";
   }
 
-  template<typename T> 
-  void addVarLengthDataString(const T& item, vector<uint8_t>& target) anyexcept
-       requires is_constantIterable<T>
+  void addVarLengthDataString(const ConstantIterable auto& item, vector<uint8_t>& target) anyexcept
    {
         size_t len { item.size() };
         uint32ToUChars(target, static_cast<uint32_t>(len));
@@ -322,9 +330,7 @@ namespace stringutils{
      return len + sizeof(uint32_t);
   }
 
-  template <typename T> 
-  size_t getVariableLengthRawValue(const vector<uint8_t>& index, size_t offset, T& destination) anyexcept
-      requires is_iterable<T> 
+  size_t getVariableLengthRawValue(const vector<uint8_t>& index, size_t offset, Iterable auto& destination) anyexcept
   {
         uint8_t   check;
         try{ 
@@ -505,10 +511,7 @@ namespace stringutils{
      return length + sizeof(uint32_t);
   }
 
-  template <typename T> 
-  void insArrayVals(const T& orig, size_t origOffset, vector<uint8_t>& dest, size_t destOffset) anyexcept
-       requires is_iterable<T>
-  {
+  void insArrayVals(const Iterable auto& orig, size_t origOffset, vector<uint8_t>& dest, size_t destOffset) anyexcept {
      size_t origSize { orig.size() },
             destSize { dest.size() };
      if( ((origSize - origOffset) > (destSize - destOffset)) ||
@@ -526,9 +529,7 @@ namespace stringutils{
      }
   }
   
-  template<typename T, typename U> 
-  void decodeB64(const T& in, U& out) anyexcept
-     requires is_constantIterable<T> && is_constantIterable<U>{
+  void decodeB64(const ConstantIterable auto& in, ConstantIterable auto& out) anyexcept{
          #ifdef __GNUC__
          #pragma GCC diagnostic push
          #pragma GCC diagnostic ignored "-Wtype-limits"
@@ -568,9 +569,7 @@ namespace stringutils{
                            checkTable[static_cast<size_t>(*(i+3))]     );
   }
 
-  template<typename T, typename U> 
-  void encodeB64(const T& in, U& out) anyexcept 
-     requires is_constantIterable<T> && is_constantIterable<U>{
+  void encodeB64(const ConstantIterable auto& in, ConstantIterable auto& out) anyexcept {
          try{
              out.resize((in.size() + 2) / 3 * 4);
          }catch(...){
@@ -695,10 +694,7 @@ namespace stringutils{
      return orig;
   }
 
-  template<typename T>
-  void loadFileMem(string fileName, T& dest, bool terminator) anyexcept
-      requires is_rawdata_accessible<T>
-  {
+  void loadFileMem(string fileName, RawdataAccessible auto& dest, bool terminator) anyexcept {
     struct stat fileAttr;
     int         fd { open(fileName.c_str(), O_RDONLY) };
         if(fd == -1)
@@ -758,4 +754,4 @@ namespace stringutils{
   #pragma clang diagnostic pop
   #endif
 
-}
+} // End namespace

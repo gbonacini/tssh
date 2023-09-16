@@ -22,30 +22,30 @@
 namespace conceptsLib{
 
 template<typename V>
-concept is_appendable = requires (V v ){
+concept Appendable = requires (V v ){
      v.clear();
      v.end();
 };
 
 template<typename V>
-concept is_constantIterable = requires (V v ){
+concept ConstantIterable = requires (V v ){
      v.cbegin();
      v.cend();
 };
 
 template<typename V>
-concept is_iterable = requires (V v ){
+concept Iterable = requires (V v ){
      v.begin();
      v.end();
 };
 
 template<typename V>
-concept is_rawdata_accessible = requires (V v ){
+concept RawdataAccessible = requires (V v ){
      v.data();
 };
 
 template<typename V>
-concept is_integral = requires (V ){
+concept Integral = requires (V ){
      std::is_integral_v<V>;
 };
 

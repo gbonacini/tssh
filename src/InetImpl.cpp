@@ -32,7 +32,7 @@ namespace inet {
    using std::cerr,
          std::string,
          std::vector,
-         conceptsLib::is_appendable,
+         conceptsLib::Appendable,
          typeutils::safeSsizeT,
          typeutils::safeSizeT;
    
@@ -183,9 +183,8 @@ namespace inet {
       return readLen;
    }
 
-   template<typename T> 
-   void Inet::getBufferCopy(T& dest, bool append)  const anyexcept requires is_appendable<T> {
-      
+   void Inet::getBufferCopy(Appendable auto& dest, bool append)  const anyexcept 
+   {
       if(buffer.size() == 0)
          throw InetException("getBufferCopy: Attempt of copy an unitialized buffer.");
       try{
@@ -348,4 +347,4 @@ namespace inet {
    #pragma clang diagnostic pop
    #endif
 
-}
+} // End namespace

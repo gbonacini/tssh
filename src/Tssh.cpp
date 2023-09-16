@@ -57,6 +57,7 @@ namespace tssh{
           stringutils::loadFileMem,
           stringutils::secureZeroing,
           stringutils::trace,
+          stringutils::mergeStrings,
           stringutils::getDebug,
           stringutils::uint32ToUChars,
           stringutils::StringUtilsException,
@@ -233,9 +234,7 @@ namespace tssh{
       initBuffer(SSH_MAX_PACKET_SIZE);
       try{
          incomingEnc.resize(SSH_MAX_PACKET_SIZE * 10);  
-         outcomingEnc.resize(SSH_MAX_PACKET_SIZE);
          currentHashS.resize(SSH_MAX_PACKET_SIZE);
-         keys.resize(SSH_STD_KEYS_NUMBER);
          message.resize(SSH_MAX_PACKET_SIZE);
          partialRead.resize(SSH_MAX_PACKET_SIZE * 10);
       }catch(...){
@@ -373,7 +372,7 @@ namespace tssh{
       }
 
       try{
-         fill(incomingEnc.begin(), incomingEnc.end(), 0);
+            fill(incomingEnc.begin(), incomingEnc.end(), 0);
       }catch(...){
             throw InetException("readSshEnc: Buffer init error.");
       }
@@ -462,7 +461,7 @@ namespace tssh{
       uint32ToUChars(msg.data(), safeUint32(msg.size() - sizeof(uint32_t)));
 
       crypto.encr(msg.data(), safeInt(msg.size()), outcomingEnc.data(), &outcomingEncLen);
-      encrTextLen = static_cast<size_t>(outcomingEncLen);
+      encrTextLen = static_cast<size_t>(outcomingEncLen); // TODO: check
 
       crypto.encrFin(outcomingEnc.data() + safeSizeT(outcomingEncLen), &outcomingEncLen);
 
@@ -480,8 +479,8 @@ namespace tssh{
       crypto.hmacCtS(currentHashS.data(), safeInt(msg.size() + sizeof(uint32_t)),
                      outcomingEnc.data() + encrTextLen, &hashLen);
 
-      TRACE("* HMAC Len: " + to_string(hashLen) + "\n* Encr + HMAC payload: ", 
-                      &outcomingEnc, encrTextLen, encrTextLen + hashLen, 
+      TRACE(mergeStrings({ "* HMAC Len: " , to_string(hashLen).c_str() , "\n* Encr + HMAC payload: " }).c_str(), 
+                      outcomingEnc.data(), encrTextLen, encrTextLen + hashLen, 
                       encrTextLen + hashLen);
 
       writeBuffer(outcomingEnc.data(), encrTextLen + hashLen);
@@ -532,8 +531,7 @@ namespace tssh{
          throw InetException("checkSshHeader: Unexpected Header");
    }
    
-   void SshTransport::addRandomBytes(size_t bytes, vector<uint8_t>& target, 
-                                     size_t offset) const anyexcept{
+   void SshTransport::addRandomBytes(size_t bytes, vector<uint8_t>& target, size_t offset) const anyexcept{
       try{
          target.insert(target.end(), bytes, 0);
       }catch(...){
@@ -1651,4 +1649,4 @@ namespace tssh{
    #pragma clang diagnostic pop 
    #endif
 
-}
+} // End Namespace

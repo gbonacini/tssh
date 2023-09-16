@@ -53,7 +53,7 @@ namespace crypto{
          stringutils::StringUtilsException,
          typeutils::safeInt,
          typeutils::safeSizeT,
-         conceptsLib::is_constantIterable;
+         conceptsLib::ConstantIterable;
 
    static const char *RFC3526_PRIME    {  "0FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A637ED6B0BFF5CB6F406B7EDEE386BFB5A899FA5AE9F24117C4B1FE649286651ECE45B3DC2007CB8A163BF0598DA48361C55D39A69163FA8FD24CF5F83655D23DCA3AD961C62F356208552BB9ED529077096966D670C354E4ABC9804F1746C08CA18217C32905E462E36CE3BE39E772C180E86039B2783A2EC07A28FB5C55DF06F4C52C9DE2BCBF6955817183995497CEA956AE515D2261898FA051015728E5A8AACAA68FFFFFFFFFFFFFFFF" };
 
@@ -397,14 +397,14 @@ namespace crypto{
       if(!found)
          throw CryptoException("setBlkAlgCtS: Unexpected CtS Block Cipher type.");
 
-     switch(idx){
+      switch(idx){
         case 0:
            blkEncCtS = new CryptoBlkEncCtSAes128Ctr();
            TRACE("* MAC CtS Selected: hmac-sha1");
         break;
         default:
            throw CryptoException("setBlkAlgCtS: MAC CtS type error.");
-     }
+      }
    }
 
    void Crypto::setBlkAlgStC(void)  anyexcept{
@@ -420,14 +420,14 @@ namespace crypto{
       if(!found)
          throw CryptoException("setBlkAlgStC: Unexpected StC Block Cipher type.");
 
-     switch(idx){
+      switch(idx){
         case 0:
            blkEncStC = new CryptoBlkEncStCAes128Ctr();
            TRACE("* MAC StC Selected: hmac-sha1");
         break;
         default:
            throw CryptoException("setBlkAlgStC: MAC StC type error.");
-     }
+      }
    }
 
    void Crypto::initMacCtS(vector<uint8_t>* initVect) noexcept{
@@ -480,9 +480,7 @@ namespace crypto{
       blkEncStC->decrFin(decrypt, dsize);
    }
 
-   template<typename T>
-   void Crypto::serverKeyHash(const T& in, vector<uint8_t>& out) const anyexcept 
-        requires is_constantIterable<T>
+   void Crypto::serverKeyHash(const ConstantIterable auto& in, vector<uint8_t>& out) const anyexcept 
    {
       vector<uint8_t>  buffIn,
                        buffHash,
@@ -1025,4 +1023,4 @@ namespace crypto{
    #pragma clang diagnostic pop
    #endif
 
-}
+} // End namespace

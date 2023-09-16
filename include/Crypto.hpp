@@ -397,13 +397,11 @@ namespace crypto {
                                    std::vector<uint8_t>& iv)     const anyexcept;
          void           initBlkDec(std::vector<uint8_t>& key, 
                                    std::vector<uint8_t>& iv)     const anyexcept;
-         template<typename T>
-         void           serverKeyHash(const T& in, 
-                                   std::vector<uint8_t> &out)    const anyexcept
-                        requires conceptsLib::is_constantIterable<T>;
+         void           serverKeyHash(const conceptsLib::ConstantIterable auto& in, 
+                                   std::vector<uint8_t> &out)    const anyexcept;
    };
 
    extern template 
    void Crypto::serverKeyHash(const std::string& in, 
                               std::vector<uint8_t>& out)         const anyexcept;
-}
+} // End namespace

@@ -88,9 +88,8 @@ namespace inet{
          void     addLine(std::string* dest)                          const noexcept;
          ssize_t  getReadLen(void)                                    const noexcept;
          void     initBuffer(size_t len)                                    anyexcept;
-         template<typename T> 
-         void     getBufferCopy(T& dest, bool append=false)            const anyexcept 
-                  requires conceptsLib::is_appendable<T>;
+         void     getBufferCopy(conceptsLib::Appendable auto& dest, 
+                                bool append=false)                    const anyexcept;
    
          void     setTimeoutMin(long int seconds, int useconds=0)           noexcept;
          void     setTimeoutMax(long int seconds, int useconds=0)           noexcept;
@@ -132,5 +131,6 @@ namespace inet{
    void Inet::getBufferCopy(std::string& dest, bool append=false)           const anyexcept;
    extern template 
    void Inet::getBufferCopy(std::vector<uint8_t>& dest, bool append=false)  const anyexcept;
-}
+
+} // End namespace
    

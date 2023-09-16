@@ -36,6 +36,7 @@
 #include <initializer_list>
 #include <map>
 #include <set>
+#include <array>
 
 #include <anyexcept.hpp>
 #include <Inet.hpp>
@@ -240,47 +241,47 @@ namespace tssh{
          void                   disconnect(void)                               anyexcept; 
    
       private:
-         int                    rndFd;
-         std::string            hostname, 
-                                clientIdString,           
-                                serverIdString;           
+         int                                    rndFd;
+         std::string                            hostname, 
+                                                clientIdString,           
+                                                serverIdString;           
  
-         mutable uint32_t       packetsRcvCount;   
-         mutable uint32_t       packetsSndCount;
+         mutable uint32_t                       packetsRcvCount;   
+         mutable uint32_t                       packetsSndCount;
     
-         sshKexPacket           clientConfiguration;
-         SshDhReplyPacket       dhReplyPacket;
-         std::vector<Key>       keys;   // Rows:                          |  Cols:
-                                        // -------------------------------------------------
-                                        // 0 - INITIAL_IV_C_TO_S_IDX      |  0 - KEYTEXT
-                                        // 1 - INITIAL_IV_S_TO_C_IDX      |  1 - KEYTYPE
-                                        // 2 - ENCR_KEY_C_TO_S_IDX        |  2 - KEYHASH
-                                        // 3 - ENCR_KEY_S_TO_C_IDX        |
-                                        // 4 - INTEGRITY_KEY_C_TO_S_IDX   |
-                                        // 5 - INTEGRITY_KEY_S_TO_C_IDX   |
-         bool                    haveKeys;
-         std::vector<uint8_t>    clientKexInit,
-                                 serverKexInit,
-                                 sharedKey,
-                                 currentSessionHash,  
-                                 outcomingEnc,
-                                 currentHashC,
-                                 currentHashS,
-                                 buffCopy;
+         sshKexPacket                           clientConfiguration;
+         SshDhReplyPacket                       dhReplyPacket;
+         std::array<Key, SSH_STD_KEYS_NUMBER>   keys;   // Rows:                          |  Cols:
+                                                        // -------------------------------------------------
+                                                        // 0 - INITIAL_IV_C_TO_S_IDX      |  0 - KEYTEXT
+                                                        // 1 - INITIAL_IV_S_TO_C_IDX      |  1 - KEYTYPE
+                                                        // 2 - ENCR_KEY_C_TO_S_IDX        |  2 - KEYHASH
+                                                        // 3 - ENCR_KEY_S_TO_C_IDX        |
+                                                        // 4 - INTEGRITY_KEY_C_TO_S_IDX   |
+                                                        // 5 - INTEGRITY_KEY_S_TO_C_IDX   |
+         bool                                    haveKeys;
+         std::vector<uint8_t>                    clientKexInit,
+                                                 serverKexInit,
+                                                 sharedKey,
+                                                 currentSessionHash,  
+                                                 currentHashC,
+                                                 currentHashS,
+                                                 buffCopy;
+         std::array<uint8_t,SSH_MAX_PACKET_SIZE> outcomingEnc;
       protected:
-         crypto::Crypto          crypto;
-         ClientPubKey            clientPubKey;
-         std::vector<uint8_t>    sessionIdHash,
-                                 incomingEnc,
-                                 genericBuffer,
-                                 message,
-                                 partialRead; 
-         unsigned int            currentHashCLen;
-         size_t                  currentBlockLenE,
-                                 currentBlockLenD;
-         struct termios          termOld,
-                                 termNew;
-         std::string             knownHosts;
+         crypto::Crypto                          crypto;
+         ClientPubKey                            clientPubKey;
+         std::vector<uint8_t>                    sessionIdHash,
+                                                 incomingEnc,
+                                                 genericBuffer,
+                                                 message,
+                                                 partialRead; 
+         unsigned int                            currentHashCLen;
+         size_t                                  currentBlockLenE,
+                                                 currentBlockLenD;
+         struct termios                          termOld,
+                                                 termNew;
+         std::string                             knownHosts;
 
          void                   readSsh(void)                                            anyexcept; 
          bool                   readSshEnc(int chan=-1)                                  anyexcept; 
@@ -328,25 +329,25 @@ namespace tssh{
          void                    getShell()                                              anyexcept; 
       private:
          mutable
-         volatile sig_atomic_t   sWinch;
-         bool                    noTTY,
-                                 nonCanonical;
-         std::string             privKey,
-                                 user,
-                                 idFilePref,
-                                 pubKey;
-         uint32_t                channelNumber,
-                                 remoteChannelNumber,
-                                 initialWindowsSize,
-                                 maxPacketSize,
-                                 bytesToAdd;
-         std::vector<uint8_t>    extData,
-                                 keybInputData;
-         struct winsize          windowAttr;
-         struct sigaction        sigActionWndw;
-         sigset_t                sigsetBackup,
-                                 sigsetBlockAll;
-         Fsm                     fsm;
+         volatile sig_atomic_t                      sWinch;
+         bool                                       noTTY,
+                                                    nonCanonical;
+         std::string                                privKey,
+                                                    user,
+                                                    idFilePref,
+                                                    pubKey;
+         uint32_t                                   channelNumber,
+                                                    remoteChannelNumber,
+                                                    initialWindowsSize,
+                                                    maxPacketSize,
+                                                    bytesToAdd;
+         std::vector<uint8_t>                       extData,
+                                                    keybInputData;
+         struct winsize                             windowAttr;
+         struct sigaction                           sigActionWndw;
+         sigset_t                                   sigsetBackup,
+                                                    sigsetBlockAll;
+         Fsm                                        fsm;
    
          void                    getUserKeyFiles(void)                                   anyexcept; 
          void                    getUserPubK(void)                                       anyexcept; 

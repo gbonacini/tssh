@@ -64,7 +64,8 @@ namespace typeutils{
   template unsigned int    safeUInt(size_t size)               anyexcept;
   template unsigned long   safeULong(int size)                 anyexcept;
   template unsigned long   safeULong(long int size)            anyexcept;
-}
+
+} // End namespace
 
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
