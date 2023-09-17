@@ -505,7 +505,7 @@ namespace crypto{
      }catch(StringUtilsException& e){
          throw(string("serverKeyHash: ").append(e.what()));
      }catch(...){
-        throw CryptoException("serverKeyHash: data error.");
+         throw CryptoException("serverKeyHash: data error.");
      }
    }
 

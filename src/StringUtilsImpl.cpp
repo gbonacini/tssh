@@ -35,6 +35,7 @@ namespace stringutils{
         std::setw,
         std::string,
         std::to_string,
+        std::string_view,
         std::vector,
         std::array,
         std::set,
@@ -99,11 +100,10 @@ namespace stringutils{
       return errorCode;
    }
 
-   string mergeStrings(initializer_list<const char*> list) noexcept{
+   string mergeStrings(initializer_list<const std::string> list) noexcept{
        string buff {""};
 
-       for( auto elem : list)
-           buff.append(elem);
+       for( auto elem : list) buff.append(elem);
 
        return buff;
    }
@@ -137,7 +137,7 @@ namespace stringutils{
      try{
         dest.insert(dest.end(), handler, handler + sizeof(uint32_t));
      }catch(...){
-    throw StringUtilsException("uint32ToUChars: Data error.");
+        throw StringUtilsException("uint32ToUChars: Data error.");
      }
   }
   
@@ -310,10 +310,11 @@ namespace stringutils{
   }
   
   void addVarLengthDataCCharStr(const char* item, vector<uint8_t>& target) anyexcept{
-     size_t len { strlen(item) };
-     uint32ToUChars(target, safeUint32(len));
+     string_view itemView { item };
+
+     uint32ToUChars(target, safeUint32(itemView.size()));
      try{
-         if(len > 0) target.insert(target.end(), item, item+len);
+         if( !itemView.empty() ) target.insert(target.end(), itemView.cbegin(), itemView.cend());
      }catch(...){
          throw StringUtilsException("addVarLengthDataCCharStr: Data error.");
      }
@@ -344,8 +345,8 @@ namespace stringutils{
         try{ 
             if(length >0) check = index.at(length -1);
         }catch(...){
-            throw StringUtilsException(string("getVariableLengthRawValue: Invalid field length :") 
-                                      + to_string(length) + " elem: " + to_string(check));
+            throw StringUtilsException(mergeStrings({"getVariableLengthRawValue: Invalid field length :", 
+                                                     to_string(length), " elem: ", to_string(check)}));
         }
 
         try{
@@ -376,8 +377,8 @@ namespace stringutils{
      try{ 
          if(length >0) check = index.at(length -1);
      }catch(...){
-         throw StringUtilsException(string("getVariableLengthRawValue - item: Invalid field length :") 
-                                   + to_string(length) + " elem: " + to_string(check));
+         throw StringUtilsException(mergeStrings({"getVariableLengthRawValue - item: Invalid field length :", 
+                                    to_string(length),  " elem: ", to_string(check)}));
      }
 
      try{
@@ -387,7 +388,7 @@ namespace stringutils{
                                        index.begin() + safePtrdiff(sizeof(uint32_t) + offset + length));
         }else{
               destination[item].push_back(0);
-              TRACE(" ** Empty Value: " + to_string(item)); 
+              TRACE(mergeStrings({" ** Empty Value: ", to_string(item)})); 
         }
      }catch(...){
          throw StringUtilsException("getVariableLengthRawValue: b : Data error.");
@@ -410,8 +411,8 @@ namespace stringutils{
      try{ 
          if(length >0) check = index.at(length -1);
      }catch(...){
-         throw StringUtilsException(string("getVariableLengthValueCsv: Invalid field length :") 
-                                   + to_string(length) + " elem: " + to_string(check));
+         throw StringUtilsException(mergeStrings({"getVariableLengthValueCsv: Invalid field length :", 
+                                    to_string(length), " elem: ", to_string(check)}));
      }
 
      try{
@@ -424,12 +425,12 @@ namespace stringutils{
            char*          flag {    strtok(buff.data(), ",") };
            while(flag != nullptr){
               algorithmStrings[item].push_back(flag);
-              TRACE((" ** Value " + to_string(item) + " : ").c_str(), 
+              TRACE(mergeStrings({" ** Value ", to_string(item), " : "}).c_str(), 
                      reinterpret_cast<const uint8_t*>(flag), strlen(flag)); 
               flag = strtok(nullptr, ",");
            }
         }else{
-              TRACE(" ** Empty Value: " + to_string(item) ); 
+              TRACE(mergeStrings({" ** Empty Value: ", to_string(item)}) ); 
               algorithmStrings[item].push_back("");
         }
      }catch(...){
@@ -453,8 +454,8 @@ namespace stringutils{
      try{ 
          if(length >0) check = index.at(length -1);
      }catch(...){
-         throw StringUtilsException(string("getVariableLengthValueCsv: Invalid field length :") 
-                                   + to_string(length) + " elem: " + to_string(check));
+         throw StringUtilsException(mergeStrings({"getVariableLengthValueCsv: Invalid field length :", 
+                                    to_string(length), " elem: ", to_string(check)}));
      }
 
      try{
@@ -467,7 +468,7 @@ namespace stringutils{
            char*          flag {    strtok(buff.data(), ",") };
            while(flag != nullptr){
               algorithmStrings[item].insert(flag);
-              TRACE((" ** Value " + to_string(item) + " : ").c_str(), 
+              TRACE(mergeStrings({" ** Value ", to_string(item), " : "}).c_str(), 
                      reinterpret_cast<const uint8_t*>(flag), strlen(flag)); 
               flag = strtok(nullptr, ",");
            }
@@ -494,8 +495,8 @@ namespace stringutils{
      try{ 
          if(length >0) check = index.at(length -1);
      }catch(...){
-         throw StringUtilsException(string("getVariableLengthSingleBignum: Invalid field length :") 
-                                   + to_string(length) + " elem: " + to_string(check));
+         throw StringUtilsException(mergeStrings({"getVariableLengthSingleBignum: Invalid field length :", 
+                                    to_string(length), " elem: ", to_string(check)}));
      }
 
      try{
@@ -669,7 +670,7 @@ namespace stringutils{
         FD_SET(STDIN_FILENO,      &readfds);
 
         if(select(STDIN_FILENO+1, &readfds, nullptr, nullptr, nullptr) < 0)
-           throw StringUtilsException(string("getPassword: b : Password loop: ") + strerror(errno));
+           throw StringUtilsException(mergeStrings({"getPassword: b : Password loop: ", strerror(errno)}));
 
         status = read(STDIN_FILENO, &currChar, 1);
         if(status < 0 )
@@ -698,14 +699,14 @@ namespace stringutils{
     struct stat fileAttr;
     int         fd { open(fileName.c_str(), O_RDONLY) };
         if(fd == -1)
-                throw(StringUtilsException(string("loadFileMem: Can't open file: ") + fileName));
+                throw(StringUtilsException(mergeStrings({"loadFileMem: Can't open file: ", fileName})));
 
         if(fstat(fd, &fileAttr) != 0)
-                throw(StringUtilsException(string("loadFileMem: Can't read file attributes: ") + fileName));
+                throw(StringUtilsException(mergeStrings({"loadFileMem: Can't read file attributes: ",fileName})));
      
         size_t bytes   { safeSizeT(fileAttr.st_size + (terminator ? 1 : 0)) }; 
          if(bytes == 0)
-                throw(StringUtilsException(string("loadFileMem: Error reading file, too big: .") + fileName));
+                throw(StringUtilsException(mergeStrings({"loadFileMem: Error reading file, too big: .", fileName})));
 
         try{
             dest.resize(bytes);
@@ -716,7 +717,7 @@ namespace stringutils{
         }
 
         if( read(fd, dest.data(), bytes) == -1 ) 
-           throw(StringUtilsException(string("Error reading file: .") + fileName));
+           throw(StringUtilsException(mergeStrings({"Error reading file: .", fileName})));
         close(fd);
   }
 

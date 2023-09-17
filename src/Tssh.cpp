@@ -57,10 +57,10 @@ namespace tssh{
           stringutils::loadFileMem,
           stringutils::secureZeroing,
           stringutils::trace,
-          stringutils::mergeStrings,
           stringutils::getDebug,
           stringutils::uint32ToUChars,
           stringutils::StringUtilsException,
+          stringutils::mergeStrings,
           typeutils::safePtrdiff,
           typeutils::safeUint32,
           typeutils::safeUint8,
@@ -479,7 +479,7 @@ namespace tssh{
       crypto.hmacCtS(currentHashS.data(), safeInt(msg.size() + sizeof(uint32_t)),
                      outcomingEnc.data() + encrTextLen, &hashLen);
 
-      TRACE(mergeStrings({ "* HMAC Len: " , to_string(hashLen).c_str() , "\n* Encr + HMAC payload: " }).c_str(), 
+      TRACE(mergeStrings({ "* HMAC Len: " , to_string(hashLen), "\n* Encr + HMAC payload: " }).c_str(), 
                       outcomingEnc.data(), encrTextLen, encrTextLen + hashLen, 
                       encrTextLen + hashLen);
 

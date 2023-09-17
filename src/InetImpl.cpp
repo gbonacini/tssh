@@ -21,7 +21,7 @@
 #include <fcntl.h>
 #include <sys/socket.h>
 
-#include <cstring>
+#include <algorithm>
 #include <iostream>
 
 #include <Inet.hpp>
@@ -32,6 +32,7 @@ namespace inet {
    using std::cerr,
          std::string,
          std::vector,
+         std::fill,
          conceptsLib::Appendable,
          typeutils::safeSsizeT,
          typeutils::safeSizeT;
@@ -207,7 +208,7 @@ namespace inet {
          localBuff            = &indBuff;
       }
    
-      memset(*localBuff, 0, bufLen);
+      fill(static_cast<char*>(*localBuff), static_cast<char*>(*localBuff) + bufLen, 0);
       readLen = (*rFunc)(localHandler, *localBuff, bufLen);
       if(readLen == 0)                  throw InetException("Connection was closed by the server.");
       if(readLen < 0 && errno != EINTR) throw InetException(string("readBuffer: Read error: ") + strerror(errno));
@@ -242,7 +243,7 @@ namespace inet {
          localBuff            = &indBuff;
       }
    
-      memset(*localBuff, 0, bufLen);
+      fill(static_cast<char*>(*localBuff), static_cast<char*>(*localBuff) + bufLen, 0);
       ssize_t tlen         { (*rFunc)(localHandler, *localBuff, bufLen) };
       if(tlen == 0) throw InetException("Connection was closed by the server.");
       if(tlen < 1 && errno != EAGAIN && errno != EINTR)

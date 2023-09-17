@@ -61,7 +61,8 @@ namespace stringutils{
                    int errorCode;
    };
 
-   std::string mergeStrings(std::initializer_list<const char*> list)                                noexcept;
+   // TODO: std::format doesn't work yet
+   std::string mergeStrings(std::initializer_list<const std::string> list)                          noexcept;
 
    void      setDebug(bool onOff)                                                                   noexcept;
    bool      getDebug(void)                                                                         noexcept;
