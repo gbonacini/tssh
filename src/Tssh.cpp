@@ -1062,7 +1062,7 @@ namespace tssh{
       }
       
       char*       flag              { strtok(reinterpret_cast<char*>(genericBuffer.data()), " ") };
-      get<PUBKEYTYPE>(clientPubKey) = flag;
+      get<PUBKEYTYPE>(clientPubKey) = "rsa-sha2-256"; // Overrides proper algorithm
       flag = strtok(nullptr, " ");
       decodeB64(string(flag), get<PUBKEYBLOB>(clientPubKey));
       flag = strtok(nullptr, " ");
@@ -1199,6 +1199,7 @@ namespace tssh{
                    });
             break;
             case SSH_MSG_USERAUTH_FAILURE:
+               TRACE( "* Received SSH_MSG_USERAUTH_FAILURE.");
                fsm.checkStatus(SSH_MSG_USERAUTH_FAILURE);
                if(!keybInter){
                   TRACE("  ** SSH_MSG_USERAUTH_FAILURE: Trying keyb-inter.");
@@ -1239,6 +1240,7 @@ namespace tssh{
                TRACE("* Received SSH_MSG_USERAUTH_BANNER.");
             break;
             case SSH_MSG_UNIMPLEMENTED:
+                TRACE("* Received SSH_MSG_UNIMPLEMENTED.");
                 throw InetException("connectionLoop: Error: SSH_MSG_UNIMPLEMENTED.");
             case SSH_MSG_DEBUG:
                 TRACE( "* Received SSH_MSG_DEBUG.");
@@ -1246,6 +1248,7 @@ namespace tssh{
                       charToUint32(incomingEnc.data()) + sizeof(uint32_t));
             break;
             case SSH_MSG_DISCONNECT:
+                TRACE( "* Received SSH_MSG_DISCONNECT.");
                 offset  = DATA_OFFSET;
                 errCode = charToUint32(incomingEnc.data() + offset);
                 offset += sizeof(uint32_t);
@@ -1623,7 +1626,6 @@ namespace tssh{
       addHeader(SSH_MSG_KEX_DH_GEX_REQUEST_OLD, msg);
 
       crypto.setDhKeys(genericBuffer, msg);
-   
       sendWithHeader(msg, BEGINNING_BLOCK_LEN_ALLIGN);
       readSsh();
 

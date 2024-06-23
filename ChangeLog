@@ -1,3 +1,9 @@
+tssh (0.7.7) any; urgency=high
+
+ * Alpha Test
+ Debugging: rsa-sha2-256 key based auth
+ -- Gabriele Bonacini <gabriele.bonacini@protonmail.com> Sun, 23 Jun 2024 19:50:00 -0100
+
 tssh (0.7.5c) any; urgency=low
 
  * Alpha Test

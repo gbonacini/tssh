@@ -185,8 +185,7 @@ namespace inet {
       return readLen;
    }
 
-   void Inet::getBufferCopy(Appendable auto& dest, bool append)  const anyexcept 
-   {
+   void Inet::getBufferCopy(Appendable auto& dest, bool append)  const anyexcept {
       if(buffer.size() == 0)
          throw InetException("getBufferCopy: Attempt of copy an unitialized buffer.");
       try{

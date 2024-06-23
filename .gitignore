@@ -34,3 +34,4 @@ include/config.h.in
 install-sh
 ltmain.sh
 missing
+src/tssh

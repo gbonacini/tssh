@@ -53,6 +53,7 @@ namespace crypto{
          stringutils::StringUtilsException,
          typeutils::safeInt,
          typeutils::safeSizeT,
+         typeutils::safeUInt,
          conceptsLib::ConstantIterable;
 
    static const char *RFC3526_PRIME    {  "0FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A637ED6B0BFF5CB6F406B7EDEE386BFB5A899FA5AE9F24117C4B1FE649286651ECE45B3DC2007CB8A163BF0598DA48361C55D39A69163FA8FD24CF5F83655D23DCA3AD961C62F356208552BB9ED529077096966D670C354E4ABC9804F1746C08CA18217C32905E462E36CE3BE39E772C180E86039B2783A2EC07A28FB5C55DF06F4C52C9DE2BCBF6955817183995497CEA956AE515D2261898FA051015728E5A8AACAA68FFFFFFFFFFFFFFFF" };
@@ -651,6 +652,7 @@ namespace crypto{
       if(EVP_DigestInit_ex(mctx, md, nullptr) != 1)
          throw CryptoException(string("signMessage: EVP_PKEY_assign_RSA (1) failed: ") +
                                ERR_error_string(ERR_get_error(), nullptr));
+
       #ifdef __clang__
       #pragma clang diagnostic pop
       #endif
@@ -666,7 +668,7 @@ namespace crypto{
       BIO* bioPrivKey { BIO_new_mem_buf(b64PrivKey.data(), safeInt(b64PrivKey.size()))};
       RSA* rsaPrivKey { RSA_new()};
   
-      if(PEM_read_bio_RSAPrivateKey(bioPrivKey, &rsaPrivKey, nullptr, nullptr) == nullptr)
+      if(PEM_read_bio_RSAPrivateKey(bioPrivKey, nullptr, nullptr, nullptr) == nullptr)
          throw(CryptoException(string("signMessage: Error loading private key in BIO object.") +
                ERR_error_string(ERR_get_error(), nullptr)));
   
@@ -789,21 +791,6 @@ namespace crypto{
    {}
 
    void CryptoKeyRsa2_256::signMessage(string& privKey, vector<uint8_t>& msg, vector<uint8_t>& sign) const anyexcept{
-      EVP_PKEY*     vkey       { EVP_PKEY_new() };
-      EVP_MD_CTX*   mctx       { EVP_MD_CTX_create() };
-      const EVP_MD* md         { EVP_get_digestbyname("SHA256") };
-
-      #ifdef __clang__
-      #pragma clang diagnostic push
-      #pragma clang diagnostic ignored "-Wold-style-cast"
-      #endif
-
-      if(EVP_DigestInit_ex(mctx, md, nullptr) != 1)
-         throw CryptoException(string("signMessage: EVP_PKEY_assign_RSA (1) failed: ") +
-                               ERR_error_string(ERR_get_error(), nullptr));
-      #ifdef __clang__
-      #pragma clang diagnostic pop
-      #endif
 
       TRACE("* Msg To Sign: ", &msg);
 
@@ -812,6 +799,11 @@ namespace crypto{
       loadFileMem(privKey, b64PrivKey, false);
   
       TRACE("* Auth Private Key: " + privKey, &b64PrivKey);
+
+      SHA256_CTX ctx;
+	   SHA256_Init(&ctx);
+	   SHA256_Update(&ctx, msg.data(), msg.size());
+	   SHA256_Final(msg.data(), &ctx);
   
       BIO* bioPrivKey { BIO_new_mem_buf(b64PrivKey.data(), safeInt(b64PrivKey.size()))};
       RSA* rsaPrivKey { RSA_new()};
@@ -822,36 +814,14 @@ namespace crypto{
   
       sign.resize(safeSizeT(RSA_size(rsaPrivKey)));
   
-      #ifdef __clang__
-      #pragma clang diagnostic push
-      #pragma clang diagnostic ignored "-Wold-style-cast"
-      #endif
+      unsigned int signlen { safeUInt(sign.size())};
+      RSA_sign(NID_sha256, msg.data(), SHA256_DIGEST_LENGTH, sign.data(), &signlen, rsaPrivKey);
 
-      if(EVP_PKEY_assign_RSA(vkey, rsaPrivKey) != 1)
-         throw CryptoException(string("signMessage: EVP_PKEY_assign_RSA (2) failed: ") +
-                               ERR_error_string(ERR_get_error(), nullptr));
-      #ifdef __clang__
-      #pragma clang diagnostic pop
-      #endif
-
-      if(EVP_DigestSignInit(mctx, nullptr, md, nullptr, vkey) != 1)
-         throw CryptoException(string("signMessage: EVP_DigestSignInit failed: ") +
-                               ERR_error_string(ERR_get_error(), nullptr));
-
-      if(EVP_DigestSignUpdate(mctx, msg.data(), msg.size()) != 1)
-         throw CryptoException(string("signMessage: EVP_DigestSignUpdate failed: ") +
-                               ERR_error_string(ERR_get_error(), nullptr));
-      size_t signlen { sign.size() };
-      if(EVP_DigestSignFinal(mctx, sign.data(), &signlen) != 1)
-         throw CryptoException(string("signMessage: EVP_DigestVerifyFinal failed: ") +
-                               ERR_error_string(ERR_get_error(), nullptr));
       TRACE("* Auth Msg Sign: ", &sign);
 
       secureZeroing(b64PrivKey.data(), b64PrivKey.size());
 
       BIO_vfree(bioPrivKey);
-      EVP_MD_CTX_destroy(mctx);
-      EVP_PKEY_free(vkey);
    }
 
    void CryptoKeyRsa2_256::signDH(vector<uint8_t>& buff, vector<uint8_t>& sign,
@@ -870,8 +840,9 @@ namespace crypto{
       EVP_PKEY  *vkey             { EVP_PKEY_new() };
       EVP_MD_CTX* mctx            { EVP_MD_CTX_create() };
       const EVP_MD* md            { EVP_get_digestbyname("SHA256") };
+      
       if(EVP_DigestInit_ex(mctx, md, nullptr) != 1)
-         throw CryptoException(string("signDH: EVP_PKEY_assign_RSA (1) failed: ") +
+         throw CryptoException(string("signDH256: EVP_PKEY_assign_RSA (1) failed: ") +
                                           ERR_error_string(ERR_get_error(), nullptr));
       #ifdef __clang__
       #pragma clang diagnostic push
@@ -879,7 +850,7 @@ namespace crypto{
       #endif
 
       if(EVP_PKEY_assign_RSA(vkey, RSAPublicKey_dup(serverPublicKey)) != 1)
-         throw CryptoException(string("signDH: EVP_PKEY_assign_RSA (2) failed: ") +
+         throw CryptoException(string("signDH256: EVP_PKEY_assign_RSA (2) failed: ") +
                                ERR_error_string(ERR_get_error(), nullptr));
       #ifdef __clang__
       #pragma clang diagnostic pop
@@ -888,15 +859,15 @@ namespace crypto{
       TRACE("* Signature - Buffer: ",  &buff);
       TRACE("* Signature - Signature: ",  &sign);
       if(EVP_DigestVerifyInit(mctx, nullptr, md, nullptr, vkey) != 1)
-         throw CryptoException(string("signDH: EVP_DigestVerifyInit failed: ") +
+         throw CryptoException(string("signDH256: EVP_DigestVerifyInit failed: ") +
                                       ERR_error_string(ERR_get_error(), nullptr));
 
       if(EVP_DigestVerifyUpdate(mctx, buff.data(), buff.size()) != 1)
-         throw CryptoException(string("signDH: EVP_DigestVerifyUpdate failed: ") +
+         throw CryptoException(string("signDH256: EVP_DigestVerifyUpdate failed: ") +
                                       ERR_error_string(ERR_get_error(), nullptr));
 
       if(EVP_DigestVerifyFinal(mctx, sign.data(), sign.size()) != 1)
-         throw CryptoException(string("signDH: EVP_DigestVerifyFinal failed: ") +
+         throw CryptoException(string("signDH256: EVP_DigestVerifyFinal failed: ") +
                                       ERR_error_string(ERR_get_error(), nullptr));
       EVP_MD_CTX_destroy(mctx);
       EVP_PKEY_free(vkey);
