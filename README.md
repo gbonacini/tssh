@@ -115,6 +115,20 @@ Instructions:
 
 See the man page included in the release.
 
+Key creation: rsa-sha2-256 
+==========================
+
+OpenSSH introduced a new default proprietary format for DH keys, that is not supported by this program, that, instead use the standard PEM format.
+This means that when you create the SSH keys, you need to add an extra parameter when you create a rsa-sha2-256 key pair, for example:
+```shell
+ssh-keygen -t rsa-sha2-256 -b 2048 -m PEM
+```
+Connection example (server is configured to use port 2222):
+```shell
+./tssh  -i id_rsa -l bg -p2222 192.168.1.13
+```
+See man page for further details.
+
 Important Notes:
 ================
 
