@@ -1,9 +1,9 @@
 Description:
 ============
 
-Tssh is a SSH 2 client I wrote in C++11 (now updated to c++20)  from scratch, starting from the RFCs.
+Tssh is a SSH 2 client I wrote in C++11 (now updated to C++20) from scratch, starting from the RFCs.
 
-This is a screeshoot of the output that the program produces in debug mode, with the contents of the initial packets exchange:
+Debug mode can print for every packet sent a detailed dump, with a description of their purpose. This is a screeshoot of the output that the program produces in debug mode, with the contents of the initial packets exchange:
 
 ![alt text](screenshoots/handshake.png "Tssh screenshoot")
 
@@ -26,14 +26,16 @@ Prerequisites:
 The program is intended to be used in a *nix environment and it is tested on various Linux distributions and OS X:
 
 - Ubuntu 22.04.2 LTS  ARM
-- Ubuntu 22.04.3 LTS  X86-64
-- MacOS  13.5         ARM
+- Ubuntu 22.04.4 LTS  X86-64
+- MacOS  13.6.7       ARM 
 - MAcOS  12.6.8       X86-64
 
 using, as compiler, one in this list:
 
 - gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04)
+- gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) 
 - Apple clang version 14.0.3 (clang-1403.0.22.14.1)
+- Apple clang version 15.0.0 (clang-1500.1.0.2.5)
 
 and, as ssh server, one of the following:
 
@@ -41,6 +43,7 @@ and, as ssh server, one of the following:
 - OpenSSH_9.0p1, LibreSSL 3.3.6  MacOs  13.5        ARM
 - OpenSSH_8.6p1, LibreSSL 3.3.6  MacOs  12.6.8      x86_64
 - OpenSSH_8.9p1 Ubuntu-3ubuntu0.3, OpenSSL 3.0.2 15 x86_64
+- OpenSSH_8.9p1 Ubuntu-3ubuntu0.7, OpenSSL 3.0.2 15 ARM      
 
 The only external dependency is the OpenSSL library, used for the cryptographic functions.
 I could introduce alternatives to OpenSSL in the next versions.
