@@ -706,6 +706,7 @@ namespace crypto{
       BIO_vfree(bioPrivKey);
       EVP_MD_CTX_destroy(mctx);
       EVP_PKEY_free(vkey);
+      RSA_free(rsaPrivKey);
    }
 
    void CryptoKeyRsa::signDH(vector<uint8_t>& buff, vector<uint8_t>& sign,
@@ -801,9 +802,9 @@ namespace crypto{
       TRACE("* Auth Private Key: " + privKey, &b64PrivKey);
 
       SHA256_CTX ctx;
-	   SHA256_Init(&ctx);
-	   SHA256_Update(&ctx, msg.data(), msg.size());
-	   SHA256_Final(msg.data(), &ctx);
+      SHA256_Init(&ctx);
+      SHA256_Update(&ctx, msg.data(), msg.size());
+      SHA256_Final(msg.data(), &ctx);
   
       BIO* bioPrivKey { BIO_new_mem_buf(b64PrivKey.data(), safeInt(b64PrivKey.size()))};
       RSA* rsaPrivKey { RSA_new()};
@@ -822,6 +823,7 @@ namespace crypto{
       secureZeroing(b64PrivKey.data(), b64PrivKey.size());
 
       BIO_vfree(bioPrivKey);
+      RSA_free(rsaPrivKey);
    }
 
    void CryptoKeyRsa2_256::signDH(vector<uint8_t>& buff, vector<uint8_t>& sign,
