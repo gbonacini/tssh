@@ -136,12 +136,12 @@ Important Notes:
 ================
 
 At the moment I consider this program an instrument to study the SSH internals and a base for some security test applications.
-This program is an alpha version and, at the moment, it's considerated experimental. In particular, it doesn't represent an alternative to consolidated program like the OpenSSH client: the programmers of that tool (and its equivalents ) implemented plenty of security features that, at the moment, are not present in my program. So keep in mind that in some situation the use of this software should be avoided.
+This program is an alpha version and, at the moment, it's considered experimental. In particular, it doesn't represent an alternative to consolidated program like the OpenSSH client: the programmers of that tool (and its equivalents ) implemented plenty of security features that, at the moment, are not present in my program. So keep in mind that in some situation the use of this software should be avoided.
 
 Note that the "-d" flag will print on stderr all the packets exchanged before and after the authentication, and the current status of the client. 
 
 *** This means that sensible data will be visualized on the screen ! *** 
 
-So if you are thinking to use this program in envirnonment with security restrictions,  reflect on the conseguences before using it!
+So if you are thinking to use this program in environment with security restrictions,  reflect on the consequences before using it!
 
 
