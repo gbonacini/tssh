@@ -38,7 +38,7 @@ AC_CHECK_LIB([ssl],[RSA_set0_key],[],[AC_MSG_FAILURE([could not find lib ssl])])
 AC_CANONICAL_HOST
 case $host_os in
   darwin* )
-              OPTIMIZATION="-O3 "
+              OPTIMIZATION="-O3  -march=native "
               if test "x$CC" = xgcc; then
                     CXXFLAGS=" -std=c++20 -g -Weverything \
                              -D_FORTIFY_SOURCE=2 ${OPTIMIZATION} -fstack-protector \
@@ -53,7 +53,7 @@ case $host_os in
 
         ;;
   linux*)
-              OPTIMIZATION="-O3 "
+              OPTIMIZATION="-O3  -march=native "
               if test "x$CC" = xgcc; then
                     CXXFLAGS=" -std=c++20 -g -Wall -Wextra \
                              -D_FORTIFY_SOURCE=2 ${OPTIMIZATION} -fstack-protector \
