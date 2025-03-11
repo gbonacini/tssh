@@ -90,14 +90,14 @@ namespace inet {
       if(len > 0)
          return ::read(*(static_cast<int const *>(fDesc->peerFd)), buf, static_cast<size_t>(len));
       else
-         return EINVAL;
+         return - EINVAL;
    }
    
    ssize_t Inet::writeSocket(Handler* fDesc, void *buf, size_t len) noexcept{
       if(len > 0)
          return ::write(*(static_cast<int const *>(fDesc->peerFd)), buf, static_cast<size_t>(len));
       else
-         return EINVAL;
+         return - EINVAL;
    }
    
    size_t Inet::readLineTimeout(size_t maxSize, char sep, Handler *hdlr) anyexcept{
