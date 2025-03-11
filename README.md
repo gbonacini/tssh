@@ -36,8 +36,10 @@ using, as compiler, one in this list:
 
 - gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04)
 - gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) 
+- gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
 - Apple clang version 14.0.3 (clang-1403.0.22.14.1)
 - Apple clang version 15.0.0 (clang-1500.1.0.2.5)
+- Apple clang version 16.0.0 (clang-1600.0.26.6)
 
 and, as ssh server, one of the following:
 
@@ -46,6 +48,7 @@ and, as ssh server, one of the following:
 - OpenSSH_8.6p1, LibreSSL 3.3.6  MacOs  12.6.8      x86_64
 - OpenSSH_8.9p1 Ubuntu-3ubuntu0.3, OpenSSL 3.0.2 15 x86_64
 - OpenSSH_8.9p1 Ubuntu-3ubuntu0.7, OpenSSL 3.0.2 15 ARM      
+- OpenSSH_8.9p1 Ubuntu-3ubuntu0.10, OpenSSL 3.0.2 15 Mar 2022
 
 The only external dependency is the OpenSSL library, used for the cryptographic functions.
 I could introduce alternatives to OpenSSL in the next versions.
