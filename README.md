@@ -25,8 +25,10 @@ Prerequisites:
 
 The program is intended to be used in a *nix environment and it is tested on various Linux distributions and OS X:
 
+- Ubuntu 22.04.5 LTS  ARM
 - Ubuntu 22.04.2 LTS  ARM
 - Ubuntu 22.04.4 LTS  X86-64
+- MacOS  14.7.4       ARM 
 - MacOS  13.6.7       ARM 
 - MAcOS  12.6.8       X86-64
 
