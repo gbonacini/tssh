@@ -1,3 +1,15 @@
+tssh (0.7.9) any; urgency=low
+
+ * Beta
+ Increased compiler optimization ( LTO )
+ -- Gabriele Bonacini <gabriele.bonacini@protonmail.com> Tue, 27 May 2025 22:00:00 -0100
+
+tssh (0.7.8) any; urgency=low
+
+ * Beta
+ Debugging lib function. Increased compiler optimization ( native )
+ -- Gabriele Bonacini <gabriele.bonacini@protonmail.com> Tue, 10 Mar 2025 23:00:00 -0100
+
 tssh (0.7.7b) any; urgency=low
 
  * Alpha Test
