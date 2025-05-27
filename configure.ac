@@ -58,7 +58,7 @@ case $host_os in
               LTO="$(g++ -flto -E - < /dev/null  > /dev/null 2>&1 && echo '-flto')"
               if test "x$CC" = xgcc; then
                     CXXFLAGS=" -std=c++20 -g -Wall -Wextra \
-                             -D_FORTIFY_SOURCE=2 ${OPTIMIZATION} -fstack-protector \
+                             -D_FORTIFY_SOURCE=2 ${OPTIMIZATION}  ${LTO}  -fstack-protector \
                              --param=ssp-buffer-size=4 -Wformat -Werror=format-security ${INC_SSL_CUSTOM}"
                     LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM}-Wl,-z,relro"
               else
