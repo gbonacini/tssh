@@ -62,7 +62,7 @@ case $host_os in
                    CPU_OPTIMIZATION="$(g++ -march=native -E - < /dev/null  > /dev/null 2>&1 && echo '-march=native')"
                  ;;
                  aarch64)
-                   CPU_OPTIMIZATION="$(g++ -mcpu=native -E - < /dev/null  > /dev/null 2>&1 && echo '-mcpu=native')"
+                   CPU_OPTIMIZATION="$([[ "x$WITH_NATIVE" != "x" ]] && g++ -mcpu=native -E - < /dev/null  > /dev/null 2>&1 && echo '-mcpu=native')"
                  ;;
               esac
 
