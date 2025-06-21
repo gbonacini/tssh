@@ -24,3 +24,25 @@ Description: tssh is a ssh experimental client
 EOF
 
 fakeroot dpkg --build ./deb/tssh_ubuntu_arm64_22_04
+
+./configure
+make clean all
+
+mkdir -p ./deb/tssh_ubuntu_arm64_22_04_lto/usr/local/bin
+mkdir -p ./deb/tssh_ubuntu_arm64_22_04_lto/usr/local/man/man1
+mkdir    ./deb/tssh_ubuntu_arm64_22_04_lto/DEBIAN
+
+cp ./src/tssh   ./deb/tssh_ubuntu_arm64_22_04_lto/usr/local/bin
+cp ./doc/tssh.1 ./deb/tssh_ubuntu_arm64_22_04_lto/usr/local/man/man1
+
+cat > ./deb/tssh_ubuntu_arm64_22_04_lto/DEBIAN/control << EOF
+Package: tssh
+Version: ${VERSION}
+Maintainer: gbonacini
+Depends: libssl3 
+Architecture: arm64
+Homepage: https://github.com/gbonacini
+Description: tssh is a ssh experimental client
+EOF
+
+fakeroot dpkg --build ./deb/tssh_ubuntu_arm64_22_04_lto
