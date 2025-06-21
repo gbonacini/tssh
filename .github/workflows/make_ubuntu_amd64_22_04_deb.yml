@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  Create_Packages:
-    name: Create Package
+  Create_Packages_AMD64:
+    name: Create Package amd64
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
@@ -27,8 +27,8 @@ jobs:
         with:
           files: deb/tssh_ubuntu_amd64_22_04*.deb
 
-  Create_Packages:
-    name: Create Package
+  Create_PackagesARM64:
+    name: Create Package arm64
     runs-on: ubuntu-22.04-arm
     steps:
       - name: Checkout code
