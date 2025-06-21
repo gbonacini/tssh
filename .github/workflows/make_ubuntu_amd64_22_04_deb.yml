@@ -25,4 +25,4 @@ jobs:
       - name: Release the Package
         uses: softprops/action-gh-release@v2
         with:
-          files: deb/tssh_ubuntu_amd64_22_04.deb
+          files: deb/tssh_ubuntu_amd64_22_04*.deb
