@@ -116,7 +116,7 @@ Installation:
     or<BR>
   ./configure WITH_LTO=yes<BR>
     to compile with LTO optimization (see https://en.wikipedia.org/wiki/Interprocedural_optimization ).
-    For ARM 64 bit CPU, -march is disabled by default due to incompatibilities, to enable it pass WITH_NATIVE=yes
+    Native code generation is disabled by default to permit portable packaging. To activate it locally add WITH_NATIVE=yes to configure parameter list.
 - Compile the program:<BR>
   make
 - Install the program and the man page:<BR>
