@@ -16,7 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          path: "master"
+          path: master
           - run: git checkout 0.7.8b_stable
 
       - name: Deb Builder
