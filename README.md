@@ -112,9 +112,9 @@ Installation:
 - create compilation scripts:<BR>
   make -f makefile.dist
 - launch the configure script:<BR>
-  ./configure
-  or
-  ./configure WITH_LTO=yes
+  ./configure<BR>
+  or<BR>
+  ./configure WITH_LTO=yes<BR>
   to compile with LTO optimization (see https://en.wikipedia.org/wiki/Interprocedural_optimization )
 - Compile the program:<BR>
   make
