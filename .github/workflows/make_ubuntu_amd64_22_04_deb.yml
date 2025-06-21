@@ -26,3 +26,20 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: deb/tssh_ubuntu_amd64_22_04*.deb
+
+  Create_Packages:
+    name: Create Package
+    runs-on: ubuntu-22.04-arm
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Deb Builder
+        run: bash ./scripts/build_ubuntu_arm64.sh
+
+      - name: Release the Package
+        uses: softprops/action-gh-release@v2
+        with:
+          files: deb/tssh_ubuntu_arm64_22_04*.deb
