@@ -55,10 +55,21 @@ case $host_os in
         ;;
   linux*)
               OPTIMIZATION="-O3  -march=native "
+              CPU_OPTIMIZATION=""
+              CPU_TYPE="$(uname -p)"
+              case ${CPU_TYPE} in
+                 x86_64)
+                   CPU_OPTIMIZATION="$(g++ -march=native -E - < /dev/null  > /dev/null 2>&1 && echo '-march=native')"
+                 ;;
+                 aarch64)
+                   CPU_OPTIMIZATION="$(g++ -mcpu=native -E - < /dev/null  > /dev/null 2>&1 && echo '-mcpu=native')"
+                 ;;
+              esac
+
               LTO="$([[ "x$WITH_LTO" != "x" ]] && g++ -flto -E - < /dev/null  > /dev/null 2>&1 && echo '-flto')"
               if test "x$CC" = xgcc; then
                     CXXFLAGS=" -std=c++20 -g -Wall -Wextra \
-                             -D_FORTIFY_SOURCE=2 ${OPTIMIZATION}  ${LTO}  -fstack-protector \
+                             -D_FORTIFY_SOURCE=2 ${OPTIMIZATION} ${CPU_OPTIMIZATION} ${LTO}  -fstack-protector \
                              --param=ssp-buffer-size=4 -Wformat -Werror=format-security ${INC_SSL_CUSTOM}"
                     LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM}-Wl,-z,relro"
               else
