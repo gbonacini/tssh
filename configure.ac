@@ -54,7 +54,7 @@ case $host_os in
 
         ;;
   linux*)
-              OPTIMIZATION="-O3  -march=native "
+              OPTIMIZATION="-O3 "
               CPU_OPTIMIZATION=""
               CPU_TYPE="$(uname -p)"
               case ${CPU_TYPE} in
