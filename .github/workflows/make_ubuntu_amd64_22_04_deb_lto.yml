@@ -3,9 +3,11 @@ name: Create DPKG Package Ubuntu 22.04 amd64 with LTO
 permissions:
   contents: write
 
-on: workflow_dispatch
-   tag: 
-     - '0.7.9b_stable'
+on:
+  push:
+    tags:
+      - '0.7.9b_stable'
+  workflow_dispatch:
 
 jobs:
   Create_Packages:
