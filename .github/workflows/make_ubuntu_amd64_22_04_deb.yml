@@ -1,0 +1,29 @@
+name: Create DPKG Package Ubuntu 22.04 amd64
+
+permissions:
+  contents: write
+
+on:
+  push:
+    tags:
+      - 'Ver*'
+
+jobs:
+  Create_Packages:
+    name: Create Package
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          path: "master"
+          - run: git checkout 0.7.8b_stable
+
+      - name: Deb Builder
+        run: |
+          ./scripts/build_ubuntu_amd64.sh
+
+      - name: Release the Package
+        uses: softprops/action-gh-release@v1
+        with:
+          files: deb/tssh_ubuntu_amd64_22_04.deb
