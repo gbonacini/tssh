@@ -1,4 +1,4 @@
-name: Create DPKG Package Ubuntu 22.04 amd64 with LTO
+name: Create DPKG Package Ubuntu 22.04 amd64
 
 permissions:
   contents: write
@@ -20,10 +20,10 @@ jobs:
           fetch-depth: 0
 
       - name: Deb Builder
-        run: bash ./scripts/build_ubuntu_amd64_lto.sh
+        run: bash ./scripts/build_ubuntu_amd64.sh
 
       - name: Release the Package
         uses: softprops/action-gh-release@v2
         with:
           tag_name: '*'
-          files: deb/tssh_ubuntu_amd64_22_04_lto.deb
+          files: deb/tssh_ubuntu_amd64_22_04.deb

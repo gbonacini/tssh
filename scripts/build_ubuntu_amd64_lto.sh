@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 make -f ./makefile.dist 
-./configure
+./configure WITH_LTO=yes
 make 
 
 mkdir -p ./deb/tssh_ubuntu_amd64_22_04_lto/usr/local/man/man1
