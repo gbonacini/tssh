@@ -115,7 +115,8 @@ Installation:
   ./configure<BR>
     or<BR>
   ./configure WITH_LTO=yes<BR>
-    to compile with LTO optimization (see https://en.wikipedia.org/wiki/Interprocedural_optimization )
+    to compile with LTO optimization (see https://en.wikipedia.org/wiki/Interprocedural_optimization ).
+    For ARM 64 bit CPU, -march is disabled by default due to incompatibilities, to enable it pass WITH_NATIVE=yes
 - Compile the program:<BR>
   make
 - Install the program and the man page:<BR>
