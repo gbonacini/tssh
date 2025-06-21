@@ -4,6 +4,8 @@ permissions:
   contents: write
 
 on: workflow_dispatch
+   tags:
+      - "0.7.9_stable"
 
 jobs:
   Create_Packages:
@@ -19,6 +21,6 @@ jobs:
         run: bash ./scripts/build_ubuntu_amd64_lto.sh
 
       - name: Release the Package
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: deb/tssh_ubuntu_amd64_22_04_lto.deb
