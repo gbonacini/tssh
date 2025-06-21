@@ -14,7 +14,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - run: git checkout 0.7.9_stable
 
       - name: Deb Builder
         run: bash ./scripts/build_ubuntu_amd64_lto.sh
