@@ -4,8 +4,7 @@ permissions:
   contents: write
 
 on: workflow_dispatch
-   tags:
-      - "0.7.9_stable"
+   tag: 0.7.9b_stable
 
 jobs:
   Create_Packages:
