@@ -25,7 +25,7 @@ EOF
 
 fakeroot dpkg --build ./deb/tssh_ubuntu_arm64_22_04
 
-./configure
+./configure WITH_LTO=yes
 make clean all
 
 mkdir -p ./deb/tssh_ubuntu_arm64_22_04_lto/usr/local/bin
