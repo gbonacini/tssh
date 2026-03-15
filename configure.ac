@@ -57,22 +57,24 @@ case $host_os in
               OPTIMIZATION="-O3 "
               CPU_OPTIMIZATION=""
               CPU_TYPE="$(uname -p)"
-              case ${CPU_TYPE} in
-                 x86_64)
-                   CPU_OPTIMIZATION="$([[ "x$WITH_NATIVE" != "x" ]] && g++ -march=native -E - < /dev/null  > /dev/null 2>&1 && echo '-march=native')"
-                 ;;
-                 aarch64)
-                   CPU_OPTIMIZATION="$([[ "x$WITH_NATIVE" != "x" ]] && g++ -mcpu=native -E - < /dev/null  > /dev/null 2>&1 && echo '-mcpu=native')"
-                 ;;
-              esac
 
-              LTO="$([[ "x$WITH_LTO" != "x" ]] && g++ -flto -E - < /dev/null  > /dev/null 2>&1 && echo '-flto')"
               if   test "x$WITH_FILC" != "x" ; then
                     CXX="$WITH_FILC"
                     CXXFLAGS=" -std=c++20 -g -Wall -Wextra ${OPTIMIZATION} ${CPU_OPTIMIZATION} \
                              -Wformat -Werror=format-security ${INC_SSL_CUSTOM}"
                     LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM}-Wl,-z,relro"
               elif test "x$CXX" = "xg++"; then
+                    case ${CPU_TYPE} in
+                       x86_64)
+                         CPU_OPTIMIZATION="$([[ "x$WITH_NATIVE" != "x" ]] && g++ -march=native -E - < /dev/null  > /dev/null 2>&1 && echo '-march=native')"
+                       ;;
+                       aarch64)
+                         CPU_OPTIMIZATION="$([[ "x$WITH_NATIVE" != "x" ]] && g++ -mcpu=native -E - < /dev/null  > /dev/null 2>&1 && echo '-mcpu=native')"
+                       ;;
+                    esac
+
+                    LTO="$([[ "x$WITH_LTO" != "x" ]] && g++ -flto -E - < /dev/null  > /dev/null 2>&1 && echo '-flto')"
+
                     CXXFLAGS=" -std=c++20 -g -Wall -Wextra \
                              -D_FORTIFY_SOURCE=2 ${OPTIMIZATION} ${CPU_OPTIMIZATION} ${LTO}  -fstack-protector \
                              --param=ssp-buffer-size=4 -Wformat -Werror=format-security ${INC_SSL_CUSTOM}"
