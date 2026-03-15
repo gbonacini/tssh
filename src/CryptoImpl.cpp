@@ -502,7 +502,7 @@ namespace crypto{
             out.insert(out.end(), *(i+1));
             out.insert(out.end(), ':');
          }
-         out[out.size() - 1] = 0;
+         out.insert(out.end(), 0);
      }catch(StringUtilsException& e){
          throw(string("serverKeyHash: ").append(e.what()));
      }catch(...){
