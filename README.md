@@ -122,6 +122,18 @@ Installation:
 - Install the program and the man page:<BR>
   sudo make install
 
+Fil-c Based Building
+====================
+
+- From version 0.80: I started to compile this program with Fil-C ( see https://fil-c.org for details);
+- In short, Fil-C is a Clang extension that, "using a combination of concurrent garbage collection and invisible capabilities (InvisiCaps)", permits to obtain builds of C/C++ programs that are memory safe, like Rust programs are;
+- I compiled Fil-C from source but you can obtains some pre-compiled packages from its Github page ( https://github.com/pizlonator/fil-c/ );
+- With Fil-C installed, you can compile this program with it, obtain a memory safe build of tssh;
+- In order to do that, you have to use configure with the WITH_FILC option specifying the Fil-C path, for example:
+```shell
+ ./configure WITH_FILC=/home/bg/.links/filc++
+```
+
 Instructions:
 =============
 
