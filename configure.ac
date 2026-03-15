@@ -67,7 +67,12 @@ case $host_os in
               esac
 
               LTO="$([[ "x$WITH_LTO" != "x" ]] && g++ -flto -E - < /dev/null  > /dev/null 2>&1 && echo '-flto')"
-              if test "x$CC" = xgcc; then
+              if   test "x$WITH_FILC" != "x" ; then
+                    CXX="$WITH_FILC"
+                    CXXFLAGS=" -std=c++20 -g -Wall -Wextra ${OPTIMIZATION} ${CPU_OPTIMIZATION} \
+                             -Wformat -Werror=format-security ${INC_SSL_CUSTOM}"
+                    LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM}-Wl,-z,relro"
+              elif test "x$CXX" = "xg++"; then
                     CXXFLAGS=" -std=c++20 -g -Wall -Wextra \
                              -D_FORTIFY_SOURCE=2 ${OPTIMIZATION} ${CPU_OPTIMIZATION} ${LTO}  -fstack-protector \
                              --param=ssp-buffer-size=4 -Wformat -Werror=format-security ${INC_SSL_CUSTOM}"
