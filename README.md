@@ -122,6 +122,25 @@ Installation:
 - Install the program and the man page:<BR>
   sudo make install
 
+CMake:
+======
+
+- create build directory at the same level of ./src/ :<BR>
+   mkdir build<BR>
+- Launch CMake, OSX environment doesn't require parameters:
+    cmake ..<BR>
+  on Linux environments we have some options, we can request native code generation:
+    cmake -DUSE_MARCH_NATIVE=ON  ..
+  also, if available Fil-C and an OpenSSL library compiled with that compiler, we can compile the project usint them specifying:<BR>
+    -DUSE_FIL_C_WITH_SSL=[OPEN_SSL_FIL-C_PATH] <BR>
+  for example:
+    cmake -DUSE_FIL_C_WITH_SSL=/home/bg/_Compiledir/_Fil-C/fil-c/pizfix/lib/  ..
+  we also can require both those features:
+    cmake -DUSE_MARCH_NATIVE=ON -DUSE_FIL_C_WITH_SSL=/home/bg/_Compiledir/_Fil-C/fil-c/pizfix/lib/  ..
+- Last step is make execution:<BR>
+    make -j$(nproc)<BR>
+  
+
 Fil-c Based Building
 ====================
 
