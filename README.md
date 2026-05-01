@@ -125,20 +125,20 @@ Installation:
 CMake:
 ======
 
-- create build directory at the same level of ./src/ :<BR>
-   mkdir build<BR>
-- Launch CMake, OSX environment doesn't require parameters:<BR>
-    cmake ..<BR>
-  on Linux environments we have some options, we can request native code generation:<BR>
-    cmake -DUSE_MARCH_NATIVE=ON  ..<BR>
-  also, if available Fil-C and an OpenSSL library compiled with that compiler, we can compile the project usint them specifying:<BR>
-    -DUSE_FIL_C_WITH_SSL=[OPEN_SSL_FIL-C_PATH] <BR>
-  for example:<BR>
-    cmake -DUSE_FIL_C_WITH_SSL=/home/bg/_Compiledir/_Fil-C/fil-c/pizfix/lib/  ..<BR>
-  we also can require both those features:<BR>
-    cmake -DUSE_MARCH_NATIVE=ON -DUSE_FIL_C_WITH_SSL=/home/bg/_Compiledir/_Fil-C/fil-c/pizfix/lib/  ..<BR>
-- Last step is make execution:<BR>
-    make -j$(nproc)<BR>
+- create build directory at the same level of ./src/ :<BR><BR>
+   mkdir build<BR><BR>
+- Launch CMake, OSX environment doesn't require parameters:<BR><BR>
+    cmake ..<BR><BR>
+  on Linux environments we have some options, we can request native code generation:<BR><BR>
+    cmake -DUSE_MARCH_NATIVE=ON  ..<BR><BR>
+  also, if available Fil-C and an OpenSSL library compiled with that compiler, we can compile the project usint them specifying:<BR><BR>
+    -DUSE_FIL_C_WITH_SSL=[OPEN_SSL_FIL-C_PATH] <BR><BR>
+  for example:<BR><BR>
+    cmake -DUSE_FIL_C_WITH_SSL=/home/bg/_Compiledir/_Fil-C/fil-c/pizfix/lib/  ..<BR><BR>
+  we also can require both those features:<BR><BR>
+    cmake -DUSE_MARCH_NATIVE=ON -DUSE_FIL_C_WITH_SSL=/home/bg/_Compiledir/_Fil-C/fil-c/pizfix/lib/  ..<BR><BR>
+- Last step is make execution:<BR><BR>
+    make -j$(nproc)<BR><BR>
   
 
 Fil-c Based Building
