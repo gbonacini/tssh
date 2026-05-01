@@ -62,7 +62,7 @@ case $host_os in
                     CXX="$WITH_FILC"
                     CXXFLAGS=" -std=c++20 -g -Wall -Wextra ${OPTIMIZATION} ${CPU_OPTIMIZATION} \
                              -Wformat -Werror=format-security ${INC_SSL_CUSTOM}"
-                    LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM}-Wl,-z,relro"
+                    LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM} -Wl,-z,relro"
               elif test "x$CXX" = "xg++"; then
                     case ${CPU_TYPE} in
                        x86_64)
@@ -78,7 +78,7 @@ case $host_os in
                     CXXFLAGS=" -std=c++20 -g -Wall -Wextra \
                              -D_FORTIFY_SOURCE=2 ${OPTIMIZATION} ${CPU_OPTIMIZATION} ${LTO}  -fstack-protector \
                              --param=ssp-buffer-size=4 -Wformat -Werror=format-security ${INC_SSL_CUSTOM}"
-                    LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM}-Wl,-z,relro"
+                    LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM} -Wl,-z,relro"
               else
                     CXXFLAGS=" -std=c++20 ${OPTIMIZATION} -g -Wall "
                     LDFLAGS="$LDFLAGS ${LIB_SSL_CUSTOM}"
