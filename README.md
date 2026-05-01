@@ -112,33 +112,53 @@ Installation:
 - create compilation scripts:<BR>
   make -f makefile.dist
 - launch the configure script:<BR>
+```shell
   ./configure<BR>
+```
     or<BR>
+```shell
   ./configure WITH_LTO=yes<BR>
+```
     to compile with LTO optimization (see https://en.wikipedia.org/wiki/Interprocedural_optimization ).
     Native code generation is disabled by default to permit portable packaging. To activate it locally add WITH_NATIVE=yes to configure parameter list.
 - Compile the program:<BR>
+```shell
   make
+```
 - Install the program and the man page:<BR>
+```shell
   sudo make install
+```
 
 CMake:
 ======
 
 - create build directory at the same level of ./src/ :<BR><BR>
+```shell
    mkdir build<BR><BR>
+```
 - Launch CMake, OSX environment doesn't require parameters:<BR><BR>
+```shell
     cmake ..<BR><BR>
+```
   on Linux environments we have some options, we can request native code generation:<BR><BR>
+```shell
     cmake -DUSE_MARCH_NATIVE=ON  ..<BR><BR>
+```
   also, if available Fil-C and an OpenSSL library compiled with that compiler, we can compile the project usint them specifying:<BR><BR>
     -DUSE_FIL_C_WITH_SSL=[OPEN_SSL_FIL-C_PATH] <BR><BR>
   for example:<BR><BR>
+```shell
     cmake -DUSE_FIL_C_WITH_SSL=/home/bg/_Compiledir/_Fil-C/fil-c/pizfix/lib/  ..<BR><BR>
+```
   we also can require both those features:<BR><BR>
+```shell
     cmake -DUSE_MARCH_NATIVE=ON -DUSE_FIL_C_WITH_SSL=/home/bg/_Compiledir/_Fil-C/fil-c/pizfix/lib/  ..<BR><BR>
+```
 - Last step is make execution:<BR><BR>
+```shell
     make -j$(nproc)<BR><BR>
+```
   
 
 Fil-c Based Building
