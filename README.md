@@ -117,7 +117,9 @@ Installation:
 ```shell
   ./configure
 ```
-    or
+
+ or
+
 ```shell
   ./configure WITH_LTO=yes
 ```
